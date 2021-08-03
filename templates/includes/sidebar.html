@@ -1,0 +1,140 @@
+{% load static %}
+<aside class="main-sidebar sidebar-light-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{% url 'app:inicio' %}" class="brand-link">
+        <img src="{% static 'img/logo_alces.png' %}" alt="Los Alces" class="brand-image"
+             style="float: none;display: block;margin-left: auto;margin-right: auto">
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{% static 'img/user-icon.png' %}" class="img-circle elevation-2" alt="Imagen Usuario">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">{{ user.username }}</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item {% if seccion == 'recorridos' %}menu-open{% endif %}">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-route"></i>
+                        <p>
+                            Recorridos
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'cuenta:usuarios' %}"
+                               class="nav-link {% if request.path == '/recorridos/asignar_despachos/' %}active{% endif %}">
+                                <i class="fas fa-play nav-icon"></i>
+                                <p>Asignar Despachos</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'cuenta:usuarios' %}"
+                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                                <i class="far fa-calendar-alt nav-icon"></i>
+                                <p>Informe Despachos</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'cuenta:usuarios' %}"
+                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                                <i class="fas fa-money-bill nav-icon"></i>
+                                <p>Pago Planilla</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'cuenta:usuarios' %}"
+                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                                <i class="fas fa-folder-plus nav-icon"></i>
+                                <p>Revalidar Planilla</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'cuenta:usuarios' %}"
+                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                                <i class="fas fa-folder-minus nav-icon"></i>
+                                <p>Anular Planilla</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'cuenta:usuarios' %}"
+                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                                <i class="fas fa-business-time nav-icon"></i>
+                                <p>Administrar Servicios</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {% if seccion == 'directorio' %}menu-open{% endif %}">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-list-alt"></i>
+                        <p>Directorio
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'buses:listar' %}"
+                               class="nav-link {% if request.path == '/buses/' %}active{% endif %}">
+                                <i class="fas fa-bus nav-icon"></i>
+                                <p>Buses</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'conductores:listar' %}"
+                               class="nav-link {% if request.path == '/conductores/' %}active{% endif %}">
+                                <i class="fas fa-user-tie nav-icon"></i>
+                                <p>Conductores</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {% if seccion == 'admin' %}menu-open{% endif %}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-toolbox"></i>
+                        <p>Administración<i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'cuenta:usuarios' %}"
+                               class="nav-link {% if request.path == '/usuarios/' %}active{% endif %}">
+                                <i class="far fa-user nav-icon"></i>
+                                <p>Usuarios</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'cuenta:logout' %}" class="nav-link">
+                        <i class="nav-icon fas fa-door-open"></i>
+                        <p>Salir</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

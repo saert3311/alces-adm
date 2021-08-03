@@ -1,0 +1,155 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block stylesheets %}{% endblock stylesheets %}
+{% block acciones %}
+    <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'cuenta:usuarios' %}" class="nav-link">Volver</a>
+    </li>
+{% endblock acciones %}
+{% block contenido %}
+    {% load widget_tweaks %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ titulo }}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'cuenta:usuarios' %}">Usuarios</a></li>
+                        <li class="breadcrumb-item active">{{ titulo }}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-8 align-self-center">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ subtitulo }}</h3>
+                        </div>
+                        <form method="post" id="crear_usuario_form">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Nombre</label>
+                                            {{ form.first_name|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Apellido</label>
+                                            {{ form.last_name|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">RUT</label>
+                                            {{ form.username|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Email</label>
+                                            {{ form.email|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    {% if form.password1 %}
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Contraseña</label>
+                                                {{ form.password1|add_class:'form-control form-control-border' }}
+                                                <small id="passwordHelpBlock" class="form-text text-muted">
+                                                    <small id="passwordHelpBlock" class="form-text text-muted">
+                                                        150 carácteres como máximo. Únicamente letras, dígitos y
+                                                        @/./+/-/_
+                                                    </small>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Repetir Contraseña</label>
+                                                {{ form.password2|add_class:'form-control form-control-border' }}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Contraseña</label>
+                                                {{ form.password|add_class:'form-control form-control-border'|attr:"type:password" }}
+                                                <small id="passwordHelpBlock" class="form-text text-muted">
+                                                    <small id="passwordHelpBlock" class="form-text text-muted">
+                                                        150 carácteres como máximo. Únicamente letras, dígitos y
+                                                        @/./+/-/_
+                                                    </small>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group" style="margin-top: 1.5rem">
+                                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                {{ form.is_active|add_class:'custom-control-input' }}
+                                                    <label for="id_is_active" class="custom-control-label">Esta Activo</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label>Rol de Usuario</label>
+                                            {{ form.user_type|add_class:'form-control' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ form.date_joined|attr:"type:hidden" }}
+                                {% csrf_token %}
+                            </div>
+                            <div class="card-footer text-right">
+                                <button type="submit" class="btn btn-primary">{{ boton }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+{% endblock contenido %}
+{% block javascripts %}
+    <script src="{% static 'js/jquery.rut.min.js' %}"></script>
+    <script>
+    $('#crear_usuario_form').on('submit', function (e) {
+    e.preventDefault();
+    var parameters = $(this).serializeArray();
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: parameters,
+        dataType: 'json'
+    }).done(function (data) {
+        if (!data.hasOwnProperty('error')) {
+            location.href = '/usuarios/';
+            return false;
+        }
+        message_error(data.error);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus + ': ' + errorThrown);
+    }).always(function (data) {
+
+    });
+});
+$('#id_username').rut({formatOn: 'keyup', validateOn: 'change keyup'});
+    </script>
+{% endblock javascripts %}
+

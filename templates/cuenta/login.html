@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Los Alces - Login</title>
+    <link href={% static 'favicons/apple-touch-icon.png' %}" sizes="180x180" rel="apple-touch-icon"/>
+    <link href="{% static 'favicons/favicon-32x32.png' %}" sizes="32x32" rel="icon" type="image/png"/>
+    <link href="{% static 'favicons/favicon-16x16.png' %}" sizes="16x16" rel="icon" type="image/png"/>
+    <link href="{% static 'favicons/site.webmanifest' %}" rel="manifest"/>
+    <link color="#d10031" href="{% static 'favicons/safari-pinned-tab.svg' %}" rel="mask-icon"/>
+    <link href="{% static 'favicons/favicon.ico' %}" rel="shortcut icon"/>
+    <meta name="theme-color" content="#d10031"/>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/sweetalert2/sweetalert2.css' %}">
+</head>
+<body class="hold-transition login-page" id="cuerpo-login">
+<div class="login-box">
+  <!-- /.login-logo -->
+  <div class="card card-outline card-primary">
+    <div class="card-header text-center">
+      <img src="{% static 'img/logo_alces.png' %}" alt="Logo Los Alces" style="max-width: 100%">
+    </div>
+    <div class="card-body">
+      <p class="login-box-msg">Iniciar Sesión</p>
+
+      <form id="loginform" method="post" onSubmit="logear(); return false">
+          <input type="hidden" name="next" value="{{ next }}">
+          {% csrf_token %}
+        <div class="input-group mb-3">
+          <input name="username" type="text" class="form-control" placeholder="Usuario">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input name="password" type="password" class="form-control" placeholder="Contraseña">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8">
+              <div class="icheck-primary">
+              <input type="checkbox" id="remember" name="remember">
+              <label for="remember">
+                Recuerdame
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block" id="login_submit" onclick="logear()">Entrar</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+      <p class="mb-1">
+        <a href="#">Olvido su contraseña</a>
+      </p>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'plugins/sweetalert2/sweetalert2.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+<script>
+    function logear() {
+    $.ajax({
+        url: '/login/', type: 'POST',
+        data: $('#loginform').serialize(),
+        cache: false,
+        success: function(data) {
+            if (data['msg'] == 'success') {
+                location.href = "/";
+            } else {
+                $('#cuerpo-login').attr('style','min-height:100vh');
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Usuario o Contraseña errada'
+                })
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>

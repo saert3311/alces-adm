@@ -1,0 +1,13 @@
+.table td, .table th {
+    vertical-align: middle;
+}
+td.botones{
+    text-align: center;
+}
+td.botones button {
+    margin: 0 5px;
+}
+
+.input-group.patente input:first-child {
+    width: 75%;
+}

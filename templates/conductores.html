@@ -1,0 +1,118 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+{% endblock stylesheets %}
+{% block acciones %}
+    <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'conductores:crear' %}" class="nav-link">Nuevo Conductor</a>
+    </li>
+{% endblock acciones %}
+{% block contenido %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ titulo }}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
+                        <li class="breadcrumb-item active">{{ titulo }}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-10 align-self-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="listado-conductores" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>RUT</th>
+                                    <th>Nombre</th>
+                                    <th>Dirección</th>
+                                    <th>Comuna</th>
+                                    <th>Telefono</th>
+                                    <th>Licencia</th>
+                                    <th>Vencimiento Licencia</th>
+                                    <th>Foto</th>
+                                    <th>Opciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for c in object_list %}
+                                    <tr>
+                                        <td>{{ c.rut }}</td>
+                                        <td>{{ c.nombre }} {{ c.apellidos }}</td>
+                                        <td>{{ c.direccion }}</td>
+                                        <td>{{ c.comuna_text }}</td>
+                                        <td>{{ c.telefono }}</td>
+                                        <td>{{ c.licencia }}</td>
+                                        <td>{{ c.venc_licencia }}</td>
+                                        <td class="botones"><i class="far fa-eye foto_conductor"
+                                                               load_img="{{ c.get_foto }}"></i></td>
+                                        <td class="botones"><a href="{% url 'conductores:actualizar_conductor' c.id %}">
+                                            <button type="button" class="btn btn-secondary"><i class="far fa-edit"></i>
+                                            </button>
+                                        </a><a href="{% url 'conductores:eliminar_conductor' c.id %}">
+                                            <button type="button" class="btn btn-danger"><i
+                                                    class="far fa-trash-alt"></i></button>
+                                        </a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock contenido %}
+{% block javascripts %}
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script>
+        $(function () {
+            $('#listado-conductores').DataTable({
+                language: {
+                    url: '/static/plugins/datatables/es.json'
+                },
+                'columnDefs': [{
+                    'targets': [2, 4, 7, 8],
+                    'orderable': false,
+                }]
+            });
+        })
+        $('.foto_conductor').on('click', function () {
+            var loc_img = $(this).attr("load_img");
+            $.confirm({
+                title: 'Fotografia',
+                content: '<img class="foto_conductor" src="' + loc_img + '" alt="">',
+                animation: 'top',
+                animationClose: 'top',
+                buttons: {
+                    okay: {
+                        text: 'Ok',
+                        btnClass: 'btn-blue'
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock javascripts %}
