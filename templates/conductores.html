@@ -51,6 +51,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                {% comment %}
                                 {% for c in object_list %}
                                     <tr>
                                         <td>{{ c.rut }}</td>
@@ -71,6 +72,7 @@
                                         </a></td>
                                     </tr>
                                 {% endfor %}
+                                {% endcomment %}
                                 </tbody>
                             </table>
                         </div>
@@ -87,32 +89,6 @@
     <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-    <script>
-        $(function () {
-            $('#listado-conductores').DataTable({
-                language: {
-                    url: '/static/plugins/datatables/es.json'
-                },
-                'columnDefs': [{
-                    'targets': [2, 4, 7, 8],
-                    'orderable': false,
-                }]
-            });
-        })
-        $('.foto_conductor').on('click', function () {
-            var loc_img = $(this).attr("load_img");
-            $.confirm({
-                title: 'Fotografia',
-                content: '<img class="foto_conductor" src="' + loc_img + '" alt="">',
-                animation: 'top',
-                animationClose: 'top',
-                buttons: {
-                    okay: {
-                        text: 'Ok',
-                        btnClass: 'btn-blue'
-                    }
-                }
-            });
-        });
-    </script>
+    <script src="{% static 'js/common.js' %}"></script>
+    <script src="{% static 'js/conductores/listar.js' %}"></script>
 {% endblock javascripts %}

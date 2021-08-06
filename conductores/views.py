@@ -22,6 +22,22 @@ class ListarConductores(LoginRequiredMixin, ListView):
         context['seccion'] = 'directorio'
         return context
 
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'buscardata':
+                data = []
+                for i in Conductores.objects.all():
+                    data.append(i.conductorJSON())
+                    print(data)
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        finally:
+            return JsonResponse(data, safe=False)
+
 class CrearConductor(LoginRequiredMixin, CreateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'

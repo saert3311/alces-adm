@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'alces.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'alces_sys',
+        'NAME': 'alces',
         'USER': 'alces_user',
         'PASSWORD': 'aygklAVaxy8ATrFDfxMICSXuhxudf5aO',
         'HOST': 'localhost',

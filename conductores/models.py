@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import model_to_dict
 
 from alces.settings import MEDIA_URL, STATIC_URL
 from app.models import Regiones, Comunas
@@ -21,14 +22,29 @@ class Conductores(models.Model):
     def __str__(self):
         return self.nombre
 
-    def get_foto(self):
+    @property
+    def nombreCompleto(self):
+        return '{} {}'.format(self.nombre, self.apellidos)
+
+    @property
+    def foto_url(self):
         if self.foto:
             return '{}{}'.format(MEDIA_URL, self.foto)
         return '{}{}'.format(STATIC_URL, 'img/default-placeholder.png')
 
+    @property
     def comuna_text(self):
         if self.comuna:
             return Comunas.objects.get(pk=self.comuna)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    def conductorJSON(self):
+        """Hacer funcion personalizada para serializar la vaina"""
+        item = model_to_dict(self, fields=['rut', 'nombreCompleto', 'direccion', 'comuna_text', 'telefono', 'venc_licencia', 'foto_url'])
+        return item
 
     class Meta:
         ordering = ['rut']
