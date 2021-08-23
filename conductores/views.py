@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from .forms import *
 from .models import Conductores
-
+from .serializers import ListarSerializado
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
@@ -28,9 +28,10 @@ class ListarConductores(LoginRequiredMixin, ListView):
             accion = request.POST['accion']
             if accion == 'buscardata':
                 data = []
-                for i in Conductores.objects.all():
-                    data.append(i.conductorJSON())
-                    print(data)
+                los_conductores = Conductores.objects.all()
+                conductores_serializados = ListarSerializado(los_conductores, many=True)
+                for i in conductores_serializados.data:
+                    data.append(i)
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:
