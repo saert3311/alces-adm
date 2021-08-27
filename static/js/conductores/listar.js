@@ -49,7 +49,10 @@
                                         </a>`
                         return botones
                     }
-                }],
+                },{
+                    className: "botones", "targets": [ -1, -2 ]
+                }
+                ],
                 'initComplete': function () {
                             $('.foto_conductor').on('click', function () {
             let loc_img = $(this).attr("load_img");

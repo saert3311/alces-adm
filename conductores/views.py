@@ -43,7 +43,7 @@ class CrearConductor(LoginRequiredMixin, CreateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Conductores
-    form_class = CrearConductorForm
+    form_class = ConductorForm
     template_name = 'conductores/crear-actualizar.html'
     success_url = reverse_lazy('conductores:listar')
 
@@ -69,7 +69,7 @@ class ActualizarConductor(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Conductores
-    form_class = ActualizarConductorForm
+    form_class = ConductorForm
     template_name = 'conductores/crear-actualizar.html'
     success_url = reverse_lazy('conductores:listar')
 
@@ -86,6 +86,7 @@ class ActualizarConductor(LoginRequiredMixin, UpdateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         data = {}
         try:
             form = self.get_form()

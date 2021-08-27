@@ -50,43 +50,6 @@
                                     <th>Opciones</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                {% comment %}
-                                {% for c in object_list %}
-                                    <tr>
-                                        <td>{{ c.rut }}</td>
-                                        <td>{{ c.nombre }} {{ c.apellidos }}</td>
-                                        <td>{{ c.direccion }}</td>
-                                        <td>{{ c.comuna_text }}</td>
-                                        <td>{{ c.telefono }}</td>
-                                        <td>{{ c.licencia }}</td>
-                                        <td>{{ c.venc_licencia }}</td>
-                                        <td class="botones"><i class="far fa-eye foto_conductor"
-                                                               load_img="{{ c.get_foto }}"></i></td>
-                                        <td class="botones"><a href="{% url 'conductores:actualizar_conductor' c.id %}">
-                                            <button type="button" class="btn btn-secondary"><i class="far fa-edit"></i>
-                                            </button>
-                                        </a><a href="{% url 'conductores:eliminar_conductor' c.id %}">
-                                            <button type="button" class="btn btn-danger"><i
-                                                    class="far fa-trash-alt"></i></button>
-                                        </a></td>
-                                    </tr>
-                                {% endfor %}
-                                {% endcomment %}
-                                </tbody>
-                                <thead>
-                                <tr>
-                                    <th>RUT</th>
-                                    <th>Nombre</th>
-                                    <th>Dirección</th>
-                                    <th>Comuna</th>
-                                    <th>Telefono</th>
-                                    <th>Licencia</th>
-                                    <th>Vencimiento Licencia</th>
-                                    <th>Foto</th>
-                                    <th>Opciones</th>
-                                </tr>
-                                </thead>
                             </table>
                         </div>
                     </div>

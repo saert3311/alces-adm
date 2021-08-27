@@ -31,13 +31,15 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-8 align-self-center">
+                <div class="col align-self-center">
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">{{ subtitulo }}</h3>
                         </div>
                         <form method="post" id="crear_conductor_form" data-comunas-url="{% url 'app:get_comunas' %}">
                             <div class="card-body">
+                                <div class="row">
+                                    <div class="col-9">
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="form-group">
@@ -112,7 +114,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    {% comment %}<div class="col-4">
                                         <div class="form-group">
                                             <label for="exampleInputBorder">Foto</label>
                                             <div class="input-group">
@@ -123,6 +125,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {% endcomment %}
                                     <div class="col-2">
                                         <div class="form-group" style="margin-top: 2.5rem">
                                             <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
@@ -132,6 +135,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                    </div>
+                                    <div class="col-3">
+
+                                    </div>
+                                </div>
+
                                 {% csrf_token %}
                             </div>
                             <div class="card-footer text-right">
@@ -159,7 +168,8 @@
         });
         $('#crear_conductor_form').on('submit', function (e) {
             e.preventDefault();
-            var parameters = new FormData(this);
+            let parameters = new FormData(this);
+
             $.ajax({
                 url: window.location.pathname,
                 type: 'POST',
