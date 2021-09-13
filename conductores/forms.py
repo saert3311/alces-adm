@@ -17,10 +17,17 @@ class ConductorForm(ModelForm):
             'region': Select()
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        id_comuna = Comunas.objects.get(nombre=cleaned_data['comuna'])
+        cleaned_data['comuna'] = id_comuna.id
+        id_region = Regiones.objects.get(nombre=cleaned_data['region'])
+        cleaned_data['region'] = id_region.id
+        return cleaned_data
+
     def save(self, commit=True):
         data = {}
         form = super()
-        print(form)
         try:
             if form.is_valid():
                 form.save()

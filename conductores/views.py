@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, QueryDict
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
@@ -56,7 +56,6 @@ class CrearConductor(LoginRequiredMixin, CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         data = {}
         try:
             form = self.get_form()
@@ -83,10 +82,10 @@ class ActualizarConductor(LoginRequiredMixin, UpdateView):
         context['subtitulo'] = 'Puede actualizar la información del usuario'
         context['boton'] = 'Actualizar'
         context['seccion'] = 'directorio'
+
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         data = {}
         try:
             form = self.get_form()

@@ -27,16 +27,24 @@ class Vehiculos(models.Model):
     t_salida = models.PositiveSmallIntegerField(choices=TERMINALES, default=1, verbose_name="Terminal Salida")
     activo = models.BooleanField(default=True, verbose_name="Vehiculo Activo")
 
+    @property
     def get_patente(self):
-        return self.patente
+        if self.u_patente == "":
+            return self.patente
+        return f'{self.patente}-{self.u_patente}'
+
+    @property
+    def get_descripcion(self):
+        return f'{self.marca} {self.modelo}'
 
     def get_nro(self):
         return self.nro
 
+    @property
     def get_foto(self):
         if self.foto:
-            return '{}{}'.format(MEDIA_URL, self.foto)
-        return '{}{}'.format(STATIC_URL, 'img/default-placeholder.png')
+            return f'{MEDIA_URL}{self.foto}'
+        return f'{STATIC_URL}img/default-placeholder.png'
 
     def __str__(self):
         return f'{self.nro} : {self.patente}'

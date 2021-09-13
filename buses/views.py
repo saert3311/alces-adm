@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-
+from buses.serializers import ListarSerializado
 from buses.forms import VehiculoForm
 from buses.models import Vehiculos
 
@@ -18,6 +18,23 @@ class ListarVehiculos(LoginRequiredMixin, ListView):
         context['titulo'] = 'Buses'
         context['seccion'] = 'directorio'
         return context
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'buscardata':
+                data = []
+                los_vehiculos = Vehiculos.objects.all()
+                vehiculos_serializados = ListarSerializado(los_vehiculos, many=True)
+                for i in vehiculos_serializados.data:
+                    data.append(i)
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        finally:
+            return JsonResponse(data, safe=False)
 
 class CrearVehiculo(LoginRequiredMixin, CreateView):
     login_url = '/login/'
