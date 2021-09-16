@@ -93,6 +93,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{% url 'propietarios:listar' %}"
+                               class="nav-link {% if request.path == '/propietarios/' %}active{% endif %}">
+                                <i class="far fa-address-card"></i>
+                                <p>Propietarios</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
                             <a href="{% url 'buses:listar' %}"
                                class="nav-link {% if request.path == '/buses/' %}active{% endif %}">
                                 <i class="fas fa-bus nav-icon"></i>

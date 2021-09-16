@@ -18,7 +18,7 @@
                     {'data': 'veh_completo'},
                     {'data': 'ano'},
                     {'data': 'ven_revision'},
-                    {'data': 't_salida'},
+                    {'data': 'salida'},
                     {'data': 'la_foto'},
                     {'data': 'id'}
                 ],

@@ -23,7 +23,8 @@ urlpatterns = [
     path('', include('cuenta.urls', namespace='cuenta')),
     path('', include('app.urls', namespace='app')),
     path('', include('conductores.urls', namespace='conductores')),
-    path('', include('buses.urls', namespace='buses'))
+    path('', include('buses.urls', namespace='buses')),
+    path('', include('propietarios.urls', namespace='propietarios'))
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

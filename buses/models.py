@@ -46,6 +46,10 @@ class Vehiculos(models.Model):
             return f'{MEDIA_URL}{self.foto}'
         return f'{STATIC_URL}img/default-placeholder.png'
 
+    @property
+    def terminal_display(self):
+        return self.get_t_salida_display()
+
     def __str__(self):
         return f'{self.nro} : {self.patente}'
 
