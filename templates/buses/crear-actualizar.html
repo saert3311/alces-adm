@@ -1,7 +1,10 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 {% block title %}Crear Vehiculo{% endblock %}
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+{% endblock stylesheets %}
 {% block acciones %}
     <li class="nav-item d-none d-sm-inline-block">
         <a href="{% url 'buses:listar' %}" class="nav-link">Volver</a>
@@ -31,7 +34,7 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-8 align-self-center">
+                <div class="col align-self-center">
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">{{ subtitulo }}</h3>
@@ -39,78 +42,85 @@
                         <form method="post" id="crear_form">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-sm-2">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Patente</label>
-                                            <div class="input-group patente">
-                                                {{ form.patente|add_class:'form-control' }}
-                                                {{ form.u_patente|add_class:'form-control' }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Nro Interno</label>
-                                            {{ form.nro|add_class:'form-control form-control-border' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Marca</label>
-                                            {{ form.marca|add_class:'form-control form-control-border' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Modelo</label>
-                                            {{ form.modelo|add_class:'form-control form-control-border' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Año</label>
-                                            {{ form.ano|add_class:'form-control form-control-border' }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Venc. Revision Tecnica</label>
-                                            <div class="input-group date" id="fecha_vencimiento"
-                                                 data-target-input="nearest">
-                                                {{ form.ven_revision|add_class:'form-control datetimepicker-input'|attr:'data-target:#fecha_vencimiento' }}
-                                                <div class="input-group-append" data-target="#fecha_vencimiento"
-                                                     data-toggle="datetimepicker">
-                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    <div class="col-sm-9">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Patente</label>
+                                                <div class="input-group patente">
+                                                    {{ form.patente|add_class:'form-control' }}
+                                                    {{ form.u_patente|add_class:'form-control' }}
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Terminal Salida</label>
-                                            {{ form.t_salida|add_class:'custom-select form-control-border' }}
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Nro Interno</label>
+                                                {{ form.nro|add_class:'form-control form-control-border' }}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="exampleInputBorder">Propietario</label>
-                                            {{ form.t_salida|add_class:'custom-select form-control-border' }}
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Marca</label>
+                                                {{ form.marca|add_class:'form-control form-control-border' }}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="id_foto">Foto</label>
-                                            <div class="input-group">
-                                                <div class="custom-file">
-                                                    {{ form.foto|add_class:'custom-file-input'|attr:"lang:es" }}
-                                                    <label class="custom-file-label" for="id_foto">Buscar...</label>
-                                                </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Modelo</label>
+                                                {{ form.modelo|add_class:'form-control form-control-border' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Año</label>
+                                                {{ form.ano|add_class:'form-control form-control-border' }}
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputBorder">Venc. Revision Tecnica</label>
+                                                <div class="input-group date" id="fecha_vencimiento"
+                                                     data-target-input="nearest">
+                                                    {{ form.ven_revision|add_class:'form-control datetimepicker-input'|attr:'data-target:#fecha_vencimiento' }}
+                                                    <div class="input-group-append" data-target="#fecha_vencimiento"
+                                                         data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label for="id_t_salida">Terminal Salida</label>
+                                                {{ form.t_salida|add_class:'custom-select form-control-border' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="id_propietario">Propietario</label>
+                                                {{ form.propietario|add_class:'form-control select2bs4' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                <div class="col-sm-3">
+                                     <div class="form-group">
+                                         <label for="id_foto" class="w-100">Foto</label>
+                                         <figure class="figure">
+                                              <img src="{{ vehiculos.get_foto }}" class="figure-img img-fluid rounded" alt="{{ vehiculos.get_descripcion }}">
+                                            </figure>
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        {{ form.foto|add_class:'custom-file-input'|attr:"lang:es" }}
+                                                        <label class="custom-file-label" for="id_foto">Buscar...</label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                 </div>
+                                    </div>
                                 {% csrf_token %}
                             </div>
                             <div class="card-footer text-right">
@@ -129,10 +139,16 @@
     <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
     <script src="{% static 'plugins/moment/locale/es.js' %}"></script>
     <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
     <script>
         $(function () {
             bsCustomFileInput.init();
         });
+        $(function (){
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        })
         $('#fecha_vencimiento').datetimepicker({
             locale: 'es',
             format: 'DD/MM/YYYY',
@@ -161,6 +177,7 @@
 
             });
         });
+
     </script>
 {% endblock javascripts %}
 

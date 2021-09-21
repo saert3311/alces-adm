@@ -56,7 +56,11 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="exampleInputBorder">RUT</label>
+                                            {% if 'conductores/actualizar' in request.path %}
+                                            {{ form.rut|add_class:'form-control form-control-border'|attr:'disabled' }}
+                                            {% else %}
                                             {{ form.rut|add_class:'form-control form-control-border' }}
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
@@ -129,11 +133,10 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
+                                            <label for="id_foto" class="w-100">Foto</label>
                                             <figure class="figure">
                                               <img src="{{ conductores.foto_url }}" class="figure-img img-fluid rounded" alt="{{ conductores.nombreCompleto }}">
-                                              <figcaption class="figure-caption">{{ conductores.nombreCompleto }}</figcaption>
                                             </figure>
-                                            <label for="id_foto">Foto</label>
                                             <div class="custom-file">
                                                 {{ form.foto|add_class:'custom-file-input' }}
                                               <label class="custom-file-label" for="id_foto">Buscar</label>

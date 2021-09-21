@@ -9,4 +9,4 @@ class ListarSerializado(serializers.ModelSerializer):
 
     class Meta:
         model = Conductores
-        fields = ['id', 'rut', 'nombre_completo', 'direccion', 'la_comuna', 'telefono', 'venc_licencia', 'la_foto', 'licencia']
+        fields = ['id', 'rut', 'nombre_completo', 'direccion', 'la_comuna', 'telefono', 'venc_licencia', 'la_foto', 'licencia', 'email', 'nombre']

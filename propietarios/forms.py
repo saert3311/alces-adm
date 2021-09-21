@@ -5,7 +5,7 @@ from propietarios.models import Propietarios
 from app.models import Comunas, Regiones
 
 
-class ConductorForm(ModelForm):
+class PropietarioForm(ModelForm):
     region = forms.ModelChoiceField(queryset=Regiones.objects.all(), widget=forms.Select)
     comuna = forms.ModelChoiceField(queryset=Comunas.objects.all(), widget=forms.Select)
 

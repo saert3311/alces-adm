@@ -41,11 +41,16 @@
                     'orderable': false,
                     render: function (data, type, row){
                         let botones = `<a href="/conductores/actualizar/${row.id}">
-                                            <button type="button" class="btn btn-secondary"><i class="far fa-edit"></i>
+                                            <button type="button" class="btn btn-primary"><i class="far fa-edit"></i>
                                             </button>
-                                        </a><a href="/conductores/eliminar/${row.id}">
-                                            <button type="button" class="btn btn-danger"><i
-                                                    class="far fa-trash-alt"></i></button>
+                                        </a>
+                                        <a href="tel:${row.telefono}">
+                                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Llamar ${row.nombre}"><i class="fas fa-phone-alt"></i>
+                                            </button>
+                                        </a>
+                                        <a href="mailto:${row.email}">
+                                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Email a ${row.nombre}"><i class="far fa-envelope"></i>
+                                            </button>
                                         </a>`
                         return botones
                     }
@@ -70,6 +75,7 @@
                 }
             });
         });
+                                $('[data-toggle="tooltip"]').tooltip()
                 }
             });
         })

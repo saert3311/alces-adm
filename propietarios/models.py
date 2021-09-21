@@ -16,7 +16,7 @@ class Propietarios(models.Model):
     activo = models.BooleanField(default=True, verbose_name="Propietario Activo")
 
     def __str__(self):
-        return self.nombre
+        return '{} {} - {}'.format(self.nombre, self.apellidos, self.rut)
 
     @property
     def nombreCompleto(self):

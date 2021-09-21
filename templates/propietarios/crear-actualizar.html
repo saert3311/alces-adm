@@ -43,7 +43,7 @@
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label for="exampleInputBorder">Nombre</label>
+                                            <label for="id_nombre">Nombre</label>
                                             {{ form.nombre|add_class:'form-control form-control-border' }}
                                         </div>
                                     </div>
@@ -55,8 +55,12 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label for="exampleInputBorder">RUT</label>
-                                            {{ form.rut|add_class:'form-control form-control-border' }}
+                                            <label for="id_rut">RUT</label>
+                                            {% if 'propietarios/actualizar' in request.path %}
+                                                {{ form.rut|add_class:'form-control form-control-border'|attr:'disabled' }}
+                                            {% else %}
+                                                {{ form.rut|add_class:'form-control form-control-border' }}
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="col-sm-3">

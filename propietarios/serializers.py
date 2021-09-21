@@ -8,4 +8,4 @@ class ListarSerializado(serializers.ModelSerializer):
 
     class Meta:
         model = Propietarios
-        fields = ['id', 'rut', 'nombre_completo', 'direccion', 'la_comuna', 'telefono', 'activo']
+        fields = ['id', 'rut', 'nombre_completo', 'direccion', 'la_comuna', 'telefono', 'activo', 'nombre', 'email']
