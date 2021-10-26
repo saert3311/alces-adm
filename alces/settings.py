@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'conductores',
     'buses',
     'propietarios',
+    'recorridos'
 ]
 
 MIDDLEWARE = [

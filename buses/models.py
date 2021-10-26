@@ -26,8 +26,8 @@ class Vehiculos(models.Model):
     ], verbose_name="Nro Interno", unique=True)
     foto = models.ImageField(upload_to='fotos_vehiculos', null=True, blank=True)
     t_salida = models.PositiveSmallIntegerField(choices=TERMINALES, default=1, verbose_name="Terminal Salida")
-    activo = models.BooleanField(default=True, verbose_name="Vehiculo Activo")
-    propietario = models.ForeignKey(Propietarios, on_delete=models.PROTECT, default=1)
+    es_activo = models.BooleanField(default=True, verbose_name="Vehiculo Activo")
+    id_propietario = models.ForeignKey(Propietarios, on_delete=models.PROTECT, default=1)
 
     @property
     def get_patente(self):
