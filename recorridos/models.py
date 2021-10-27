@@ -1,8 +1,8 @@
 from django.db import models
 
-from buses.models import Vehiculos
+from buses.models import Vehiculo
 from cuenta.models import User
-from conductores.models import Conductores, Auxiliar
+from conductores.models import Conductor, Auxiliar
 from app.models import Sucursal
 
 
@@ -30,12 +30,12 @@ class Recorrido(models.Model):
 class Planilla(models.Model):
     nro_control = models.PositiveIntegerField(unique=True, verbose_name="Nro. Control")
     id_pago_planilla = models.ForeignKey(Pago_planilla, on_delete=models.PROTECT)
-    id_vehiculo = models.ForeignKey(Vehiculos, on_delete=models.PROTECT, verbose_name="Vehiculo")
+    id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name="Vehiculo")
     id_recorrido = models.ForeignKey(Recorrido, on_delete=models.PROTECT, verbose_name="Recorrido")
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Generado por")
     fecha_venta = models.DateTimeField(auto_now_add=True)
     revalidada = models.PositiveIntegerField(verbose_name="Planilla revalidada")
-    id_conductor = models.ForeignKey(Conductores, on_delete=models.PROTECT, verbose_name="Conductor")
+    id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name="Conductor")
     es_pirata = models.BooleanField(verbose_name='Es pirata')
 
 class Despacho(models.Model):
@@ -44,7 +44,7 @@ class Despacho(models.Model):
         (1, 'Ida'),
         (2, 'Vuelta')
     )
-    id_conductor = models.ForeignKey(Conductores, on_delete=models.PROTECT, verbose_name='Conductor')
+    id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name='Conductor')
     id_auxiliar = models.ForeignKey(Auxiliar, on_delete=models.PROTECT, verbose_name='Auxiliar')
     id_planilla = models.ForeignKey(Planilla, on_delete=models.PROTECT, verbose_name='Planilla')
     variante = models.SmallIntegerField(choices=VARIANTE, default=1, verbose_name='Variante')
@@ -56,7 +56,7 @@ class Despacho(models.Model):
     id_recorrido = models.ForeignKey(Recorrido, on_delete=models.PROTECT, verbose_name='Recorrido')
     id_origen = models.ForeignKey(Sucursal, related_name='salida', on_delete=models.PROTECT, verbose_name='Origen')
     id_suc_despacho = models.ForeignKey(Sucursal, related_name='despachado', on_delete=models.PROTECT, verbose_name='Sucursal despacho')
-    id_vehiculo = models.ForeignKey(Vehiculos, on_delete=models.PROTECT, verbose_name='Vehiculo')
+    id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name='Vehiculo')
 
 
 

@@ -13,7 +13,7 @@ class Regiones(models.Model):
         return self.nombre
 
 
-class Provincias(models.Model):
+class Provincia(models.Model):
     nombre = models.CharField(max_length=100)
     cod_region = models.ForeignKey(Regiones,  on_delete=models.DO_NOTHING)
 
@@ -24,9 +24,9 @@ class Provincias(models.Model):
         return self.nombre
 
 
-class Comunas(models.Model):
+class Comuna(models.Model):
     nombre = models.CharField(max_length=100)
-    cod_provincia = models.ForeignKey(Provincias, on_delete=models.DO_NOTHING, null=True)
+    cod_provincia = models.ForeignKey(Provincia, on_delete=models.DO_NOTHING, null=True)
 
     class Meta:
         ordering = ['nombre']

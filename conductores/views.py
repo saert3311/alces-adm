@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 
 from .forms import *
-from .models import Conductores
+from .models import Conductor
 from .serializers import ListarSerializado
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -13,7 +13,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 class ListarConductores(LoginRequiredMixin, ListView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Conductores
+    model = Conductor
     template_name = 'conductores.html'
 
     def get_context_data(self, **kwargs):
@@ -28,7 +28,7 @@ class ListarConductores(LoginRequiredMixin, ListView):
             accion = request.POST['accion']
             if accion == 'buscardata':
                 data = []
-                los_conductores = Conductores.objects.all()
+                los_conductores = Conductor.objects.all()
                 conductores_serializados = ListarSerializado(los_conductores, many=True)
                 for i in conductores_serializados.data:
                     data.append(i)
@@ -42,7 +42,7 @@ class ListarConductores(LoginRequiredMixin, ListView):
 class CrearConductor(LoginRequiredMixin, CreateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Conductores
+    model = Conductor
     form_class = ConductorForm
     template_name = 'conductores/crear-actualizar.html'
     success_url = reverse_lazy('conductores:listar')
@@ -67,7 +67,7 @@ class CrearConductor(LoginRequiredMixin, CreateView):
 class ActualizarConductor(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Conductores
+    model = Conductor
     form_class = ConductorForm
     template_name = 'conductores/crear-actualizar.html'
     success_url = reverse_lazy('conductores:listar')
@@ -97,7 +97,7 @@ class ActualizarConductor(LoginRequiredMixin, UpdateView):
 class EliminarConductor(LoginRequiredMixin, DeleteView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Conductores
+    model = Conductor
     template_name = 'conductores/eliminar.html'
     success_url = reverse_lazy('conductores:listar')
 

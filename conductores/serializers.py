@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from conductores.models import Conductores
+from conductores.models import Conductor
 
 
 class ListarSerializado(serializers.ModelSerializer):
@@ -8,5 +8,5 @@ class ListarSerializado(serializers.ModelSerializer):
     la_foto = serializers.CharField(source='foto_url', read_only=True)
 
     class Meta:
-        model = Conductores
+        model = Conductor
         fields = ['id', 'rut', 'nombre_completo', 'direccion', 'la_comuna', 'telefono', 'venc_licencia', 'la_foto', 'licencia', 'email', 'nombre']

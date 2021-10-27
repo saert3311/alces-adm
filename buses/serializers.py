@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from buses.models import Vehiculos
+from buses.models import Vehiculo
 
 
 class ListarSerializado(serializers.ModelSerializer):
@@ -8,5 +8,5 @@ class ListarSerializado(serializers.ModelSerializer):
     salida = serializers.CharField(source='terminal_display', read_only=True)
 
     class Meta:
-        model = Vehiculos
+        model = Vehiculo
         fields = ['id', 'nro', 'patente', 'veh_completo', 'ano', 'ven_revision', 'salida', 'la_foto']

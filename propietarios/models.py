@@ -1,10 +1,10 @@
 from django.db import models
 
 # Create your models here.
-from app.models import Comunas
+from app.models import Comuna
 
 
-class Propietarios(models.Model):
+class Propietario(models.Model):
     nombre = models.CharField(max_length=50, verbose_name='Nombre')
     apellidos = models.CharField(max_length=50, verbose_name='Apellidos')
     rut = models.CharField(max_length=13, unique=True, verbose_name='RUT')
@@ -25,7 +25,7 @@ class Propietarios(models.Model):
     @property
     def comuna_text(self):
         if self.comuna:
-            return Comunas.objects.get(pk=self.comuna)
+            return Comuna.objects.get(pk=self.comuna)
 
     class Meta:
         ordering = ['rut']

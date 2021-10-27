@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render
-from .models import Comunas
+from .models import Comuna
 
 # Create your views here.
 from django.views import View
@@ -23,7 +23,7 @@ def handler500(request):
 def GetComunas(request):
     id_region = request.GET.get('region')
     try:
-        comunas = Comunas.objects.filter(cod_provincia__cod_region_id=id_region)
+        comunas = Comuna.objects.filter(cod_provincia__cod_region_id=id_region)
         data = []
         for i in comunas:
             data.append({'id': i.id, 'comuna': i.nombre})

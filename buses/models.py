@@ -1,12 +1,12 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from propietarios.models import Propietarios
+from propietarios.models import Propietario
 
 # Create your models here.
 from alces.settings import MEDIA_URL, STATIC_URL
 
 
-class Vehiculos(models.Model):
+class Vehiculo(models.Model):
 
     TERMINALES = (
         (1, 'Collao'),
@@ -27,7 +27,7 @@ class Vehiculos(models.Model):
     foto = models.ImageField(upload_to='fotos_vehiculos', null=True, blank=True)
     t_salida = models.PositiveSmallIntegerField(choices=TERMINALES, default=1, verbose_name="Terminal Salida")
     es_activo = models.BooleanField(default=True, verbose_name="Vehiculo Activo")
-    id_propietario = models.ForeignKey(Propietarios, on_delete=models.PROTECT, default=1)
+    id_propietario = models.ForeignKey(Propietario, on_delete=models.PROTECT, default=1)
 
     @property
     def get_patente(self):

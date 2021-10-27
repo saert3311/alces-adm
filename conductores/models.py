@@ -1,11 +1,11 @@
 from django.db import models
 
 from alces.settings import MEDIA_URL, STATIC_URL
-from app.models import Regiones, Comunas
+from app.models import Regiones, Comuna
 
 # Create your models here.
 
-class Conductores(models.Model):
+class Conductor(models.Model):
     nombre = models.CharField(max_length=50, verbose_name='Nombre')
     apellidos = models.CharField(max_length=50, verbose_name='Apellidos')
     rut = models.CharField(max_length=13, unique=True, verbose_name='RUT')
@@ -35,7 +35,7 @@ class Conductores(models.Model):
     @property
     def comuna_text(self):
         if self.comuna:
-            return Comunas.objects.get(pk=self.comuna)
+            return Comuna.objects.get(pk=self.comuna)
 
     class Meta:
         ordering = ['rut']
@@ -61,7 +61,7 @@ class Auxiliar(models.Model):
     @property
     def comuna_text(self):
         if self.comuna:
-            return Comunas.objects.get(pk=self.comuna)
+            return Comuna.objects.get(pk=self.comuna)
 
     class Meta:
         ordering = ['rut']

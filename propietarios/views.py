@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 
 from .forms import PropietarioForm
-from .models import Propietarios
+from .models import Propietario
 from .serializers import ListarSerializado
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView
@@ -12,7 +12,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 class ListarPropietarios(LoginRequiredMixin, ListView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Propietarios
+    model = Propietario
     template_name = 'propietarios/listar.html'
 
     def get_context_data(self, **kwargs):
@@ -27,7 +27,7 @@ class ListarPropietarios(LoginRequiredMixin, ListView):
             accion = request.POST['accion']
             if accion == 'buscardata':
                 data = []
-                los_propietarios = Propietarios.objects.all()
+                los_propietarios = Propietario.objects.all()
                 propietarios_serializados = ListarSerializado(los_propietarios, many=True)
                 for i in propietarios_serializados.data:
                     data.append(i)
@@ -42,7 +42,7 @@ class ListarPropietarios(LoginRequiredMixin, ListView):
 class CrearPropietario(LoginRequiredMixin, CreateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Propietarios
+    model = Propietario
     form_class = PropietarioForm
     template_name = 'propietarios/crear-actualizar.html'
     success_url = reverse_lazy('propietarios:listar')
@@ -68,7 +68,7 @@ class CrearPropietario(LoginRequiredMixin, CreateView):
 class ActualizarPropietario(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Propietarios
+    model = Propietario
     form_class = PropietarioForm
     template_name = 'propietarios/crear-actualizar.html'
     success_url = reverse_lazy('propietarios:listar')

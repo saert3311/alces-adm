@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from propietarios.models import Propietarios
+from propietarios.models import Propietario
 
 
 class ListarSerializado(serializers.ModelSerializer):
@@ -7,5 +7,5 @@ class ListarSerializado(serializers.ModelSerializer):
     la_comuna = serializers.CharField(source='comuna_text', read_only=True)
 
     class Meta:
-        model = Propietarios
+        model = Propietario
         fields = ['id', 'rut', 'nombre_completo', 'direccion', 'la_comuna', 'telefono', 'activo', 'nombre', 'email']

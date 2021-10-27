@@ -1,14 +1,14 @@
 from django import forms
 from django.forms import ModelForm, Select
-from buses.models import Vehiculos
-from propietarios.models import Propietarios
+from buses.models import Vehiculo
+from propietarios.models import Propietario
 
 
 class VehiculoForm(ModelForm):
-    propietario = forms.ModelChoiceField(queryset=Propietarios.objects.all(), widget=forms.Select)
+    propietario = forms.ModelChoiceField(queryset=Propietario.objects.all(), widget=forms.Select)
 
     class Meta:
-        model = Vehiculos
+        model = Vehiculo
         fields = '__all__'
 
     def save(self, commit=True):

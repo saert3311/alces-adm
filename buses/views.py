@@ -4,13 +4,13 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from buses.serializers import ListarSerializado
 from buses.forms import VehiculoForm
-from buses.models import Vehiculos
+from buses.models import Vehiculo
 
 
 class ListarVehiculos(LoginRequiredMixin, ListView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Vehiculos
+    model = Vehiculo
     template_name = 'buses/listar.html'
 
     def get_context_data(self, **kwargs):
@@ -25,7 +25,7 @@ class ListarVehiculos(LoginRequiredMixin, ListView):
             accion = request.POST['accion']
             if accion == 'buscardata':
                 data = []
-                los_vehiculos = Vehiculos.objects.all()
+                los_vehiculos = Vehiculo.objects.all()
                 vehiculos_serializados = ListarSerializado(los_vehiculos, many=True)
                 for i in vehiculos_serializados.data:
                     data.append(i)
@@ -39,7 +39,7 @@ class ListarVehiculos(LoginRequiredMixin, ListView):
 class CrearVehiculo(LoginRequiredMixin, CreateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Vehiculos
+    model = Vehiculo
     form_class = VehiculoForm
     template_name = 'buses/crear-actualizar.html'
     success_url = reverse_lazy('buses:listar')
@@ -65,7 +65,7 @@ class CrearVehiculo(LoginRequiredMixin, CreateView):
 class ActualizarVehiculo(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Vehiculos
+    model = Vehiculo
     form_class = VehiculoForm
     template_name = 'buses/crear-actualizar.html'
     success_url = reverse_lazy('buses:listar')
@@ -94,7 +94,7 @@ class ActualizarVehiculo(LoginRequiredMixin, UpdateView):
 class EliminarConductor(LoginRequiredMixin, DeleteView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Vehiculos
+    model = Vehiculo
     template_name = 'conductores/eliminar.html'
     success_url = reverse_lazy('conductores:listar')
 
