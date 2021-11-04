@@ -31,8 +31,8 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'cuenta:usuarios' %}"
-                               class="nav-link {% if request.path == '/recorridos/asignar_despachos/' %}active{% endif %}">
+                            <a href="{% url 'recorridos:asignar-despacho' %}"
+                               class="nav-link {% if request.path == '/recorridos/asignar-despacho/' %}active{% endif %}">
                                 <i class="fas fa-play nav-icon"></i>
                                 <p>Asignar Despachos</p>
                             </a>
@@ -76,8 +76,8 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'cuenta:usuarios' %}"
-                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                            <a href="{% url 'recorridos:listar-servicios' %}"
+                               class="nav-link {% if request.path == '/recorridos/administrarServicios/' %}active{% endif %}">
                                 <i class="fas fa-business-time nav-icon"></i>
                                 <p>Administrar Servicios</p>
                             </a>

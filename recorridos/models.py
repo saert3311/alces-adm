@@ -20,18 +20,29 @@ class Pago_planilla(models.Model):
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Recibido por")
 
 
-class Recorrido(models.Model):
-    nombre = models.CharField(max_length=50, verbose_name="Nombre")
+class Servicio(models.Model):
+    nombre = models.CharField(max_length=50, verbose_name="Nombre", unique=True)
     es_vigente = models.BooleanField(verbose_name="Vigente")
     valor_planilla = models.PositiveIntegerField(verbose_name="Valor planilla")
     distancia = models.SmallIntegerField(verbose_name="Distancia")
 
+    @property
+    def kms(self):
+        if self.distancia == 1:
+            return '{} Km'.format(self.distancia)
+        else:
+            return '{} Kms'.format(self.distancia)
+
+    def __str__(self):
+        return self.nombre
+
 
 class Planilla(models.Model):
     nro_control = models.PositiveIntegerField(unique=True, verbose_name="Nro. Control")
+    fecha_planilla = models.DateField(verbose_name='Fecha de Planilla', default='1999-01-01', blank=False)
     id_pago_planilla = models.ForeignKey(Pago_planilla, on_delete=models.PROTECT)
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name="Vehiculo")
-    id_recorrido = models.ForeignKey(Recorrido, on_delete=models.PROTECT, verbose_name="Recorrido")
+    id_recorrido = models.ForeignKey(Servicio, on_delete=models.PROTECT, verbose_name="Recorrido")
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Generado por")
     fecha_venta = models.DateTimeField(auto_now_add=True)
     revalidada = models.PositiveIntegerField(verbose_name="Planilla revalidada")
@@ -49,11 +60,12 @@ class Despacho(models.Model):
     id_planilla = models.ForeignKey(Planilla, on_delete=models.PROTECT, verbose_name='Planilla')
     variante = models.SmallIntegerField(choices=VARIANTE, default=1, verbose_name='Variante')
     hora_asignacion = models.DateTimeField(auto_now_add=True, verbose_name='Hora Asignación')
-    hora_salida = models.DateTimeField(verbose_name='Hora salida')
-    hora_llegada = models.DateTimeField(verbose_name='Hora llegada', blank=True)
+    fecha_despacho = models.DateField(verbose_name='Fecha Despacho', default='1999-01-01', blank=False)
+    hora_salida = models.TimeField(verbose_name='Hora salida')
+    hora_llegada = models.TimeField(verbose_name='Hora llegada', blank=True)
     id_usuario = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Usuario')
     id_destino = models.ForeignKey(Sucursal, related_name='llegada', on_delete=models.PROTECT, verbose_name='Destino')
-    id_recorrido = models.ForeignKey(Recorrido, on_delete=models.PROTECT, verbose_name='Recorrido')
+    id_recorrido = models.ForeignKey(Servicio, on_delete=models.PROTECT, verbose_name='Recorrido')
     id_origen = models.ForeignKey(Sucursal, related_name='salida', on_delete=models.PROTECT, verbose_name='Origen')
     id_suc_despacho = models.ForeignKey(Sucursal, related_name='despachado', on_delete=models.PROTECT, verbose_name='Sucursal despacho')
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name='Vehiculo')

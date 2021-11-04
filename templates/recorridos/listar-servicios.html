@@ -8,7 +8,7 @@
 {% endblock stylesheets %}
 {% block acciones %}
     <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% url 'propietarios:crear' %}" class="nav-link">Nuevo Propietario</a>
+        <a href="{% url 'recorridos:crear-servicio' %}" class="nav-link">Crear Servicio</a>
     </li>
 {% endblock acciones %}
 {% block contenido %}
@@ -33,18 +33,16 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col align-self-center">
+                <div class="col-12 align-self-center">
                     <div class="card">
                         <div class="card-body">
-                            <table id="listado-propietarios" class="table table-bordered table-striped">
+                            <table id="listado-servicios" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>RUT</th>
-                                    <th>Nombre</th>
-                                    <th>Dirección</th>
-                                    <th>Comuna</th>
-                                    <th>Telefono</th>
-                                    <th>Activo</th>
+                                    <th>Nombre Ruta</th>
+                                    <th>Valor Planilla</th>
+                                    <th>Distancia</th>
+                                    <th>Esta Vigente</th>
                                     <th>Opciones</th>
                                 </tr>
                                 </thead>
@@ -64,5 +62,5 @@
     <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
     <script src="{% static 'js/common.js' %}"></script>
-    <script src="{% static 'js/propietarios/listar.js' %}"></script>
+    <script src="{% static 'js/recorridos/listar.js' %}"></script>
 {% endblock javascripts %}

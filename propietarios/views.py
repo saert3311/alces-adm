@@ -5,7 +5,6 @@ from django.urls import reverse_lazy
 from .forms import PropietarioForm
 from .models import Propietario
 from .serializers import ListarSerializado
-# Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView
 
 

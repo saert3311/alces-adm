@@ -1,0 +1,151 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Despachos{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+{% endblock stylesheets %}
+{% block acciones %}
+    <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'buses:listar' %}" class="nav-link">Volver</a>
+    </li>
+{% endblock acciones %}
+{% block contenido %}
+    {% load widget_tweaks %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ titulo }}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
+                        <li class="breadcrumb-item active">{{ titulo }}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6 align-self-start">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ seccion1 }}</h3>
+                        </div>
+                        <form method="post" id="crear_form">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                                <label for="fecha_despacho">Fecha</label>
+                                                <div class="input-group date" id="fecha_despacho"
+                                                     data-target-input="nearest">
+                                                    {{ form.fecha_despacho|add_class:'form-control datetimepicker-input'|attr:'data-target:#fecha_despacho' }}
+                                                    <div class="input-group-append" data-target="#fecha_despacho"
+                                                         data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                                <label for="id_propietario">Bus</label>
+                                                {{ form.id_vehiculo|add_class:'form-control select2bs4' }}
+                                            </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                                <label for="id_recorrido">Servicio</label>
+                                                {{ form.id_recorrido|add_class:'form-control select2bs4' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="id_variante">Variante</label>
+                                            {{ form.variante|add_class:'form-control' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="hora_salida">Hora Salida</label>
+                                                <div class="input-group date" id="hora_salida" data-target-input="nearest">
+                                                    {{ form.fecha_despacho|add_class:'form-control datetimepicker-input'|attr:'data-target:#hora_salida' }}
+                                                    <div class="input-group-append" data-target="#hora_salida" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                                <label for="id_conductor">Conductor</label>
+                                                {{ form.id_conductor|add_class:'form-control select2bs4' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                                <label for="id_auxiliar">Auxiliar</label>
+                                                {{ form.id_auxiliar|add_class:'form-control select2bs4' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% csrf_token %}
+                            </div>
+                            <div class="card-footer text-right">
+                                <button type="submit" class="btn btn-primary">{{ boton }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-6 align-self-start">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ seccion2 }}</h3>
+                        </div>
+                            <div class="card-body">
+                                Aqui ira tabla
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+{% endblock contenido %}
+{% block javascripts %}
+    <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+    <script src="{% static 'plugins/moment/locale/es.js' %}"></script>
+    <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
+    <script>
+        $('#fecha_despacho').datetimepicker({
+            locale: 'es',
+            format: 'DD/MM/YYYY',
+            userCurrent: false,
+            date: ($("#fecha_despacho").attr("value"), 'DD/MM/YYYY')
+        });
+        $('#hora_salida').datetimepicker({
+            locale: 'es',
+            format: 'LT'
+        });
+        $(function (){
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        })
+    </script>
+{% endblock javascripts %}
+

@@ -27,6 +27,10 @@ class Conductor(models.Model):
         return '{} {}'.format(self.nombre, self.apellidos)
 
     @property
+    def nombrerut(self):
+        return '{} {} - {}'.format(self.nombre, self.apellidos, self.rut)
+
+    @property
     def foto_url(self):
         if self.foto:
             return '{}{}'.format(MEDIA_URL, self.foto)

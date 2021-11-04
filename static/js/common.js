@@ -28,3 +28,7 @@ $.ajaxSetup({
         }
     }
 });
+
+function displayCLP(num){
+    return Intl.NumberFormat('es-CL', {currency: 'CLP', style: 'currency'}).format(num)
+}

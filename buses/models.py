@@ -53,7 +53,7 @@ class Vehiculo(models.Model):
         return self.get_t_salida_display()
 
     def __str__(self):
-        return f'{self.nro} : {self.patente}'
+        return f'{self.nro}  -  {self.patente}'
 
     class Meta:
         ordering = ['nro']
