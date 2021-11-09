@@ -13,5 +13,8 @@ handler500 = views.handler500
 urlpatterns = [
     # Pagina Inicio
     path('', Inicio.as_view(), name='inicio'),
-    path('tools/get_comunas/', views.GetComunas, name='get_comunas')
+    path('tools/get_comunas/', views.GetComunas, name='get_comunas'),
+    path('sucursales/', ListarSucursales.as_view(), name='listar-sucursales'),
+    path('sucursales/crear/', CrearSucursal.as_view(), name='crear-sucursal'),
+    path('sucursales/actualizar/<int:pk>/', ActualizarSucursal.as_view(), name='actualizar-sucursal')
 ]

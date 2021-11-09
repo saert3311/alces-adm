@@ -40,7 +40,7 @@
                     'orderable': false,
                     render: function (data, type, row){
                         let botones = `<a href="/buses/actualizar/${row.id}">
-                                            <button type="button" class="btn btn-secondary"><i class="far fa-edit"></i>
+                                            <button type="button" class="btn btn-secondary btn-sm"><i class="far fa-edit"></i>
                                             </button>
                                         </a>`
                         return botones

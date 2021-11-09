@@ -32,15 +32,15 @@
                     'orderable': false,
                     render: function (data, type, row){
                         let botones = `<a href="/propietarios/actualizar/${row.id}">
-                                            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Editar ${row.nombre}"><i class="far fa-edit"></i>
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Editar ${row.nombre}"><i class="far fa-edit"></i>
                                             </button>
                                         </a>
                                         <a href="tel:${row.telefono}">
-                                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Llamar ${row.nombre}"><i class="fas fa-phone-alt"></i>
+                                            <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Llamar ${row.nombre}"><i class="fas fa-phone-alt"></i>
                                             </button>
                                         </a>
                                         <a href="mailto:${row.email}">
-                                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Email a ${row.nombre}"><i class="far fa-envelope"></i>
+                                            <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Email a ${row.nombre}"><i class="far fa-envelope"></i>
                                             </button>
                                         </a>`
                         return botones

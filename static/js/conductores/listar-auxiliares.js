@@ -1,5 +1,5 @@
         $(function () {
-            $('#listado-conductores').DataTable({
+            $('#listado-auxiliares').DataTable({
                 responsive: true,
                 autoWidth: false,
                 destroy: true,
@@ -18,8 +18,6 @@
                     {'data': 'direccion'},
                     {'data': 'la_comuna'},
                     {'data': 'telefono'},
-                    {'data': 'licencia'},
-                    {'data': 'venc_licencia'},
                     {'data': 'la_foto'},
                     {'data': 'id'}
                 ],
@@ -40,7 +38,7 @@
                     'targets': [-1],
                     'orderable': false,
                     render: function (data, type, row){
-                        let botones = `<a href="/conductores/actualizar/${row.id}">
+                        let botones = `<a href="/auxiliares/actualizar/${row.id}">
                                             <button type="button" class="btn btn-primary btn-sm"><i class="far fa-edit"></i>
                                             </button>
                                         </a>

@@ -42,7 +42,7 @@ class CrearVehiculo(LoginRequiredMixin, CreateView):
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'buses/crear-actualizar.html'
-    success_url = reverse_lazy('buses:listar')
+    success_url = reverse_lazy('buses:listar_vehiculo')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,7 +68,7 @@ class ActualizarVehiculo(LoginRequiredMixin, UpdateView):
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'buses/crear-actualizar.html'
-    success_url = reverse_lazy('buses:listar')
+    success_url = reverse_lazy('buses:listar_vehiculo')
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -90,30 +90,3 @@ class ActualizarVehiculo(LoginRequiredMixin, UpdateView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
-
-class EliminarConductor(LoginRequiredMixin, DeleteView):
-    login_url = '/login/'
-    redirect_field_name = 'redirect_to'
-    model = Vehiculo
-    template_name = 'conductores/eliminar.html'
-    success_url = reverse_lazy('conductores:listar')
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            self.object.delete()
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Conductor'
-        context['subtitulo'] = 'Se procedera a la eliminacion del siguiente conductor'
-        context['boton'] = 'Eliminar'
-        context['seccion'] = 'directorio'
-        return context

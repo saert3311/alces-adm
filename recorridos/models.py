@@ -18,6 +18,7 @@ class Pago_planilla(models.Model):
     fecha_pago = models.DateTimeField(auto_now_add=True)
     tipo_pago = models.ForeignKey(Tipo_pago, on_delete=models.PROTECT)
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Recibido por")
+    pagada = models.BooleanField(verbose_name="Planilla Pagada", default=False)
 
 
 class Servicio(models.Model):

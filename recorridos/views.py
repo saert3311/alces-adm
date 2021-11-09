@@ -23,6 +23,7 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
         context['seccion2'] = 'Ultimos Despachos'
         context['boton'] = 'Crear'
         context['seccion'] = 'directorio'
+        print(context)
         return context
 
     def post(self, request, *args, **kwargs):

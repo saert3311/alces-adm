@@ -14,7 +14,7 @@
                 <img src="{% static 'img/user-icon.png' %}" class="img-circle elevation-2" alt="Imagen Usuario">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ user.username }}</a>
+                <a href="#" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
             </div>
         </div>
 
@@ -102,7 +102,7 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'buses:listar' %}"
+                            <a href="{% url 'buses:listar_vehiculo' %}"
                                class="nav-link {% if request.path == '/buses/' %}active{% endif %}">
                                 <i class="fas fa-bus nav-icon"></i>
                                 <p>Buses</p>
@@ -111,10 +111,19 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'conductores:listar' %}"
+                            <a href="{% url 'conductores:listar_conductores' %}"
                                class="nav-link {% if request.path == '/conductores/' %}active{% endif %}">
                                 <i class="fas fa-user-tie nav-icon"></i>
                                 <p>Conductores</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'conductores:listar_auxiliares' %}"
+                               class="nav-link {% if request.path == '/auxiliares/' %}active{% endif %}">
+                                <i class="fas fa-user-tag nav-icon"></i>
+                                <p>Auxiliares</p>
                             </a>
                         </li>
                     </ul>
@@ -131,6 +140,15 @@
                                class="nav-link {% if request.path == '/usuarios/' %}active{% endif %}">
                                 <i class="far fa-user nav-icon"></i>
                                 <p>Usuarios</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'app:listar-sucursales' %}"
+                               class="nav-link {% if request.path == '/sucursales/' %}active{% endif %}">
+                                <i class="fas fa-house-user nav-icon"></i>
+                                <p>Sucursales</p>
                             </a>
                         </li>
                     </ul>

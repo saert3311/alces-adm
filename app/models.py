@@ -39,9 +39,17 @@ class Sucursal(models.Model):
     direccion = models.CharField(max_length=100, null=True)
     lat = models.DecimalField(max_digits=9, decimal_places=6,  null=True)
     lon = models.DecimalField(max_digits=9, decimal_places=6,  null=True)
+    activo = models.BooleanField(default=True, verbose_name='Sucursal Activa')
 
     class Meta:
         ordering = ['nombre']
 
     def __str__(self):
         return self.nombre
+
+    @property
+    def geo(self):
+        if self.lat and self.lon:
+            return '{},{}'.format(self.lat, self.lon)
+        else:
+            return 'N/D'

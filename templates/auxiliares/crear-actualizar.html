@@ -1,0 +1,199 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Crear conductor{% endblock %}
+{% block stylesheets %}{% endblock stylesheets %}
+{% block acciones %}
+    <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'conductores:listar_auxiliares' %}" class="nav-link">Volver</a>
+    </li>
+{% endblock acciones %}
+{% block contenido %}
+    {% load widget_tweaks %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ titulo }}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'conductores:listar_auxiliares' %}">Auxiliares</a></li>
+                        <li class="breadcrumb-item active">{{ titulo }}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col align-self-center">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ subtitulo }}</h3>
+                        </div>
+                        <form method="post" id="crear_conductor_form" data-comunas-url="{% url 'app:get_comunas' %}">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Nombre</label>
+                                            {{ form.nombre|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Apellido</label>
+                                            {{ form.apellidos|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">RUT</label>
+                                            {% if 'conductores/actualizar' in request.path %}
+                                            {{ form.rut|add_class:'form-control form-control-border'|attr:'disabled' }}
+                                            {% else %}
+                                            {{ form.rut|add_class:'form-control form-control-border' }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Email</label>
+                                            {{ form.email|add_class:'form-control form-control-border'|attr:'type:email' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Región</label>
+                                            {{ form.region|add_class:'form-control form-control-border'|remove_attr:'name' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Comuna</label>
+                                            {{ form.comuna|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Dirección</label>
+                                            {{ form.direccion|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputBorder">Telefono</label>
+                                            {{ form.telefono|add_class:'form-control form-control-border' }}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="id_foto" class="w-100">Foto</label>
+                                            <figure class="figure">
+                                              <img src="{{ conductores.foto_url }}" class="figure-img img-fluid rounded" alt="{{ conductores.nombreCompleto }}">
+                                            </figure>
+                                            <div class="custom-file">
+                                                {{ form.foto|add_class:'custom-file-input' }}
+                                              <label class="custom-file-label" for="id_foto">Buscar</label>
+                                            </div>
+                                          </div>
+                                        <div class="form-group" style="margin-top: 2.5rem">
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                {{ form.activo|add_class:'custom-control-input' }}
+                                                <label for="id_activo" class="custom-control-label">Esta Activo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% csrf_token %}
+                            </div>
+                            <div class="card-footer text-right">
+                                <button type="submit" class="btn btn-primary">{{ boton }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+{% endblock contenido %}
+{% block javascripts %}
+    <script src="{% static 'js/jquery.rut.min.js' %}"></script>
+    <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+    <script src="{% static 'plugins/moment/locale/es.js' %}"></script>
+    <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script>
+        $('#fecha_vencimiento').datetimepicker({
+            locale: 'es',
+            format: 'DD/MM/YYYY',
+            userCurrent: false,
+            date: ($("#id_venc_licencia").attr("value"), 'DD/MM/YYYY')
+        });
+        $('#crear_conductor_form').on('submit', function (e) {
+            e.preventDefault();
+            let parameters = new FormData(this);
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: parameters,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+            }).done(function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    location.href = '{% url 'conductores:listar_auxiliares' %}';
+                    return false;
+                }
+                message_error(data.error);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(textStatus + ': ' + errorThrown);
+            }).always(function (data) {
+
+            });
+        });
+        $('#id_rut').rut({formatOn: 'keyup', validateOn: 'change keyup'});
+    </script>
+    <script>
+        $("#id_region").on('change', function () {
+            let url = $("#crear_conductor_form").attr("data-comunas-url");
+            let id_region = $(this).val();
+            let select_comunas = $("#id_comuna")
+            let opciones = '<option value="">---------------</option>'
+            $.ajax({
+                url: url,
+                data: {
+                    'region': id_region
+                },
+                dataType: 'json',
+            }).done(function (data) {
+                if (!data.hasOwnProperty('error')){
+                    $.each(data, function(key, value){
+                        opciones += `<option value="${value.id}">${value.comuna}</option>`;
+                    });
+                    return false
+                }
+                message_error(data.error);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(textStatus + ': ' + errorThrown);
+            }).always(function (data) {
+                select_comunas.html(opciones);
+            });
+        });
+    </script>
+{% endblock javascripts %}
+

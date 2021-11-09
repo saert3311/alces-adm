@@ -54,6 +54,7 @@ class Auxiliar(models.Model):
     telefono = models.CharField(max_length=9, verbose_name='Telefono')
     email = models.CharField(max_length=50, verbose_name='Correo Electronico', null=True, blank=True)
     activo = models.BooleanField(default=True, verbose_name="Auxiliar Activo")
+    foto = models.ImageField(upload_to='fotos_auxiliares', null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -66,6 +67,12 @@ class Auxiliar(models.Model):
     def comuna_text(self):
         if self.comuna:
             return Comuna.objects.get(pk=self.comuna)
+
+    @property
+    def foto_url(self):
+        if self.foto:
+            return '{}{}'.format(MEDIA_URL, self.foto)
+        return '{}{}'.format(STATIC_URL, 'img/default-placeholder.png')
 
     class Meta:
         ordering = ['rut']

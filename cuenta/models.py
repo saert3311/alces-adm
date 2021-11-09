@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from app.models import Sucursal
 
 
 # Create your models here.
@@ -13,6 +14,7 @@ class User(AbstractUser):
         (3, 'terminal'),
     )
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default=1, verbose_name="Rol")
+    id_sucursal = models.ForeignKey(Sucursal, on_delete=models.PROTECT, verbose_name='Sucursal del Usuario', default=1)
 
     def is_admin(self):
         if self.user_type == 1:
