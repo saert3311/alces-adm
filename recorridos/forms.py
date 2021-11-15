@@ -1,8 +1,7 @@
 from django import forms
-from django.forms import ModelForm, Select
+from django.forms import ModelForm
 from conductores.models import Conductor, Auxiliar
 from .models import Despacho, Servicio
-from app.models import Comuna, Regiones
 
 class NombreRutModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
@@ -16,6 +15,10 @@ class DespachoForm(ModelForm):
         model = Despacho
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        super().__init__(*args, **kwargs)
+
     def save(self, commit=True):
         data = {}
         form = super()
@@ -27,6 +30,13 @@ class DespachoForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not cleaned_data['id_vehiculo'].es_activo:
+            self._errors['Vehiculo'] = self.error_class(['no se encuentra activo'])
+        return cleaned_data
+
 
 class ServicioForm(ModelForm):
 

@@ -74,6 +74,12 @@
                                                 <label for="id_activo" class="custom-control-label">Esta Activo</label>
                                             </div>
                                         </div>
+                                        <div class="form-group" style="margin-top: 2.5rem">
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                {{ form.es_terminal|add_class:'custom-control-input' }}
+                                                <label for="id_es_terminal" class="custom-control-label">Es terminal</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 {% csrf_token %}

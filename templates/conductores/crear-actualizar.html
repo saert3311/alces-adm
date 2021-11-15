@@ -4,7 +4,7 @@
 {% block stylesheets %}{% endblock stylesheets %}
 {% block acciones %}
     <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% url 'conductores:listar' %}" class="nav-link">Volver</a>
+        <a href="{% url 'conductores:listar_conductores' %}" class="nav-link">Volver</a>
     </li>
 {% endblock acciones %}
 {% block contenido %}
@@ -18,7 +18,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'conductores:listar' %}">Conductores</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'conductores:listar_conductores' %}">Conductores</a></li>
                         <li class="breadcrumb-item active">{{ titulo }}</li>
                     </ol>
                 </div><!-- /.col -->
@@ -182,7 +182,7 @@
                 contentType: false,
             }).done(function (data) {
                 if (!data.hasOwnProperty('error')) {
-                    location.href = '{% url 'conductores:listar' %}';
+                    location.href = '{% url 'conductores:listar_conductores' %}';
                     return false;
                 }
                 message_error(data.error);

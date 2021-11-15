@@ -40,6 +40,7 @@ class Sucursal(models.Model):
     lat = models.DecimalField(max_digits=9, decimal_places=6,  null=True)
     lon = models.DecimalField(max_digits=9, decimal_places=6,  null=True)
     activo = models.BooleanField(default=True, verbose_name='Sucursal Activa')
+    es_terminal = models.BooleanField(default=False, verbose_name='Sucursal es terminal')
 
     class Meta:
         ordering = ['nombre']

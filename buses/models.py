@@ -1,18 +1,23 @@
-from django.core.validators import MinValueValidator
+from datetime import date, datetime
+
+from django.core.validators import MinValueValidator, ValidationError
 from django.db import models
 from propietarios.models import Propietario
-
+from app.models import Sucursal
 # Create your models here.
 from alces.settings import MEDIA_URL, STATIC_URL
+
+#Validadores
+def es_terminal(sucursal):
+    if sucursal.es_terminal == False:
+        raise ValidationError(
+            '%(sucursal) no es terminal',
+            params={'sucursal': sucursal}
+        )
 
 
 class Vehiculo(models.Model):
 
-    TERMINALES = (
-        (1, 'Collao'),
-        (2, 'Lota'),
-        (3, 'Arauco'),
-    )
     patente = models.CharField(max_length=6, unique=True, verbose_name="Patente")
     u_patente = models.CharField(max_length=1, null=True, blank=True, verbose_name="")
     marca = models.CharField(max_length=100, verbose_name="Marca", null=True, blank=True)
@@ -25,7 +30,7 @@ class Vehiculo(models.Model):
         MinValueValidator(1)
     ], verbose_name="Nro Interno", unique=True)
     foto = models.ImageField(upload_to='fotos_vehiculos', null=True, blank=True)
-    t_salida = models.PositiveSmallIntegerField(choices=TERMINALES, default=1, verbose_name="Terminal Salida")
+    t_salida = models.ForeignKey(Sucursal, on_delete=models.PROTECT, blank=True, validators=[es_terminal])
     es_activo = models.BooleanField(default=True, verbose_name="Vehiculo Activo")
     id_propietario = models.ForeignKey(Propietario, on_delete=models.PROTECT, default=1)
 
@@ -41,6 +46,10 @@ class Vehiculo(models.Model):
 
     def get_nro(self):
         return self.nro
+
+    def validez_revtec(self, fecha=datetime.now().date()):
+        delta = fecha - self.ven_revision
+        return delta.days
 
     @property
     def get_foto(self):

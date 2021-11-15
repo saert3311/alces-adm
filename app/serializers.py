@@ -7,4 +7,4 @@ class ListarSucursalesSerializado(serializers.ModelSerializer):
 
     class Meta:
         model = Sucursal
-        fields = ['nombre', 'direccion', 'lat_lon', 'activo', 'id']
+        fields = ['nombre', 'direccion', 'lat_lon', 'activo', 'id', 'es_terminal']

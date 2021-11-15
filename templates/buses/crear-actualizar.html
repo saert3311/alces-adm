@@ -7,7 +7,7 @@
 {% endblock stylesheets %}
 {% block acciones %}
     <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% url 'buses:listar' %}" class="nav-link">Volver</a>
+        <a href="{% url 'buses:listar_vehiculo' %}" class="nav-link">Volver</a>
     </li>
 {% endblock acciones %}
 {% block contenido %}
@@ -21,7 +21,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'buses:listar' %}">Buses</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'buses:listar_vehiculo' %}">Buses</a></li>
                         <li class="breadcrumb-item active">{{ titulo }}</li>
                     </ol>
                 </div><!-- /.col -->
@@ -71,7 +71,7 @@
                                                 {{ form.modelo|add_class:'form-control form-control-border' }}
                                             </div>
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2">
                                             <div class="form-group">
                                                 <label for="exampleInputBorder">Año</label>
                                                 {{ form.ano|add_class:'form-control form-control-border' }}
@@ -167,7 +167,7 @@
                 contentType: false,
             }).done(function (data) {
                 if (!data.hasOwnProperty('error')) {
-                    location.href = '{% url 'buses:listar' %}';
+                    location.href = '{% url 'buses:listar_vehiculo' %}';
                     return false;
                 }
                 message_error(data.error);

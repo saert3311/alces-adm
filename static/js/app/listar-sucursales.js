@@ -16,6 +16,7 @@
                     {'data': 'nombre'},
                     {'data': 'direccion'},
                     {'data': 'lat_lon'},
+                    {'data': 'es_terminal'},
                     {'data': 'activo'},
                     {'data': 'id'}
                 ],
@@ -30,6 +31,15 @@
                     'orderable': false,
                     render: function (data, type, row){
                         icono = row.activo == true ? 'check' : 'ban'
+                        let activo = `<i class="fas fa-${icono}"></i>`
+                        return activo
+                    },
+                    'width': '10%'
+                },{
+                    'targets': [-3],
+                    'orderable': false,
+                    render: function (data, type, row){
+                        icono = row.es_terminal == true ? 'check' : 'ban'
                         let activo = `<i class="fas fa-${icono}"></i>`
                         return activo
                     },

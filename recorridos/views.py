@@ -7,34 +7,6 @@ from .forms import DespachoForm, ServicioForm
 from .serializers import ListarRecorridoSerial
 from django.views.generic import ListView, CreateView, UpdateView
 
-
-class AsignarDespacho(LoginRequiredMixin, CreateView):
-    login_url = '/login/'
-    redirect_field_name = 'redirect_to'
-    model = Despacho
-    form_class = DespachoForm
-    template_name = 'recorridos/asignar-despacho.html'
-    success_url = reverse_lazy('recorridos:asignar-despacho')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Asignar Despachos'
-        context['seccion1'] = 'Generar'
-        context['seccion2'] = 'Ultimos Despachos'
-        context['boton'] = 'Crear'
-        context['seccion'] = 'directorio'
-        print(context)
-        return context
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            form = self.get_form()
-            data = form.save()
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
 class ListarServicios(LoginRequiredMixin, ListView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
@@ -118,3 +90,37 @@ class ActualizarServicio(LoginRequiredMixin, UpdateView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
+
+class AsignarDespacho(LoginRequiredMixin, CreateView):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    model = Despacho
+    form_class = DespachoForm
+    template_name = 'recorridos/asignar-despacho.html'
+    success_url = reverse_lazy('recorridos:asignar-despacho')
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result['request'] = self.request
+        return result
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Asignar Despachos'
+        context['seccion1'] = 'Generar'
+        context['seccion2'] = 'Ultimos Despachos'
+        context['boton'] = 'Crear'
+        context['seccion'] = 'directorio'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'generar_despacho':
+                data = []
+                form = self.get_form()
+                data = form.save()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
