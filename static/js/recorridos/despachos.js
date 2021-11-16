@@ -7,11 +7,12 @@ hoy.setDate(hoy.getDate());
 $('#fecha_despacho').datetimepicker({
     locale: 'es',
     format: 'DD/MM/YYYY',
-    userCurrent: false,
+    userCurrent: true,
     date: ($("#fecha_despacho").attr("value"), 'DD/MM/YYYY'),
     minDate: hoy,
     maxDate: tomorrow
 });
+document.querySelector("#id_fecha_despacho").value = `${hoy.getDate()}/${hoy.getMonth()+1}/${hoy.getFullYear()}`;
 $('#hora_salida').datetimepicker({
     locale: 'es',
     format: 'LT'

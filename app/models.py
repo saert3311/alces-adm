@@ -37,8 +37,8 @@ class Comuna(models.Model):
 class Sucursal(models.Model):
     nombre = models.CharField(max_length=30)
     direccion = models.CharField(max_length=100, null=True)
-    lat = models.DecimalField(max_digits=9, decimal_places=6,  null=True)
-    lon = models.DecimalField(max_digits=9, decimal_places=6,  null=True)
+    lat = models.DecimalField(max_digits=9, decimal_places=7,  null=True)
+    lon = models.DecimalField(max_digits=9, decimal_places=7,  null=True)
     activo = models.BooleanField(default=True, verbose_name='Sucursal Activa')
     es_terminal = models.BooleanField(default=False, verbose_name='Sucursal es terminal')
 

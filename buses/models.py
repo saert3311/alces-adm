@@ -48,6 +48,8 @@ class Vehiculo(models.Model):
         return self.nro
 
     def validez_revtec(self, fecha=datetime.now().date()):
+        if fecha > self.ven_revision:
+            return False
         delta = fecha - self.ven_revision
         return delta.days
 

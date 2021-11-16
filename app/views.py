@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from .serializers import ListarSucursalesSerializado
 from .forms import SucursalForm
 from .models import Comuna, Sucursal
+from django.contrib import messages
 
 # Create your views here.
 from django.views import View
@@ -85,6 +86,7 @@ class CrearSucursal(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Sucursal Creada')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -115,6 +117,7 @@ class ActualizarSucursal(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Sucursal Actualizada')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

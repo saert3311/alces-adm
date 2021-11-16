@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, QueryDict
 from django.shortcuts import render
 from django.urls import reverse_lazy
-
+from django.contrib import messages
 from .forms import *
 from .models import Conductor, Auxiliar
 from .serializers import ListarSerializado, AuxiliarSerializado
@@ -60,6 +60,7 @@ class CrearConductor(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Conductor Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -90,6 +91,7 @@ class ActualizarConductor(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Conductor Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -172,6 +174,7 @@ class CrearAuxiliar(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Auxiliar Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -202,6 +205,7 @@ class ActualizarAuxiliar(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Auxiliar Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

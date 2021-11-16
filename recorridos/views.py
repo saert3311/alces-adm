@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-
+from django.contrib import messages
 from .models import Despacho, Servicio
 from .forms import DespachoForm, ServicioForm
 from .serializers import ListarRecorridoSerial
@@ -57,6 +57,7 @@ class CrearServicio(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Servicio Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -87,6 +88,7 @@ class ActualizarServicio(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Servicio Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -119,7 +121,7 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
             accion = request.POST['accion']
             if accion == 'generar_despacho':
                 data = []
-                form = self.get_form()
+                form = DespachoForm(request.POST, request=request)
                 data = form.save()
         except Exception as e:
             data['error'] = str(e)

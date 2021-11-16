@@ -63,7 +63,7 @@ class Despacho(models.Model):
     hora_asignacion = models.DateTimeField(auto_now_add=True, verbose_name='Hora Asignación')
     fecha_despacho = models.DateField(verbose_name='Fecha Despacho', default='1999-01-01', blank=False)
     hora_salida = models.TimeField(verbose_name='Hora salida')
-    hora_llegada = models.TimeField(verbose_name='Hora llegada', blank=True)
+    hora_llegada = models.TimeField(verbose_name='Hora llegada', blank=True, null=True)
     id_usuario = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Usuario')
     id_destino = models.ForeignKey(Sucursal, related_name='llegada', on_delete=models.PROTECT, verbose_name='Destino')
     id_recorrido = models.ForeignKey(Servicio, on_delete=models.PROTECT, verbose_name='Recorrido')

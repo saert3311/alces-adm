@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView
-
+from django.contrib import messages
 from .forms import AuthFormAlces, CrearUser, EditarUsuario
 from .models import User
 
@@ -67,6 +67,7 @@ class CrearUsuario(LoginRequiredMixin, CreateView):
             form = CrearUser(request.POST)
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Usuario Creado')
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -98,6 +99,7 @@ class ActualizarUsuario(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Usuario Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

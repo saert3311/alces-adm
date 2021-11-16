@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/alces.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/jquery-confirm/jquery-confirm.min.css' %}">
-
+    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.css' %}">
     {% block stylesheets %}{% endblock stylesheets %}
 </head>
 <body class="hold-transition sidebar-mini">
@@ -69,7 +69,18 @@
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 <script src="{% static 'plugins/jquery-confirm/jquery-confirm.min.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 <script src="{% static 'js/common.js' %}"></script>
 {% block javascripts %}{% endblock javascripts %}
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}toastr.success('{{message}}'){% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}toastr.info('{{message}}'){% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}toastr.error('{{message}}'){% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}toastr.warning('{{message}}'){% endif %}
+        </script>
+    {% endfor %}
+{% endif %}
 </body>
 </html>

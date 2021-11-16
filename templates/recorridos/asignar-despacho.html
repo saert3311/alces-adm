@@ -104,6 +104,7 @@
                                 </div>
                                 {% csrf_token %}
                                 <input id="accion" name="accion" type="hidden" value="generar_despacho">
+                                <input name="id_usuario" type="hidden" value="{{ request.user.pk }}">
                             </div>
                             <div class="card-footer text-right">
                                 <button type="submit" class="btn btn-primary">Generar Despacho</button>

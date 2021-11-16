@@ -5,6 +5,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from buses.serializers import ListarSerializado
 from buses.forms import VehiculoForm
 from buses.models import Vehiculo
+from django.contrib import messages
 
 
 class ListarVehiculos(LoginRequiredMixin, ListView):
@@ -58,6 +59,7 @@ class CrearVehiculo(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Vehiculo Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -87,6 +89,7 @@ class ActualizarVehiculo(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Vehiculo Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

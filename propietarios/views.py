@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-
+from django.contrib import messages
 from .forms import PropietarioForm
 from .models import Propietario
 from .serializers import ListarSerializado
@@ -59,6 +59,7 @@ class CrearPropietario(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Propietario Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -90,6 +91,7 @@ class ActualizarPropietario(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
+            messages.success(request, 'Propietario Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
