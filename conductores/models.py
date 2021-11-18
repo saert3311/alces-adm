@@ -4,6 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from alces.settings import MEDIA_URL, STATIC_URL
 from app.models import Regiones, Comuna
+from datetime import datetime
 
 # Create your models here.
 
@@ -34,9 +35,10 @@ class Conductor(models.Model):
             return True
         return False
 
-    @property
-    def validez_licencia(self):
-        delta = datetime.now().date() - self.venc_licencia
+    def validez_licencia(self, fecha=datetime.now().date()):
+        if fecha > self.venc_licencia:
+            return False
+        delta = fecha - self.venc_licencia
         return delta.days
 
     @property

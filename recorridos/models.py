@@ -13,7 +13,7 @@ class Tipo_pago(models.Model):
 
 
 class Pago_planilla(models.Model):
-    tiene_descuento = models.BooleanField(verbose_name="Tiene descuento")
+    tiene_descuento = models.BooleanField(verbose_name="Tiene descuento", default=False)
     valor = models.PositiveIntegerField(verbose_name="Monto Pagado")
     fecha_pago = models.DateTimeField(auto_now_add=True)
     tipo_pago = models.ForeignKey(Tipo_pago, on_delete=models.PROTECT)

@@ -38,13 +38,20 @@ class DespachoForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        print(cleaned_data)
         if not cleaned_data['id_conductor'].tiene_foto:
             self._errors['Conductor'] = self.error_class(['no tiene fotografia'])
         if not cleaned_data['id_vehiculo'].es_activo:
             self._errors['Vehiculo'] = self.error_class(['no se encuentra activo'])
         if not cleaned_data['id_vehiculo'].validez_revtec():
             self._errors['Vehiculo'] = self.error_class(['tiene revision tecnica vencida'])
+        if not cleaned_data['id_conductor'].validez_licencia():
+            self._errors['Conductor'] = self.error_class(['tiene licencia vencida'])
+        if not cleaned_data['id_conductor'].activo:
+            self._errors['Conductor'] = self.error_class(['no se encuentra activo'])
+        if not cleaned_data['id_auxiliar'].activo:
+            self._errors['Auxiliar'] = self.error_class(['no se encuentra activo'])
+        if Planilla.objects.get(id_pago_planilla__isnull=True):
+            pass #que pasa cuando debe planilla?
         return cleaned_data
 
 
