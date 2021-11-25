@@ -67,7 +67,8 @@ class CrearUsuario(LoginRequiredMixin, CreateView):
             form = CrearUser(request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Usuario Creado')
+                if not 'error' in data.keys():
+                    messages.success(request, 'Usuario Creado')
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -99,7 +100,8 @@ class ActualizarUsuario(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Usuario Actualizado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Usuario Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

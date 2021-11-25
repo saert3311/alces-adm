@@ -54,12 +54,12 @@ class CrearVehiculo(LoginRequiredMixin, CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         data = {}
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Vehiculo Creado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Vehiculo Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -89,7 +89,8 @@ class ActualizarVehiculo(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Vehiculo Actualizado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Vehiculo Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

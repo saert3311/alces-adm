@@ -60,7 +60,8 @@ class CrearConductor(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Conductor Creado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Conductor Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -91,7 +92,8 @@ class ActualizarConductor(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Conductor Actualizado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Conductor Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -174,7 +176,8 @@ class CrearAuxiliar(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Auxiliar Creado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Auxiliar Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -205,7 +208,8 @@ class ActualizarAuxiliar(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Auxiliar Actualizado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Auxiliar Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

@@ -101,7 +101,7 @@
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label for="id_propietario">Propietario</label>
-                                                {{ form.propietario|add_class:'form-control select2bs4' }}
+                                                {{ form.id_propietario|add_class:'form-control select2bs4' }}
                                             </div>
                                         </div>
                                     </div>
@@ -119,6 +119,12 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        <div class="form-group" style="margin-top: 2.5rem">
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                {{ form.es_activo|add_class:'custom-control-input' }}
+                                                <label for="id_es_activo" class="custom-control-label">Esta Activo</label>
+                                            </div>
+                                        </div>
                                 </div>
                                     </div>
                                 {% csrf_token %}

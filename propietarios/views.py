@@ -59,7 +59,8 @@ class CrearPropietario(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Propietario Creado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Propietario Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -91,7 +92,8 @@ class ActualizarPropietario(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Propietario Actualizado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Propietario Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

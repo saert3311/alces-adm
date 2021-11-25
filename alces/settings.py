@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'rest_framework',
+    'picklefield.fields',
+    'constance',
+    'constance.backends.database',
     'cuenta',
     'app',
     'conductores',
@@ -161,4 +164,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Varios
 
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    'LIMITE_PLANILLAS_DEUDA': (1, 'Limite de planillas que chofer puede deber'),
+    'LIMITE_DESPACHOS_DEUDA': (3, 'Limite de despachos que choger puede deber'),
+    'CONTROL_PLANILLA': (0, 'El siguiente numero de planilla a usar'),
+    'CAMBIAR_CONTROL': (False, 'Se cambiara o no el siguiente control de planilla')
+}
 

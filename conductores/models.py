@@ -1,10 +1,8 @@
-import datetime
-
 from django.db import models
 from django.core.exceptions import ValidationError
 from alces.settings import MEDIA_URL, STATIC_URL
 from app.models import Regiones, Comuna
-from datetime import datetime
+from datetime import date
 
 # Create your models here.
 
@@ -26,7 +24,7 @@ class Conductor(models.Model):
         return self.nombre
 
     def clean(self):
-        if self.venc_licencia < datetime.date.today():
+        if self.venc_licencia < date.today():
             raise ValidationError(('La Licencia se encuentra vencida'), code='lic_vencida')
 
     @property
@@ -35,7 +33,7 @@ class Conductor(models.Model):
             return True
         return False
 
-    def validez_licencia(self, fecha=datetime.now().date()):
+    def validez_licencia(self, fecha=date.today()):
         if fecha > self.venc_licencia:
             return False
         delta = fecha - self.venc_licencia

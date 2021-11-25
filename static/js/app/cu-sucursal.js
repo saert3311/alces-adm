@@ -10,7 +10,7 @@
                 contentType: false,
             }).done(function (data) {
                 if (!data.hasOwnProperty('error')) {
-                    location.href = '/administrarServicios/';
+                    location.href = '/sucursales/';
                     return false;
                 }
                 message_error(data.error);

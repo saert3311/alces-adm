@@ -86,7 +86,8 @@ class CrearSucursal(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Sucursal Creada')
+            if not 'error' in data.keys():
+                messages.success(request, 'Sucursal Creada')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -117,7 +118,8 @@ class ActualizarSucursal(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Sucursal Actualizada')
+            if not 'error' in data.keys():
+                messages.success(request, 'Sucursal Actualizada')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

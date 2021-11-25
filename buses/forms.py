@@ -5,7 +5,7 @@ from propietarios.models import Propietario
 from app.models import Sucursal
 
 class VehiculoForm(ModelForm):
-    propietario = forms.ModelChoiceField(queryset=Propietario.objects.all(), widget=forms.Select)
+    id_propietario = forms.ModelChoiceField(queryset=Propietario.objects.all(), widget=forms.Select)
     t_salida = forms.ModelChoiceField(queryset=Sucursal.objects.filter(es_terminal=True), widget=forms.Select)
 
     class Meta:

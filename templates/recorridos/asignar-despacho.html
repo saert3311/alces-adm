@@ -104,7 +104,6 @@
                                 </div>
                                 {% csrf_token %}
                                 <input id="accion" name="accion" type="hidden" value="generar_despacho">
-                                <input name="id_usuario" type="hidden" value="{{ request.user.pk }}">
                             </div>
                             <div class="card-footer text-right">
                                 <button type="submit" class="btn btn-primary">Generar Despacho</button>
@@ -143,5 +142,10 @@
     <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
     <script src="{% static 'js/recorridos/despachos.js' %}"></script>
+    <script>
+        if ('{{ user.id_sucursal }}' != 'Collao'){
+            $("#id_variante option[value='1']").remove();
+        }
+    </script>
 {% endblock javascripts %}
 

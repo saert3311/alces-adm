@@ -9,7 +9,7 @@ from alces.settings import MEDIA_URL, STATIC_URL
 
 #Validadores
 def es_terminal(sucursal):
-    if sucursal.es_terminal == False:
+    if sucursal == 0:
         raise ValidationError(
             '%(sucursal) no es terminal',
             params={'sucursal': sucursal}
@@ -60,8 +60,9 @@ class Vehiculo(models.Model):
         return f'{STATIC_URL}img/default-placeholder.png'
 
     @property
-    def terminal_display(self):
-        return self.get_t_salida_display()
+    def t_salida_text(self):
+        if self.t_salida:
+            return self.t_salida.nombre
 
     def __str__(self):
         return f'{self.nro}  -  {self.patente}'

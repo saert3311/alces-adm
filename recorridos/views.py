@@ -6,6 +6,7 @@ from .models import Despacho, Servicio
 from .forms import DespachoForm, ServicioForm
 from .serializers import ListarRecorridoSerial
 from django.views.generic import ListView, CreateView, UpdateView
+from app.models import Sucursal
 
 class ListarServicios(LoginRequiredMixin, ListView):
     login_url = '/login/'
@@ -57,7 +58,8 @@ class CrearServicio(LoginRequiredMixin, CreateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Servicio Creado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Servicio Creado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -88,7 +90,8 @@ class ActualizarServicio(LoginRequiredMixin, UpdateView):
         try:
             form = self.get_form()
             data = form.save()
-            messages.success(request, 'Servicio Actualizado')
+            if not 'error' in data.keys():
+                messages.success(request, 'Servicio Actualizado')
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -117,11 +120,22 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         data = {}
+        despacho = request.POST
+        despacho._mutable = True
+        despacho['id_usuario'] = str(request.user.pk)
+        despacho['id_suc_despacho'] = str(request.user.id_sucursal_id)
+        if despacho['variante'] == 1:
+            despacho['id_origen'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_a_id)
+            despacho['id_destino'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_b_id)
+        else:
+            despacho['id_origen'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_b_id)
+            despacho['id_destino'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_a_id)
+        despacho._mutable = False
         try:
             accion = request.POST['accion']
             if accion == 'generar_despacho':
                 data = []
-                form = DespachoForm(request.POST, request=request)
+                form = DespachoForm(despacho, request=request)
                 data = form.save()
         except Exception as e:
             data['error'] = str(e)

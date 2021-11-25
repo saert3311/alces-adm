@@ -80,6 +80,12 @@
                                                 <label for="id_es_terminal" class="custom-control-label">Es terminal</label>
                                             </div>
                                         </div>
+                                        <div class="form-group" style="margin-top: 2.5rem">
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                {{ form.es_recaudador|add_class:'custom-control-input' }}
+                                                <label for="id_es_recaudador" class="custom-control-label">Es Recaudador</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 {% csrf_token %}

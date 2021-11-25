@@ -45,7 +45,7 @@
                                         <div class="form-group">
                                             <label for="id_nombre">Nombre</label>
                                             {% if 'administrarServicios/actualizar' in request.path %}
-                                                {{ form.nombre|add_class:'form-control form-control-border'|attr:'disabled' }}
+                                                {{ form.nombre|add_class:'form-control-plaintext'|attr:'readonly' }}
                                             {% else %}
                                                 {{ form.nombre|add_class:'form-control form-control-border' }}
                                             {% endif %}
@@ -72,6 +72,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="terminal_a">Terminal Vuelta</label>
+                                                {{ form.terminal_b|add_class:'custom-select form-control-border' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="id_t_salida">Terminal Ida</label>
+                                                {{ form.terminal_a|add_class:'custom-select form-control-border' }}
+                                            </div>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                                 {% csrf_token %}

@@ -1,10 +1,27 @@
+from django.core.exceptions import ValidationError
 from django.db import models
-
+from constance import config
 from buses.models import Vehiculo
 from cuenta.models import User
 from conductores.models import Conductor, Auxiliar
 from app.models import Sucursal
 
+def es_terminal(sucursal):
+    if not Sucursal.objects.get(pk=sucursal).es_terminal:
+        raise ValidationError(
+            '%(sucursal) no es terminal',
+            params={'sucursal': sucursal}
+        )
+
+def inc_control_planilla():
+    ultima_planilla = Planilla.objects.all().order_by('id').last()
+    if not ultima_planilla:
+        return 1
+    if config.CAMBIAR_CONTROL is True and config.CONTROL_PLANILLA > ultima_planilla.nro_control:
+        return config.CONTROL_PLANILLA
+    if config.CAMBIAR_CONTROL is True and config.CONTROL_PLANILLA == ultima_planilla.nro_control:
+        config.CAMBIAR_CONTROL = False
+    return ultima_planilla.nro_control + 1
 
 class Tipo_pago(models.Model):
     nombre = models.CharField(max_length=25, unique=True, verbose_name="Forma de Pago")
@@ -26,6 +43,8 @@ class Servicio(models.Model):
     es_vigente = models.BooleanField(verbose_name="Vigente")
     valor_planilla = models.PositiveIntegerField(verbose_name="Valor planilla")
     distancia = models.SmallIntegerField(verbose_name="Distancia")
+    terminal_a = models.ForeignKey(Sucursal, related_name='ter_a', on_delete=models.PROTECT, verbose_name='Terminal A', default=1, validators=[es_terminal])
+    terminal_b = models.ForeignKey(Sucursal, related_name='ter_b', on_delete=models.PROTECT, verbose_name='Terminal B', default=1, validators=[es_terminal])
 
     @property
     def kms(self):
@@ -39,7 +58,7 @@ class Servicio(models.Model):
 
 
 class Planilla(models.Model):
-    nro_control = models.PositiveIntegerField(unique=True, verbose_name="Nro. Control")
+    nro_control = models.PositiveIntegerField(unique=True, verbose_name="Nro. Control", default=inc_control_planilla)
     fecha_planilla = models.DateField(verbose_name='Fecha de Planilla', default='1999-01-01', blank=False)
     id_pago_planilla = models.ForeignKey(Pago_planilla, on_delete=models.PROTECT)
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name="Vehiculo")
@@ -48,7 +67,7 @@ class Planilla(models.Model):
     fecha_venta = models.DateTimeField(auto_now_add=True)
     revalidada = models.PositiveIntegerField(verbose_name="Planilla revalidada")
     id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name="Conductor")
-    es_pirata = models.BooleanField(verbose_name='Es pirata')
+    es_pirata = models.BooleanField(verbose_name='Es pirata', default=False)
 
 class Despacho(models.Model):
 
@@ -58,7 +77,7 @@ class Despacho(models.Model):
     )
     id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name='Conductor')
     id_auxiliar = models.ForeignKey(Auxiliar, on_delete=models.PROTECT, verbose_name='Auxiliar')
-    id_planilla = models.ForeignKey(Planilla, on_delete=models.PROTECT, verbose_name='Planilla')
+    id_planilla = models.ForeignKey(Planilla, on_delete=models.PROTECT, verbose_name='Planilla', blank=True, null=True)
     variante = models.SmallIntegerField(choices=VARIANTE, default=1, verbose_name='Variante')
     hora_asignacion = models.DateTimeField(auto_now_add=True, verbose_name='Hora Asignación')
     fecha_despacho = models.DateField(verbose_name='Fecha Despacho', default='1999-01-01', blank=False)

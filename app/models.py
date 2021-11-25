@@ -41,6 +41,7 @@ class Sucursal(models.Model):
     lon = models.DecimalField(max_digits=9, decimal_places=7,  null=True)
     activo = models.BooleanField(default=True, verbose_name='Sucursal Activa')
     es_terminal = models.BooleanField(default=False, verbose_name='Sucursal es terminal')
+    es_recaudador = models.BooleanField(default=False, verbose_name='Sucursal recibe dinero')
 
     class Meta:
         ordering = ['nombre']
