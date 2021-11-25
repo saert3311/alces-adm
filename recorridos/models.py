@@ -5,6 +5,7 @@ from buses.models import Vehiculo
 from cuenta.models import User
 from conductores.models import Conductor, Auxiliar
 from app.models import Sucursal
+from datetime import timedelta
 
 def es_terminal(sucursal):
     if not Sucursal.objects.get(pk=sucursal).es_terminal:
@@ -43,6 +44,7 @@ class Servicio(models.Model):
     es_vigente = models.BooleanField(verbose_name="Vigente")
     valor_planilla = models.PositiveIntegerField(verbose_name="Valor planilla")
     distancia = models.SmallIntegerField(verbose_name="Distancia")
+    tiempo = models.DurationField(verbose_name='Duracion del Servicio', default=timedelta(hours=1))
     terminal_a = models.ForeignKey(Sucursal, related_name='ter_a', on_delete=models.PROTECT, verbose_name='Terminal A', default=1, validators=[es_terminal])
     terminal_b = models.ForeignKey(Sucursal, related_name='ter_b', on_delete=models.PROTECT, verbose_name='Terminal B', default=1, validators=[es_terminal])
 
@@ -60,12 +62,12 @@ class Servicio(models.Model):
 class Planilla(models.Model):
     nro_control = models.PositiveIntegerField(unique=True, verbose_name="Nro. Control", default=inc_control_planilla)
     fecha_planilla = models.DateField(verbose_name='Fecha de Planilla', default='1999-01-01', blank=False)
-    id_pago_planilla = models.ForeignKey(Pago_planilla, on_delete=models.PROTECT)
+    id_pago_planilla = models.ForeignKey(Pago_planilla, on_delete=models.PROTECT, blank=True, null=True)
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name="Vehiculo")
     id_recorrido = models.ForeignKey(Servicio, on_delete=models.PROTECT, verbose_name="Recorrido")
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Generado por")
     fecha_venta = models.DateTimeField(auto_now_add=True)
-    revalidada = models.PositiveIntegerField(verbose_name="Planilla revalidada")
+    revalidada = models.PositiveIntegerField(verbose_name="Planilla revalidada", blank=True, null=True)
     id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name="Conductor")
     es_pirata = models.BooleanField(verbose_name='Es pirata', default=False)
 

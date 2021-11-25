@@ -69,6 +69,9 @@ class DespachoForm(ModelForm):
         if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo']).filter(fecha_despacho=cleaned_data['fecha_despacho']).count() == 0:
             if cleaned_data['id_vehiculo'].t_salida != cleaned_data['id_origen']:
                 self._errors['Vehiculo'] = self.error_class(['1er despacho del Terminal de salida no corresponde'])
+        #else:
+            #if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']
+
         return cleaned_data
 
 
