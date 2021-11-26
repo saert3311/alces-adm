@@ -22,7 +22,65 @@ $(function (){
         theme: 'bootstrap4'
     })
 })
-
+ultimos_despachos = () => {
+     $('#ultimos_despachos').DataTable({
+                responsive: true,
+                autoWidth: false,
+                destroy: true,
+                deferRender: true,
+                "ordering": false,
+                "info":     false,
+                "paging":   false,
+                "searching": false,
+                ajax: {
+                    url: window.location.pathname,
+                    type: 'POST',
+                    data: {
+                        'accion': 'ultimos_despachos'
+                    },
+                   dataSrc: '',
+                },
+                columns: [
+                    {'data': 'nombre'},
+                    {'data': 'valor_planilla'},
+                    {'data': 'distancia_kms'},
+                    {'data': 'es_vigente'},
+                    {'data': 'id'}
+                ],
+                language: {
+                    url: '/static/plugins/datatables/es.json'
+                },
+                'columnDefs': [{
+                    'targets': [-2],
+                    'orderable': false,
+                    render: function (data, type, row){
+                        icono = row.es_vigente == true ? 'check' : 'ban'
+                        let activo = `<i class="fas fa-${icono}"></i>`
+                        return activo
+                    }
+                },{
+                    'targets': [-1],
+                    'orderable': false,
+                    render: function (data, type, row){
+                        let botones = `<a href="/administrarServicios/actualizar/${row.id}">
+                                            <button type="button" class="btn btn-primary"><i class="far fa-edit"></i>
+                                            </button>
+                                        </a>`
+                        return botones
+                    }
+                },{
+                    className: "botones", "targets": [ -1, -2 ]
+                },{
+                    'targets': [1],
+                    'orderable': false,
+                    render: function (data, type, row){
+                        return displayCLP(row.valor_planilla)
+                        }
+                    }
+                ],
+            });
+}
+ultimos_despachos();
 function resultado_despacho(obj) {
     var html = '';
     if (typeof (obj) === 'object') {

@@ -92,6 +92,14 @@ class Despacho(models.Model):
     id_suc_despacho = models.ForeignKey(Sucursal, related_name='despachado', on_delete=models.PROTECT, verbose_name='Sucursal despacho')
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name='Vehiculo')
 
+    @property
+    def detalle(self):
+        return f'{self.id_recorrido.nombre} ({self.get_variante_display()})'
+
+    @property
+    def control_planilla(self):
+        return self.id_planilla.nro_control
+
 
 
 

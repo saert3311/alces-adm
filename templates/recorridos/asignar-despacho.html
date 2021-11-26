@@ -117,13 +117,12 @@
                             <h3 class="card-title">{{ seccion2 }}</h3>
                         </div>
                             <div class="card-body">
-                                <table id="ultimos despachos" class="table table-bordered table-striped">
+                                <table id="ultimos_despachos" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
                                     <th class="text-center">Hora</th>
                                     <th class="text-center">Bus</th>
                                     <th class="text-center">Servicio</th>
-                                    <th class="text-center">Variante</th>
                                     <th class="text-center">Planilla</th>
                                 </tr>
                                 </thead>
@@ -137,6 +136,10 @@
     <!-- /.content -->
 {% endblock contenido %}
 {% block javascripts %}
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
     <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
     <script src="{% static 'plugins/moment/locale/es.js' %}"></script>
     <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>

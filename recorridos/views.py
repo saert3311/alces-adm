@@ -4,9 +4,10 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Despacho, Servicio
 from .forms import DespachoForm, ServicioForm
-from .serializers import ListarRecorridoSerial
+from .serializers import ListarRecorridoSerial, UltimosDespachosSerial
 from django.views.generic import ListView, CreateView, UpdateView
 from app.models import Sucursal
+from datetime import datetime
 
 class ListarServicios(LoginRequiredMixin, ListView):
     login_url = '/login/'
@@ -120,23 +121,30 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         data = {}
-        despacho = request.POST
-        despacho._mutable = True
-        despacho['id_usuario'] = str(request.user.pk)
-        despacho['id_suc_despacho'] = str(request.user.id_sucursal_id)
-        if despacho['variante'] == 1:
-            despacho['id_origen'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_a_id)
-            despacho['id_destino'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_b_id)
-        else:
-            despacho['id_origen'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_b_id)
-            despacho['id_destino'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_a_id)
-        despacho._mutable = False
         try:
             accion = request.POST['accion']
             if accion == 'generar_despacho':
+                despacho = request.POST
+                despacho._mutable = True
+                despacho['id_usuario'] = str(request.user.pk)
+                despacho['id_suc_despacho'] = str(request.user.id_sucursal_id)
+                if despacho['variante'] == 1:
+                    despacho['id_origen'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_a_id)
+                    despacho['id_destino'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_b_id)
+                else:
+                    despacho['id_origen'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_b_id)
+                    despacho['id_destino'] = str(Servicio.objects.get(pk=despacho['id_recorrido']).terminal_a_id)
+                despacho._mutable = False
                 data = []
                 form = DespachoForm(despacho, request=request)
                 data = form.save()
+            elif accion == 'ultimos_despachos':
+                los_ultimos = Despacho.objects.filter(fecha_despacho=datetime.now().date(), id_suc_despacho=request.user.id_sucursal_id).order_by('-hora_asignacion')[:5]
+                despachos_serializados = UltimosDespachosSerial(los_ultimos, many=True)
+                for i in despachos_serializados.data:
+                    data.append(i)
+            else:
+                data['error'] = 'Metodo no definido'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)

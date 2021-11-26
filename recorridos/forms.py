@@ -69,9 +69,11 @@ class DespachoForm(ModelForm):
         if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo']).filter(fecha_despacho=cleaned_data['fecha_despacho']).count() == 0:
             if cleaned_data['id_vehiculo'].t_salida != cleaned_data['id_origen']:
                 self._errors['Vehiculo'] = self.error_class(['1er despacho del Terminal de salida no corresponde'])
-        #else:
-            #if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']
-
+        else:
+            if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']).last().variante == cleaned_data['variante']:
+                self._errors['Vehiculo'] = self.error_class(['Debe completar su vuelta antes de iniciar una nueva vuelta'])
+            if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']).last().hora_salida + Servicio.objects.get(id=cleaned_data['id_recorrido']).tiempo < cleaned_data['hora_salida']:
+                self._errors['Vehiculo'] = self.error_class(['Hora de salida del vehiculo no corresponde con tiempo de recorrido anterior'])
         return cleaned_data
 
 
