@@ -18,8 +18,7 @@ class Migration(migrations.Migration):
                 ('cod_comuna', models.CharField(max_length=5, primary_key=True, serialize=False)),
             ],
             options={
-                'db_table': 'comuna',
-                'managed': False,
+                'ordering': ['nombre'],
             },
         ),
         migrations.CreateModel(
@@ -29,8 +28,7 @@ class Migration(migrations.Migration):
                 ('cod_provincia', models.CharField(max_length=3, primary_key=True, serialize=False)),
             ],
             options={
-                'db_table': 'provincia',
-                'managed': False,
+                'ordering': ['nombre'],
             },
         ),
         migrations.CreateModel(
@@ -40,8 +38,7 @@ class Migration(migrations.Migration):
                 ('cod_region', models.CharField(max_length=2, primary_key=True, serialize=False)),
             ],
             options={
-                'db_table': 'region',
-                'managed': False,
+                'ordering': ['nombre'],
             },
         ),
     ]
