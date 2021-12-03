@@ -32,14 +32,14 @@ class DespachoForm(ModelForm):
         try:
             if form.is_valid(): #corremos las validaciones en clean()
                 despacho = form.save(commit=False)
-                planilla, created = Planilla.objects.get_or_create(
+                despacho.id_planilla, _ = Planilla.objects.get_or_create(
                     id_vehiculo=despacho.id_vehiculo,
                     fecha_planilla=despacho.fecha_despacho,
                     defaults={'id_recorrido': despacho.id_recorrido,
                               'id_user': self.request.user,
                               'id_conductor': despacho.id_conductor})
-                despacho.id_planilla = planilla
                 despacho.save()
+                data['msg'] = 'Despacho Generado'
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -60,7 +60,7 @@ class DespachoForm(ModelForm):
             self._errors['Conductor'] = self.error_class(['no se encuentra activo'])
         if not cleaned_data['id_auxiliar'].activo:
             self._errors['Auxiliar'] = self.error_class(['no se encuentra activo'])
-        if cleaned_data['variante'] == 1 and self.request.user.id_sucursal_id != Sucursal.objects.get(nombre='Collao').pk:
+        if cleaned_data['variante'] == 1 and self.request.user.id_sucursal_id != Sucursal.objects.get(nombre__icontains='collao').id:
             self._errors['Vehiculo'] = self.error_class(['solo puede generar despachos de vuelta'])
         if Planilla.objects.filter(id_vehiculo=cleaned_data['id_vehiculo']).exclude(fecha_planilla=datetime.date.today()).filter(id_pago_planilla__isnull=True).count() >= config.LIMITE_PLANILLAS_DEUDA:
             self._errors['Vehiculo'] = self.error_class(['adeuda Planilla'])
@@ -72,7 +72,13 @@ class DespachoForm(ModelForm):
         else:
             if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']).last().variante == cleaned_data['variante']:
                 self._errors['Vehiculo'] = self.error_class(['Debe completar su vuelta antes de iniciar una nueva vuelta'])
-            if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']).last().hora_salida + Servicio.objects.get(id=cleaned_data['id_recorrido']).tiempo < cleaned_data['hora_salida']:
+            ultimo_despacho = Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']).last()
+            momento_ultimo = datetime.datetime.combine(ultimo_despacho.fecha_despacho, ultimo_despacho.hora_salida)
+            deberia_llegar = momento_ultimo + Servicio.objects.get(id=cleaned_data['id_recorrido'].id).tiempo
+            momento_salida = datetime.datetime.combine(cleaned_data['fecha_despacho'], cleaned_data['hora_salida'])
+            print(momento_salida)
+            print(deberia_llegar)
+            if deberia_llegar > momento_salida:
                 self._errors['Vehiculo'] = self.error_class(['Hora de salida del vehiculo no corresponde con tiempo de recorrido anterior'])
         return cleaned_data
 

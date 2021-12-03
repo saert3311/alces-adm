@@ -5,13 +5,13 @@ from propietarios.models import Propietario
 # Create your tests here.
 
 class GenerarDespacho(TestCase):
-    fixtures = ['regiones.json', 'provincias.json', 'comunas.json', 'sucursales.json']
+    fixtures = ['regiones.json', 'provincias.json', 'comunas.json', 'sucursales.json', 'propietarios.json']
 
     def setUp(self):
-       Vehiculo.objects.create(patente='BUENO', marca='Alces', modelo='Bus', ano='2000', ven_revision='01/01/2021', nro='999', foto='hola.jpg', t_salida=Sucursal.objects.get(pk=1), es_activo='1', id_propietario='1')
-       Vehiculo.objects.create(patente='SINFOT', marca='Alces', modelo='Bus', ano='2000', ven_revision='01/01/2021', nro='998', t_salida=Sucursal.objects.get(pk=1), es_activo='1', id_propietario='1')
-       Vehiculo.objects.create(patente='REVVEN', marca='Alces', modelo='Bus', ano='2000', ven_revision='11/15/2021', nro='997',
-                       t_salida=Sucursal.objects.get(pk=1), es_activo='1', id_propietario='1')
+       Vehiculo.objects.create(patente='BUENO', marca='Alces', modelo='Bus', ano='2000', ven_revision='2021-01-01', nro='999', foto='hola.jpg', t_salida=Sucursal.objects.get(pk=1), es_activo='1', id_propietario=Propietario.objects.get(pk=1))
+       Vehiculo.objects.create(patente='SINFOT', marca='Alces', modelo='Bus', ano='2000', ven_revision='2021-01-01', nro='998', t_salida=Sucursal.objects.get(pk=1), es_activo='1', id_propietario=Propietario.objects.get(pk=1))
+       Vehiculo.objects.create(patente='REVVEN', marca='Alces', modelo='Bus', ano='2000', ven_revision='2021-11-01', nro='997',
+                       t_salida=Sucursal.objects.get(pk=1), es_activo='1', id_propietario=Propietario.objects.get(pk=1))
 
     def test_verificar_foto(self):
         vehiculo_bueno = Vehiculo.objects.get(patente='BUENO')
@@ -21,8 +21,7 @@ class GenerarDespacho(TestCase):
 
     def test_verificar_revision(self):
         vehiculo_ven = Vehiculo.objects.get(patente='REVVEN')
-        self.assertEqual(vehiculo_ven.validez_revtec(), '1')
-        self.assertEqual(vehiculo_ven.validez_revtec(), '1')
+        self.assertFalse(vehiculo_ven.validez_revtec())
 
     #def test_forms(self):
     #    form_data = {'something': 'something'}

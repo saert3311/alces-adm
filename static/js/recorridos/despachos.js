@@ -41,42 +41,24 @@ ultimos_despachos = () => {
                    dataSrc: '',
                 },
                 columns: [
-                    {'data': 'nombre'},
-                    {'data': 'valor_planilla'},
-                    {'data': 'distancia_kms'},
-                    {'data': 'es_vigente'},
-                    {'data': 'id'}
+                    {'data': 'hora_salida_ss'},
+                    {'data': 'nro_vehiculo'},
+                    {'data': 'recorrido_despacho'},
+                    {'data': 'la_planilla'}
                 ],
                 language: {
                     url: '/static/plugins/datatables/es.json'
                 },
                 'columnDefs': [{
-                    'targets': [-2],
-                    'orderable': false,
-                    render: function (data, type, row){
-                        icono = row.es_vigente == true ? 'check' : 'ban'
-                        let activo = `<i class="fas fa-${icono}"></i>`
-                        return activo
-                    }
-                },{
                     'targets': [-1],
                     'orderable': false,
                     render: function (data, type, row){
-                        let botones = `<a href="/administrarServicios/actualizar/${row.id}">
-                                            <button type="button" class="btn btn-primary"><i class="far fa-edit"></i>
-                                            </button>
-                                        </a>`
+                        let botones = `${row.la_planilla}<span class="float-right badge bg-info" planilla="${row.id}"><i class="fas fa-print"></i></span>`
                         return botones
                     }
                 },{
-                    className: "botones", "targets": [ -1, -2 ]
-                },{
-                    'targets': [1],
-                    'orderable': false,
-                    render: function (data, type, row){
-                        return displayCLP(row.valor_planilla)
-                        }
-                    }
+                    className: "text-center", "targets": [ 0, 1, 2, 3]
+                }
                 ],
             });
 }
@@ -124,6 +106,7 @@ $('#generar_despacho').on('submit', function (e) {
         }else{
             message_error(data.error);
         }
+        ultimos_despachos();
     }).fail(function (jqXHR, textStatus, errorThrown) {
         $.alert(textStatus + ': ' + errorThrown);
     });

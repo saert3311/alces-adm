@@ -8,7 +8,7 @@ class UltimosDespachosSerial(serializers.ModelSerializer):
 
     class Meta:
         model = Despacho
-        fields = ['id', 'nro', 'hora_salida', 'recorrido_despacho', 'la_planilla']
+        fields = ['id', 'nro_vehiculo', 'hora_salida_ss', 'recorrido_despacho', 'la_planilla']
 
 class ListarRecorridoSerial(serializers.ModelSerializer):
     distancia_kms = serializers.CharField(source='kms', read_only=True)

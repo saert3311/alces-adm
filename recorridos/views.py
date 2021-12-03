@@ -139,6 +139,7 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
                 form = DespachoForm(despacho, request=request)
                 data = form.save()
             elif accion == 'ultimos_despachos':
+                data = []
                 los_ultimos = Despacho.objects.filter(fecha_despacho=datetime.now().date(), id_suc_despacho=request.user.id_sucursal_id).order_by('-hora_asignacion')[:5]
                 despachos_serializados = UltimosDespachosSerial(los_ultimos, many=True)
                 for i in despachos_serializados.data:

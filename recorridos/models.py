@@ -100,6 +100,17 @@ class Despacho(models.Model):
     def control_planilla(self):
         return self.id_planilla.nro_control
 
+    @property
+    def hora_salida_ss(self):
+        return self.hora_salida.strftime('%H:%M')
+
+    @property
+    def hora_llegada_ss(self):
+        return self.hora_llegada.strftime('%H:%M')
+
+    @property
+    def nro_vehiculo(self):
+        return self.id_vehiculo.nro
 
 
 
