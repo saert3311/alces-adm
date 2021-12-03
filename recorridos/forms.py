@@ -76,9 +76,7 @@ class DespachoForm(ModelForm):
             momento_ultimo = datetime.datetime.combine(ultimo_despacho.fecha_despacho, ultimo_despacho.hora_salida)
             deberia_llegar = momento_ultimo + Servicio.objects.get(id=cleaned_data['id_recorrido'].id).tiempo
             momento_salida = datetime.datetime.combine(cleaned_data['fecha_despacho'], cleaned_data['hora_salida'])
-            print(momento_salida)
-            print(deberia_llegar)
-            if deberia_llegar > momento_salida:
+            if not momento_salida > deberia_llegar:
                 self._errors['Vehiculo'] = self.error_class(['Hora de salida del vehiculo no corresponde con tiempo de recorrido anterior'])
         return cleaned_data
 
