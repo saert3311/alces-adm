@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/print.js/print.min.css' %}">
 {% endblock stylesheets %}
 {% block acciones %}
     <li class="nav-item d-none d-sm-inline-block">
@@ -146,6 +147,7 @@
     <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
     <script src="{% static 'js/recorridos/despachos.js' %}"></script>
+    <script src="{% static 'plugins/print.js/print.min.js' %}"></script>
     <script>
         if ('{{ user.id_sucursal }}' != 'Collao'){
             $("#id_variante option[value='1']").remove();

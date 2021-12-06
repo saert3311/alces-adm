@@ -39,7 +39,20 @@ class DespachoForm(ModelForm):
                               'id_user': self.request.user,
                               'id_conductor': despacho.id_conductor})
                 despacho.save()
-                data['msg'] = 'Despacho Generado'
+                despacho_generado = Despacho.objects.get(id=despacho.id)
+                data['despacho'] = {
+                    'id' : despacho_generado.id,
+                    'planilla' : despacho.control_planilla,
+                    'patente' : despacho_generado.id_vehiculo.patente,
+                    'bus': despacho_generado.id_vehiculo.nro,
+                    'origen': despacho_generado.id_origen.nombre,
+                    'destino': despacho_generado.id_destino.nombre,
+                    'fecha': despacho_generado.fecha_despacho,
+                    'hora' : despacho_generado.hora_salida_ss,
+                    'conductor' : despacho_generado.id_conductor.nombre,
+                    'rut': despacho_generado.id_conductor.rut,
+                    ''
+                }
             else:
                 data['error'] = form.errors
         except Exception as e:

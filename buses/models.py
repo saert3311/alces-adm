@@ -41,6 +41,10 @@ class Vehiculo(models.Model):
         return f'{self.patente}-{self.u_patente}'
 
     @property
+    def get_identidad(self):
+        return f'{self.nro} - {self.patente}'
+
+    @property
     def get_descripcion(self):
         return f'{self.marca} {self.modelo}'
 
