@@ -45,13 +45,13 @@ class DespachoForm(ModelForm):
                     'planilla' : despacho.control_planilla,
                     'patente' : despacho_generado.id_vehiculo.patente,
                     'bus': despacho_generado.id_vehiculo.nro,
-                    'origen': despacho_generado.id_origen.nombre,
-                    'destino': despacho_generado.id_destino.nombre,
                     'fecha': despacho_generado.fecha_despacho,
                     'hora' : despacho_generado.hora_salida_ss,
                     'conductor' : despacho_generado.id_conductor.nombre,
                     'rut': despacho_generado.id_conductor.rut,
-                    ''
+                    'inspector': self.request.user.nombre_completo,
+                    'ruta': despacho_generado.id_recorrido.nombre,
+                    'variante': despacho_generado.get_variante_display()
                 }
             else:
                 data['error'] = form.errors

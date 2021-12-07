@@ -38,6 +38,10 @@ class User(AbstractUser):
         item = model_to_dict(self)
         return item
 
+    @property
+    def nombre_completo(self):
+        return f'{self.first_name} {self.last_name}'
+
     class Meta:
         ordering = ('id',)
 
