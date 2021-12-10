@@ -11,3 +11,6 @@ td.botones button {
 .input-group.patente input:first-child {
     width: 75%;
 }
+@media print{
+
+}

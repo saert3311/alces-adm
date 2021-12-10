@@ -22,6 +22,28 @@ $(function (){
         theme: 'bootstrap4'
     })
 })
+
+div_despacho = (obj) => {
+    let html = '<div id="imprimir_despacho"><img src="/static/img/logo_alces_grises.png" class=" mx-auto d-block" style="max-height: 80px;width: auto">'
+    if (typeof (obj) === 'object') {
+        html+= `<div class="row mb-1 pb-1 border-bottom border-dark"><div class="col"><h4 class="text-center mb-0">PLANILLA DE RUTA</h4><p class="mb-0 text-center"><strong>Inspector:</strong> ${obj['inspector']}</p><p class="text-center mb-0">${moment().format('L')} ${moment().format('LT')}</p></div></div>`
+        html+= `<div class="row"><div class="col-sm-6"><h5 class="mb-1">Despacho</h5><p class="mb-0">${obj['id']}</p></div>`
+        html+= `<div class="col-sm-6"><h5 class="mb-1">Planilla</h5><p class="mb-0">${obj['planilla']}</p></div></div>`
+        html+= `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1">Bus:</h5><p class="mb-0">${obj['bus']}</p></div>`
+        html+= `<div class="col-sm-6"><h5 class="mb-1">Patente:</h5><p class="mb-0">${obj['patente']}</p></div></div>`
+        html+= `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1">Conductor:</h5><p class="mb-0">${obj['conductor']}</p></div>`
+        html+= `<div class="col-sm-6"><h5 class="mb-1">RUT:</h5><p class="mb-0">${obj['rut_conductor']}</p></div></div>`
+        html+= `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1" >Auxiliar:</h5><p class="mb-0">${obj['auxiliar']}</p></div>`
+        html+= `<div class="col-sm-6"><h5 class="mb-1">RUT:</h5><p class="mb-0">${obj['rut_auxiliar']}</p></div></div>`
+        html+= `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Ruta:</h5><p class="mb-0">${obj['ruta']} - ${obj['variante']}</p></div></div>`
+        html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-4 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${obj['fecha']}</p></div>`
+        html+= `<div class="col-sm-4 text-center"><h5 class="mb-1 text-center">Vuelta:</h5><p>${obj['vuelta']}</p></div>`
+        html+= `<div class="col-sm-4 text-center"><h5 class="mb-1 text-center">Salida:</h5><p>${obj['hora_salida']}</p></div></div>`
+    }
+    html += '</div>'
+    return html
+
+}
 ultimos_despachos = () => {
      $('#ultimos_despachos').DataTable({
                 responsive: true,
@@ -64,31 +86,19 @@ ultimos_despachos = () => {
 }
 ultimos_despachos();
 function resultado_despacho(obj) {
-    var html = '';
-    if (typeof (obj) === 'object') {
-        html = '<ul>';
-        $.each(obj, function (key, value) {
-            html += '<li>' + value + '</li>';
-        });
-        html += '</ul>';
+    let html = '';
+    if (typeof (obj) === 'object' && obj.hasOwnProperty('despacho')) {
+        html = div_despacho(obj['despacho']);
     } else {
         html = '<p>' + obj + '</p>';
     }
-    $.confirm({
-        title: 'Despacho generado',
-        icon: 'fas fa-road',
-        content: html,
-        type: 'blue',
-        typeAnimated: true,
-        autoClose: 'close|5000',
-         buttons: {
-             close: {
-                 text: 'Ok',
-                 action: function () {
-                 }
-             },
-         }
-    });
+    document.getElementById('recibo_despacho').innerHTML = html;
+    $('#modal_resultado').modal('show')
+    printJS({
+        printable: 'recibo_despacho',
+        type: 'html',
+        targetStyles: ['*']
+    })
 }
 $('#generar_despacho').on('submit', function (e) {
     e.preventDefault();
@@ -102,7 +112,7 @@ $('#generar_despacho').on('submit', function (e) {
         contentType: false,
     }).done(function (data) {
         if (!data.hasOwnProperty('error')) {
-            resultado_despacho(data.msg)
+            resultado_despacho(data.despacho)
         }else{
             message_error(data.error);
         }

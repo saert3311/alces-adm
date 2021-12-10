@@ -136,6 +136,24 @@
         </div>
     </div>
     <!-- /.content -->
+    <!-- Modal -->
+<div class="modal fade" id="modal_resultado" tabindex="-1" role="dialog" aria-labelledby="modal_resultado" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Despacho Generado</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="recibo_despacho" class="modal-body write-despacho">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock contenido %}
 {% block javascripts %}
     <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
@@ -146,12 +164,12 @@
     <script src="{% static 'plugins/moment/locale/es.js' %}"></script>
     <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
-    <script src="{% static 'js/recorridos/despachos.js' %}"></script>
     <script src="{% static 'plugins/print.js/print.min.js' %}"></script>
     <script>
         if ('{{ user.id_sucursal }}' != 'Collao'){
             $("#id_variante option[value='1']").remove();
         }
     </script>
+    <script src="{% static 'js/recorridos/despachos.js' %}"></script>
 {% endblock javascripts %}
 
