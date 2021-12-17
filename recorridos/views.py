@@ -2,17 +2,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .models import Despacho, Servicio
+from .models import Despacho, Servicio, Planilla
 from .forms import DespachoForm, ServicioForm
-from .serializers import ListarRecorridoSerial, UltimosDespachosSerial
-from django.views.generic import ListView, CreateView, UpdateView
-from app.models import Sucursal
+from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes
+from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from datetime import datetime
 
-class ListarServicios(LoginRequiredMixin, ListView):
+class ListarServicios(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Servicio
     template_name = 'recorridos/listar-servicios.html'
 
     def get_context_data(self, **kwargs):
@@ -149,3 +147,35 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+
+class PagoPlanilla(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    template_name = 'recorridos/pago-planilla.html'
+    success_url = reverse_lazy('recorridos:pago-planilla')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Pago de Planilla'
+        context['seccion1'] = 'Buscar'
+        context['seccion2'] = 'Planillas por Pagar'
+        context['boton'] = 'Pagar'
+        context['seccion'] = 'recorridos'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'planillas_pendientes':
+                data = []
+                las_planillas = Planilla.objects.filter(id_pago_planilla__isnull=True)
+                las_planillas_serializadas = ListarPlanillasPendientes(las_planillas, many=True)
+                for i in las_planillas_serializadas.data:
+                    data.append(i)
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        finally:
+            return JsonResponse(data, safe=False)

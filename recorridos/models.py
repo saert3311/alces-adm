@@ -71,6 +71,22 @@ class Planilla(models.Model):
     id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name="Conductor")
     es_pirata = models.BooleanField(verbose_name='Es pirata', default=False)
 
+    @property
+    def vueltas(self):
+        return Despacho.objects.filter(id_planilla=self.id).count()
+
+    @property
+    def nro_vehiculo(self):
+        return self.id_vehiculo.nro
+
+    @property
+    def servicio_desc(self):
+        return self.id_recorrido.nombre
+
+    @property
+    def valor_planilla(self):
+        return self.id_recorrido.valor_planilla
+
 class Despacho(models.Model):
 
     VARIANTE = (

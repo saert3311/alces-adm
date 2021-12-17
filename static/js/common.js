@@ -32,6 +32,10 @@ $.ajaxSetup({
 function displayCLP(num){
     return Intl.NumberFormat('es-CL', {currency: 'CLP', style: 'currency'}).format(num)
 }
+function displayFecha(fecha){
+    fecha_obj = new Date(fecha)
+    return `${fecha_obj.getDate()}/${fecha_obj.getMonth()}/${fecha_obj.getFullYear()}`
+}
 function message_error(obj) {
     var html = '';
     if (typeof (obj) === 'object') {

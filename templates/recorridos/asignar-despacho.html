@@ -10,6 +10,9 @@
 {% endblock stylesheets %}
 {% block acciones %}
     <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'recorridos:pago-planilla' %}" class="nav-link">Pago Planilla</a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
         <a href="{% url 'app:inicio' %}" class="nav-link">Volver</a>
     </li>
 {% endblock acciones %}
