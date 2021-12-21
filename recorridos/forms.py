@@ -3,7 +3,7 @@ import datetime
 from django import forms
 from django.forms import ModelForm
 from conductores.models import Conductor, Auxiliar
-from .models import Despacho, Servicio, Planilla
+from .models import Despacho, Servicio, Planilla, Pago_planilla
 from cuenta.models import User, Sucursal
 from buses.models import Vehiculo
 from constance import config
@@ -103,6 +103,24 @@ class ServicioForm(ModelForm):
 
     class Meta:
         model = Servicio
+        fields = '__all__'
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+class PagarPlanillaForm(ModelForm):
+
+    class Meta:
+        model = Pago_planilla
         fields = '__all__'
 
     def save(self, commit=True):

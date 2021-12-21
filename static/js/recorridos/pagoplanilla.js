@@ -39,7 +39,7 @@
                     'targets': [-1],
                     'orderable': false,
                     render: function (data, type, row){
-                        let botones = `<a href="/sucursales/actualizar/${row.id}">
+                        let botones = `<a href="/pagoPlanilla/pagar/${row.id}">
                                             <button type="button" class="btn btn-info btn-sm"><i class="fas fa-money-bill-wave"></i>
                                             </button>
                                         </a>`

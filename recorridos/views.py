@@ -2,8 +2,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .models import Despacho, Servicio, Planilla
-from .forms import DespachoForm, ServicioForm
+from .models import Despacho, Servicio, Planilla, Pago_planilla
+from .forms import DespachoForm, ServicioForm, PagarPlanillaForm
 from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from datetime import datetime
@@ -179,3 +179,35 @@ class PagoPlanilla(LoginRequiredMixin, TemplateView):
             data['error'] = str(e)
         finally:
             return JsonResponse(data, safe=False)
+
+class PagarPlanilla(LoginRequiredMixin, CreateView):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    model = Pago_planilla
+    form_class = PagarPlanillaForm
+    template_name = 'recorridos/pagar-planilla.html'
+    success_url = reverse_lazy('recorridos:pago-planilla')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Pagar Planilla'
+        context['subtitulo'] = 'Complete los datos para registrar el pago'
+        context['boton'] = 'Pagar'
+        context['seccion'] = 'directorio'
+        planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
+        context['planilla'] = {
+            'fecha_planilla' : planilla_pagar.fecha_planilla,
+            'bus' : planilla_pagar.id_vehiculo.get_identidad
+        }
+        return context
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            form = self.get_form()
+            data = form.save()
+            if not 'error' in data.keys():
+                messages.success(request, 'Pago Realizado')
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
