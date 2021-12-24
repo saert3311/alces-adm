@@ -3,7 +3,7 @@ import datetime
 from django import forms
 from django.forms import ModelForm
 from conductores.models import Conductor, Auxiliar
-from .models import Despacho, Servicio, Planilla, Pago_planilla
+from .models import Despacho, Servicio, Planilla, Pago_planilla, Tipo_pago
 from cuenta.models import User, Sucursal
 from buses.models import Vehiculo
 from constance import config
@@ -118,6 +118,7 @@ class ServicioForm(ModelForm):
         return data
 
 class PagarPlanillaForm(ModelForm):
+    tipo_pago = forms.ModelChoiceField(queryset=Tipo_pago.objects.all(), empty_label=None)
 
     class Meta:
         model = Pago_planilla

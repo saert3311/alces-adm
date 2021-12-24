@@ -30,7 +30,11 @@ $.ajaxSetup({
 });
 
 function displayCLP(num){
-    return Intl.NumberFormat('es-CL', {currency: 'CLP', style: 'currency'}).format(num)
+    if(isNaN(num)){
+        return Intl.NumberFormat('es-CL', {currency: 'CLP', style: 'currency'}).format(parseInt(num))
+    }else {
+        return Intl.NumberFormat('es-CL', {currency: 'CLP', style: 'currency'}).format(num)
+    }
 }
 function displayFecha(fecha){
     fecha_obj = new Date(fecha)

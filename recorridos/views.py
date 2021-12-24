@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
 from .forms import DespachoForm, ServicioForm, PagarPlanillaForm
 from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes
@@ -194,11 +195,19 @@ class PagarPlanilla(LoginRequiredMixin, CreateView):
         context['subtitulo'] = 'Complete los datos para registrar el pago'
         context['boton'] = 'Pagar'
         context['seccion'] = 'directorio'
-        planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
-        context['planilla'] = {
-            'fecha_planilla' : planilla_pagar.fecha_planilla,
-            'bus' : planilla_pagar.id_vehiculo.get_identidad
-        }
+        context['seccion2'] = 'Vale Pago'
+        try:
+            planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
+            context['planilla'] = {
+                'fecha_planilla' : planilla_pagar.fecha_planilla,
+                'bus' : planilla_pagar.id_vehiculo.get_identidad,
+                'recorrido' : planilla_pagar.id_recorrido.nombre,
+                'precio': planilla_pagar.id_recorrido.valor_planilla_feriado(planilla_pagar.fecha_planilla),
+                'nro': self.kwargs['pl'],
+                'vueltas': planilla_pagar.vueltas
+            }
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'Planilla no encontrada')
         return context
 
     def post(self, request, *args, **kwargs):

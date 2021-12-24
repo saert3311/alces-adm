@@ -5,7 +5,8 @@ from buses.models import Vehiculo
 from cuenta.models import User
 from conductores.models import Conductor, Auxiliar
 from app.models import Sucursal
-from datetime import timedelta
+import datetime
+import holidays
 
 def es_terminal(sucursal):
     if not Sucursal.objects.get(pk=sucursal).es_terminal:
@@ -29,6 +30,9 @@ class Tipo_pago(models.Model):
     descripcion = models.CharField(max_length=150, verbose_name="Descripcion")
     es_vigente = models.BooleanField(verbose_name="Vigente")
 
+    def __str__(self):
+        return self.nombre
+
 
 class Pago_planilla(models.Model):
     tiene_descuento = models.BooleanField(verbose_name="Tiene descuento", default=False)
@@ -44,7 +48,7 @@ class Servicio(models.Model):
     es_vigente = models.BooleanField(verbose_name="Vigente")
     valor_planilla = models.PositiveIntegerField(verbose_name="Valor planilla")
     distancia = models.SmallIntegerField(verbose_name="Distancia")
-    tiempo = models.DurationField(verbose_name='Duracion del Servicio', default=timedelta(hours=1))
+    tiempo = models.DurationField(verbose_name='Duracion del Servicio', default=datetime.timedelta(hours=1))
     terminal_a = models.ForeignKey(Sucursal, related_name='ter_a', on_delete=models.PROTECT, verbose_name='Terminal A', default=1, validators=[es_terminal])
     terminal_b = models.ForeignKey(Sucursal, related_name='ter_b', on_delete=models.PROTECT, verbose_name='Terminal B', default=1, validators=[es_terminal])
 
@@ -57,6 +61,13 @@ class Servicio(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def valor_planilla_feriado(self, fecha=datetime.date.today()):
+        if fecha in holidays.Chile() is True or fecha.weekday() == 6:
+            return self.valor_planilla / 2
+        else:
+            return self.valor_planilla
+
 
 
 class Planilla(models.Model):
