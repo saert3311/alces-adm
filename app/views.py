@@ -6,7 +6,10 @@ from django.views.generic import ListView, CreateView, UpdateView
 from .serializers import ListarSucursalesSerializado
 from .forms import SucursalForm
 from .models import Comuna, Sucursal
+from recorridos.models import Despacho
 from django.contrib import messages
+from datetime import date
+from django.db.models import Count
 
 # Create your views here.
 from django.views import View
@@ -16,7 +19,12 @@ class Inicio(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     def get(self, request):
-        return render(request, 'inicio.html')
+        despachos_emitidos = Despacho.objects.filter(fecha_despacho=date.today()).count()
+        maquinas_activas = Despacho.objects.filter(fecha_despacho=date.today()).values('id_vehiculo').distinct().count()
+        return render(request, 'inicio.html', {
+            'despachos_emitidos' : despachos_emitidos,
+            'maquinas_activas' : maquinas_activas
+        })
 
 
 def handler404(request, exception):

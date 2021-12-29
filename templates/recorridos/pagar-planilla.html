@@ -25,12 +25,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0"><i class="fas fa-play nav-icon"></i> {{ titulo }}</h1>
+                    <h1 class="m-0"><i class="fas fa-play nav-icon"></i> {{ texto.titulo }}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
-                        <li class="breadcrumb-item active">{{ titulo }}</li>
+                        <li class="breadcrumb-item active">{{ texto.titulo }}</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -47,7 +47,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Datos Planilla</h3>
                         </div>
-                        <form method="post" id="generar_pago">
+                        {% if planilla.pagada is None %}<form method="post" id="generar_pago">{% endif %}
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-2">
@@ -77,6 +77,7 @@
                                         <p id="costo_planilla">{{ planilla.precio }}</p>
                                     </div>
                                 </div>
+                                {% if planilla.pagada is None %}
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
@@ -87,20 +88,27 @@
                                 </div>
                                 {% csrf_token %}
                                 <input id="accion" name="accion" type="hidden" value="pagar_planilla">
+                                {% endif %}
                             </div>
-                            <div class="card-footer text-right">
-                                <button type="submit" class="btn btn-primary">Pagar Planilla</button>
+                            {% if planilla.pagada is None %}
+                            <div class="card-footer text-right" id="pago_footer">
+                                <button type="submit" class="btn btn-primary transicion" id="btn-pago">Pagar Planilla</button>
                             </div>
-                        </form>
+                            {% endif %}
+                        {% if planilla.pagada is None %}</form>{% endif %}
                     </div>
                 </div>
-                <div class="col-sm-6 align-self-start">
-                    <div class="card card-primary">
+                <div class="col-sm-6 align-self-center">
+                    <div class="text-center d-none transicion" id="loader_vale_cobro">
+                        <div class="spinner-border " role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </div>
+                    <div id="card_vale_pago" class="card card-primary d-none transicion">
                         <div class="card-header">
-                            <h3 class="card-title">{{ seccion2 }}</h3>
+                            <h3 class="card-title">{{ texto.seccion2 }}</h3>
                         </div>
                             <div class="card-body" id="vale_cobro">
-                               <img src="/static/img/logo_alces_grises.png" class=" mx-auto d-block" style="max-height: 80px;width: auto">
                             </div>
                             <div class="card-footer text-right">
                                 <button type="submit" class="btn btn-primary">Imprimir Vale Pago</button>
@@ -112,23 +120,6 @@
     </div>
     <!-- /.content -->
     <!-- Modal -->
-<div class="modal fade" id="modal_resultado" tabindex="-1" role="dialog" aria-labelledby="modal_resultado" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalScrollableTitle">Despacho Generado</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div id="recibo_despacho" class="modal-body write-despacho">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock contenido %}
 {% block javascripts %}
     <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>

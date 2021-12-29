@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
 from .forms import DespachoForm, ServicioForm, PagarPlanillaForm
 from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes
-from django.views.generic import ListView, CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView, TemplateView, View
 from datetime import datetime
 
 class ListarServicios(LoginRequiredMixin, TemplateView):
@@ -157,10 +158,7 @@ class PagoPlanilla(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Pago de Planilla'
-        context['seccion1'] = 'Buscar'
-        context['seccion2'] = 'Planillas por Pagar'
-        context['boton'] = 'Pagar'
+        context['titulo'] = 'Planillas por pagar'
         context['seccion'] = 'recorridos'
         return context
 
@@ -181,42 +179,73 @@ class PagoPlanilla(LoginRequiredMixin, TemplateView):
         finally:
             return JsonResponse(data, safe=False)
 
-class PagarPlanilla(LoginRequiredMixin, CreateView):
+class PagarPlanilla(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    model = Pago_planilla
-    form_class = PagarPlanillaForm
-    template_name = 'recorridos/pagar-planilla.html'
-    success_url = reverse_lazy('recorridos:pago-planilla')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Pagar Planilla'
-        context['subtitulo'] = 'Complete los datos para registrar el pago'
-        context['boton'] = 'Pagar'
-        context['seccion'] = 'directorio'
-        context['seccion2'] = 'Vale Pago'
+    texto_template = {
+    'titulo' : 'Pago Planilla',
+    'subtitulo' : 'Complete los datos para registrar el pago',
+    'boton' : 'Pagar',
+    'seccion' : 'directorio',
+    'seccion2' : 'Vale Pago'
+    }
+
+    def get(self, request, *args, **kwargs):
+        form = PagarPlanillaForm
         try:
             planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
-            context['planilla'] = {
+            planilla_enviar = {
                 'fecha_planilla' : planilla_pagar.fecha_planilla,
                 'bus' : planilla_pagar.id_vehiculo.get_identidad,
                 'recorrido' : planilla_pagar.id_recorrido.nombre,
                 'precio': planilla_pagar.id_recorrido.valor_planilla_feriado(planilla_pagar.fecha_planilla),
                 'nro': self.kwargs['pl'],
-                'vueltas': planilla_pagar.vueltas
+                'vueltas': planilla_pagar.vueltas,
+                'pagada' : planilla_pagar.id_pago_planilla
             }
         except ObjectDoesNotExist:
             messages.error(self.request, 'Planilla no encontrada')
-        return context
+            return redirect('recorridos:pago-planilla')
+        return render(request, 'recorridos/pagar-planilla.html', {
+            'planilla': planilla_enviar,
+            'form': form,
+            'texto' : self.texto_template
+        })
 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.save()
-            if not 'error' in data.keys():
-                messages.success(request, 'Pago Realizado')
+            accion = request.POST['accion']
+            if accion == 'pagar_planilla':
+                data = []
+                planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
+                datos_pago = request.POST
+                datos_pago._mutable = True
+                datos_pago['valor'] = planilla_pagar.id_recorrido.valor_planilla_feriado(planilla_pagar.fecha_planilla)
+                datos_pago['id_user'] = str(request.user.pk)
+                datos_pago['pagada'] = True
+                datos_pago._mutable = False
+                form = PagarPlanillaForm(datos_pago)
+                pago_procesado = form.save()
+                planilla_pagar.id_pago_planilla = int(pago_procesado.id_pago_planilla)
+                planilla_pagar.save()
+                data['pago_planilla'] = {
+                    'nro_planilla' : planilla_pagar.nro_control,
+                    'nro_pago' : pago_procesado.id_pago_planilla,
+                    'monto' : pago_procesado.valor_pagado,
+                    'bus' : planilla_pagar.id_vehiculo.get_identidad,
+                    'fecha' : pago_procesado.fecha_pago,
+                    'inspector' : str(request.user.nombre_completo),
+                    'forma_pago' : planilla_pagar.id_pago_planilla.tipo_pago.nombre,
+                    'ruta' : planilla_pagar.id_recorrido.nombre
+                }
+                if not 'error' in pago_procesado.keys():
+                    messages.success(request, 'Pago Realizado')
+                else:
+                    data['error'] = pago_procesado.error
+            else:
+                data['error'] = 'Metodo no definido'
         except Exception as e:
             data['error'] = str(e)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
