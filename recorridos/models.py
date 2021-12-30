@@ -7,6 +7,7 @@ from conductores.models import Conductor, Auxiliar
 from app.models import Sucursal
 import datetime
 import holidays
+from constance import config
 
 def es_terminal(sucursal):
     if not Sucursal.objects.get(pk=sucursal).es_terminal:
@@ -63,7 +64,7 @@ class Servicio(models.Model):
         return self.nombre
 
     def valor_planilla_feriado(self, fecha=datetime.date.today()):
-        if fecha in holidays.Chile() is True or fecha.weekday() == 6:
+        if (fecha in holidays.Chile() is True or fecha.weekday() == 6) and config.PRECIO_FERIADOS is True:
             return self.valor_planilla / 2
         else:
             return self.valor_planilla

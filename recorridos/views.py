@@ -218,7 +218,6 @@ class PagarPlanilla(LoginRequiredMixin, View):
         try:
             accion = request.POST['accion']
             if accion == 'pagar_planilla':
-                data = []
                 planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
                 datos_pago = request.POST
                 datos_pago._mutable = True
@@ -228,7 +227,11 @@ class PagarPlanilla(LoginRequiredMixin, View):
                 datos_pago._mutable = False
                 form = PagarPlanillaForm(datos_pago)
                 pago_procesado = form.save()
-                planilla_pagar.id_pago_planilla = int(pago_procesado.id_pago_planilla)
+                if 'error' in pago_procesado:
+                    data['error'] = pago_procesado['error']
+                    return JsonResponse(data, safe=False)
+                print(pago_procesado)
+                planilla_pagar.id_pago_planilla = pago_procesado.id_pago_planilla
                 planilla_pagar.save()
                 data['pago_planilla'] = {
                     'nro_planilla' : planilla_pagar.nro_control,
@@ -238,9 +241,10 @@ class PagarPlanilla(LoginRequiredMixin, View):
                     'fecha' : pago_procesado.fecha_pago,
                     'inspector' : str(request.user.nombre_completo),
                     'forma_pago' : planilla_pagar.id_pago_planilla.tipo_pago.nombre,
-                    'ruta' : planilla_pagar.id_recorrido.nombre
+                    'ruta' : planilla_pagar.id_recorrido.nombre,
+                    'fecha_planilla' : planilla_pagar.fecha_planilla
                 }
-                if not 'error' in pago_procesado.keys():
+                if not 'error' in pago_procesado:
                     messages.success(request, 'Pago Realizado')
                 else:
                     data['error'] = pago_procesado.error

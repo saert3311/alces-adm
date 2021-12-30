@@ -130,7 +130,8 @@ class PagarPlanillaForm(ModelForm):
         try:
             if form.is_valid():
                 form.save()
-                data['id_pago_planilla'] = form.id
+                data['id_pago_planilla'] = self.data
+                print(self.data)
                 data['valor_pagado'] = form.valor
                 data['fecha_pago'] = form.fecha_pago
             else:

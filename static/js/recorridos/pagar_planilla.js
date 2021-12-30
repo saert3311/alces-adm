@@ -9,10 +9,9 @@ div_resultado = (obj) => {
         html+= `<div class="col-sm-6"><h5 class="mb-1">PLANILLA</h5><p class="mb-0">${obj['nro_planilla']}</p></div></div>`
         html+= `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1">BUS:</h5><p class="mb-0">${obj['bus']}</p></div>`
         html+= `<div class="col-sm-6"><h5 class="mb-1">FORMA PAGO:</h5><p class="mb-0">${obj['forma_pago']}</p></div></div>`
-        html+= `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Ruta:</h5><p class="mb-0">${obj['ruta']} - ${obj['variante']}</p></div></div>`
-        html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-4 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${obj['fecha']}</p></div>`
-        html+= `<div class="col-sm-4 text-center"><h5 class="mb-1 text-center">Vuelta:</h5><p>${obj['vuelta']}</p></div>`
-        html+= `<div class="col-sm-4 text-center"><h5 class="mb-1 text-center">Salida:</h5><p>${obj['hora_salida']}</p></div></div>`
+        html+= `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Detalle:</h5></div></div>`
+        html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-6 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${obj['fecha']}</p></div>`
+        html+= `<div class="col-sm-6 text-center"><h5 class="mb-1 text-center">Monto:</h5><p>${obj['fecha_planilla']}</p></div></div>`
     }
     html += '</div>'
     return html
@@ -25,9 +24,11 @@ function resultado_pago(obj) {
     } else {
         html = '<p>' + obj + '</p>';
     }
-    document.getElementById('recibo_despacho').innerHTML = html;
+    document.getElementById('vale_cobro').innerHTML = html;
+    $('#loader_vale_cobro').addClass('d-none')
+    $('#card_vale_pago').removeClass('d-none')
     printJS({
-        printable: 'recibo_despacho',
+        printable: 'vale_cobro',
         type: 'html',
         targetStyles: ['*']
     })
@@ -50,14 +51,16 @@ $('#generar_pago').on('submit', function (e) {
                 }
             }).done(function (data) {
                 if (!data.hasOwnProperty('error')) {
-                    resultado_pago(data.despacho)
-                    $('#loader_vale_cobro').addClass('d-none')
-                    $('#card_vale_pago').removeClass('d-none')
+                    resultado_pago(data.pago_planilla)
                 }else{
                     message_error(data.error);
+                    $('#btn-pago').removeClass('disabled')
+                    $('#loader_vale_cobro').addClass('d-none')
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $.alert(textStatus + ': ' + errorThrown);
+                $('#btn-pago').removeClass('disabled')
+                $('#loader_vale_cobro').addClass('d-none')
             });
          }
     });
