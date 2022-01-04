@@ -43,6 +43,10 @@ class Pago_planilla(models.Model):
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Recibido por")
     pagada = models.BooleanField(verbose_name="Planilla Pagada", default=False)
 
+    @property
+    def fecha_pago_simple(self):
+        return self.hora_salida.strftime('%H:%M')
+
 
 class Servicio(models.Model):
     nombre = models.CharField(max_length=50, verbose_name="Nombre", unique=True)
@@ -121,6 +125,10 @@ class Despacho(models.Model):
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name='Vehiculo')
 
     @property
+    def ruta(self):
+        return self.id_recorrido.nombre
+
+    @property
     def detalle(self):
         return f'{self.id_recorrido.nombre} ({self.get_variante_display()})'
 
@@ -140,7 +148,36 @@ class Despacho(models.Model):
     def nro_vehiculo(self):
         return self.id_vehiculo.nro
 
+    @property
+    def nombre_inspector(self):
+        return self.id_usuario.nombre_completo
 
+    @property
+    def patente_vehiculo(self):
+        return self.id_vehiculo.patente
 
+    @property
+    def nombre_conductor(self):
+        return self.id_conductor.nombreCompleto
+
+    @property
+    def rut_conductor(self):
+        return self.id_conductor.rut
+
+    @property
+    def nombre_auxiliar(self):
+        return self.id_auxiliar.nombreCompleto
+
+    @property
+    def rut_auxiliar(self):
+        return self.id_auxiliar.rut
+
+    @property
+    def vuelta(self):
+        return Despacho.objects.filter(fecha_despacho=self.fecha_despacho, hora_asignacion__lte=self.hora_asignacion, id_vehiculo=self.id_vehiculo).count()
+
+    @property
+    def variante_text(self):
+        return self.get_variante_display()
 
 

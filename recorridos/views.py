@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
 from .forms import DespachoForm, ServicioForm, PagarPlanillaForm
-from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes
+from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes, DespachoImprimirSerial
 from django.views.generic import CreateView, UpdateView, TemplateView, View
 from datetime import datetime
 
@@ -140,10 +140,13 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
                 data = form.save()
             elif accion == 'ultimos_despachos':
                 data = []
-                los_ultimos = Despacho.objects.filter(fecha_despacho=datetime.now().date(), id_suc_despacho=request.user.id_sucursal_id).order_by('-hora_asignacion')[:5]
+                los_ultimos = Despacho.objects.filter(fecha_despacho=datetime.now().date(), id_suc_despacho=request.user.id_sucursal_id).order_by('-hora_asignacion')[:7]
                 despachos_serializados = UltimosDespachosSerial(los_ultimos, many=True)
                 for i in despachos_serializados.data:
                     data.append(i)
+            elif accion == 'buscar_despacho':
+                el_despacho = Despacho.objects.get(id=request.POST['despacho'])
+                data['despacho'] = DespachoImprimirSerial(el_despacho).data
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:
@@ -202,8 +205,9 @@ class PagarPlanilla(LoginRequiredMixin, View):
                 'precio': planilla_pagar.id_recorrido.valor_planilla_feriado(planilla_pagar.fecha_planilla),
                 'nro': self.kwargs['pl'],
                 'vueltas': planilla_pagar.vueltas,
-                'pagada' : planilla_pagar.id_pago_planilla
+                'pagada' : planilla_pagar.id_pago_planilla,
             }
+
         except ObjectDoesNotExist:
             messages.error(self.request, 'Planilla no encontrada')
             return redirect('recorridos:pago-planilla')
@@ -219,6 +223,9 @@ class PagarPlanilla(LoginRequiredMixin, View):
             accion = request.POST['accion']
             if accion == 'pagar_planilla':
                 planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
+                if planilla_pagar.id_pago_planilla is not None:
+                    data['error'] = 'Planilla ya fue pagada'
+                    return JsonResponse(data, safe=False)
                 datos_pago = request.POST
                 datos_pago._mutable = True
                 datos_pago['valor'] = planilla_pagar.id_recorrido.valor_planilla_feriado(planilla_pagar.fecha_planilla)
@@ -231,14 +238,14 @@ class PagarPlanilla(LoginRequiredMixin, View):
                     data['error'] = pago_procesado['error']
                     return JsonResponse(data, safe=False)
                 print(pago_procesado)
-                planilla_pagar.id_pago_planilla = pago_procesado.id_pago_planilla
+                planilla_pagar.id_pago_planilla = Pago_planilla.objects.get(id=pago_procesado['id_pago_planilla'])
                 planilla_pagar.save()
                 data['pago_planilla'] = {
                     'nro_planilla' : planilla_pagar.nro_control,
-                    'nro_pago' : pago_procesado.id_pago_planilla,
-                    'monto' : pago_procesado.valor_pagado,
+                    'nro_pago' : pago_procesado['id_pago_planilla'],
+                    'monto' : pago_procesado['valor_pagado'],
                     'bus' : planilla_pagar.id_vehiculo.get_identidad,
-                    'fecha' : pago_procesado.fecha_pago,
+                    'fecha' : pago_procesado['fecha_pago'],
                     'inspector' : str(request.user.nombre_completo),
                     'forma_pago' : planilla_pagar.id_pago_planilla.tipo_pago.nombre,
                     'ruta' : planilla_pagar.id_recorrido.nombre,

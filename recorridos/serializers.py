@@ -10,6 +10,22 @@ class UltimosDespachosSerial(serializers.ModelSerializer):
         model = Despacho
         fields = ['id', 'nro_vehiculo', 'hora_salida_ss', 'recorrido_despacho', 'la_planilla']
 
+class DespachoImprimirSerial(serializers.ModelSerializer):
+    planilla = serializers.CharField(source='control_planilla', read_only=True)
+    patente = serializers.CharField(source='patente_vehiculo', read_only=True)
+    bus = serializers.CharField(source='nro_vehiculo', read_only=True)
+    fecha = serializers.CharField(source='fecha_despacho', read_only=True)
+    hora_salida = serializers.CharField(source='hora_salida_ss', read_only=True)
+    conductor = serializers.CharField(source='nombre_conductor', read_only=True)
+    auxiliar = serializers.CharField(source='nombre_auxiliar', read_only=True)
+    inspector = serializers.CharField(source='nombre_inspector', read_only=True)
+    variante = serializers.CharField(source='variante_text', read_only=True)
+
+    class Meta:
+        model = Despacho
+        fields = ['id', 'planilla', 'patente', 'bus', 'fecha', 'hora_salida', 'conductor', 'rut_conductor',
+                  'auxiliar', 'rut_auxiliar', 'inspector', 'ruta', 'variante', 'vuelta']
+
 class ListarRecorridoSerial(serializers.ModelSerializer):
     distancia_kms = serializers.CharField(source='kms', read_only=True)
 

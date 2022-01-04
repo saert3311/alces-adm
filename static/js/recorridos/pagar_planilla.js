@@ -11,7 +11,7 @@ div_resultado = (obj) => {
         html+= `<div class="col-sm-6"><h5 class="mb-1">FORMA PAGO:</h5><p class="mb-0">${obj['forma_pago']}</p></div></div>`
         html+= `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Detalle:</h5></div></div>`
         html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-6 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${obj['fecha']}</p></div>`
-        html+= `<div class="col-sm-6 text-center"><h5 class="mb-1 text-center">Monto:</h5><p>${obj['fecha_planilla']}</p></div></div>`
+        html+= `<div class="col-sm-6 text-center"><h5 class="mb-1 text-center">Monto:</h5><p>${displayCLP(obj['monto'])}</p></div></div>`
     }
     html += '</div>'
     return html
@@ -51,7 +51,7 @@ $('#generar_pago').on('submit', function (e) {
                 }
             }).done(function (data) {
                 if (!data.hasOwnProperty('error')) {
-                    resultado_pago(data.pago_planilla)
+                    resultado_pago(data)
                 }else{
                     message_error(data.error);
                     $('#btn-pago').removeClass('disabled')

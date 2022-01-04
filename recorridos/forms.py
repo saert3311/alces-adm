@@ -47,14 +47,14 @@ class DespachoForm(ModelForm):
                     'bus': despacho_generado.id_vehiculo.nro,
                     'fecha': despacho_generado.fecha_despacho,
                     'hora_salida' : despacho_generado.hora_salida_ss,
-                    'conductor' : despacho_generado.id_conductor.nombre,
-                    'rut_conductor ': despacho_generado.id_conductor.rut,
-                    'auxiliar': despacho_generado.id_auxiliar.nombre,
+                    'conductor' : despacho_generado.id_conductor.nombreCompleto,
+                    'rut_conductor': despacho_generado.id_conductor.rut,
+                    'auxiliar': despacho_generado.id_auxiliar.nombreCompleto,
                     'rut_auxiliar': despacho_generado.id_auxiliar.rut,
                     'inspector': self.request.user.nombre_completo,
                     'ruta': despacho_generado.id_recorrido.nombre,
                     'variante': despacho_generado.get_variante_display(),
-                    'vuelta': Despacho.objects.filter(id_vehiculo=despacho.id_vehiculo, fecha_despacho=despacho.fecha_despacho).count()
+                    'vuelta': despacho_generado.vuelta
                 }
             else:
                 data['error'] = form.errors
@@ -86,14 +86,21 @@ class DespachoForm(ModelForm):
             if cleaned_data['id_vehiculo'].t_salida != cleaned_data['id_origen']:
                 self._errors['Vehiculo'] = self.error_class(['1er despacho del Terminal de salida no corresponde'])
         else:
-            if Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']).last().variante == cleaned_data['variante']:
-                self._errors['Vehiculo'] = self.error_class(['Debe completar su vuelta antes de iniciar una nueva vuelta'])
             ultimo_despacho = Despacho.objects.filter(id_vehiculo=cleaned_data['id_vehiculo'], fecha_despacho=cleaned_data['fecha_despacho']).last()
+            if ultimo_despacho.variante == cleaned_data['variante']:
+                self._errors['Vehiculo'] = self.error_class(['Debe completar su vuelta antes de iniciar una nueva vuelta'])
             momento_ultimo = datetime.datetime.combine(ultimo_despacho.fecha_despacho, ultimo_despacho.hora_salida)
             deberia_llegar = momento_ultimo + Servicio.objects.get(id=cleaned_data['id_recorrido'].id).tiempo
             momento_salida = datetime.datetime.combine(cleaned_data['fecha_despacho'], cleaned_data['hora_salida'])
             if not momento_salida > deberia_llegar:
                 self._errors['Vehiculo'] = self.error_class(['Hora de salida del vehiculo no corresponde con tiempo de recorrido anterior'])
+            if ultimo_despacho.id_recorrido != cleaned_data['id_recorrido']:
+                self._errors['Vehiculo'] = self.error_class([f'Ya tiene una o mas vueltas en ruta {ultimo_despacho.id_recorrido.nombre}'])
+            despachos_conductor = Despacho.objects.filter(fecha_despacho=cleaned_data['fecha_despacho'], id_conductor=cleaned_data['id_conductor'])
+            for despacho in despachos_conductor:
+                if despacho.id_conductor != cleaned_data['id_conductor']:
+                    self._errors['Conductor'] = self.error_class([f'Conductor tiene vueltas en el bus {despacho.id_vehiculo.nro}'])
+                    break
         return cleaned_data
 
 
@@ -126,14 +133,13 @@ class PagarPlanillaForm(ModelForm):
 
     def save(self, commit=True):
         data = {}
-        form = super()
+        form = super(PagarPlanillaForm, self)
         try:
             if form.is_valid():
-                form.save()
-                data['id_pago_planilla'] = self.data
-                print(self.data)
-                data['valor_pagado'] = form.valor
-                data['fecha_pago'] = form.fecha_pago
+                result = form.save()
+                data['id_pago_planilla'] = result.id
+                data['valor_pagado'] = result.valor
+                data['fecha_pago'] = result.fecha_pago
             else:
                 data['error'] = form.errors
         except Exception as e:
