@@ -64,7 +64,7 @@ class DespachoForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if not cleaned_data['id_conductor'].tiene_foto:
+        if not cleaned_data['id_conductor'].tiene_foto and config.FOTO_CONDUCTOR is True:
             self._errors['Conductor'] = self.error_class(['no tiene fotografia'])
         if not cleaned_data['id_vehiculo'].es_activo:
             self._errors['Vehiculo'] = self.error_class(['no se encuentra activo'])
@@ -74,6 +74,8 @@ class DespachoForm(ModelForm):
             self._errors['Conductor'] = self.error_class(['tiene licencia vencida'])
         if not cleaned_data['id_conductor'].activo:
             self._errors['Conductor'] = self.error_class(['no se encuentra activo'])
+        if not cleaned_data['id_auxiliar'].tiene_foto and config.FOTO_AUXILIAR is True:
+            self._errors['Auxiliar'] = self.error_class(['no tiene fotografia'])
         if not cleaned_data['id_auxiliar'].activo:
             self._errors['Auxiliar'] = self.error_class(['no se encuentra activo'])
         if cleaned_data['variante'] == 1 and self.request.user.id_sucursal_id != Sucursal.objects.get(nombre__icontains='collao').id:

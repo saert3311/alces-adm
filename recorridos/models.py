@@ -44,8 +44,12 @@ class Pago_planilla(models.Model):
     pagada = models.BooleanField(verbose_name="Planilla Pagada", default=False)
 
     @property
+    def folio(self):
+        return self.id
+
+    @property
     def fecha_pago_simple(self):
-        return self.hora_salida.strftime('%H:%M')
+        return self.fecha_pago.strftime('%d/%m/%Y')
 
 
 class Servicio(models.Model):
@@ -102,6 +106,10 @@ class Planilla(models.Model):
     @property
     def valor_planilla(self):
         return self.id_recorrido.valor_planilla
+
+    @property
+    def fecha_simple(self):
+        return self.fecha_planilla.strftime('%d/%m/%Y')
 
 class Despacho(models.Model):
 

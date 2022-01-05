@@ -77,6 +77,12 @@ class Auxiliar(models.Model):
         return self.nombre
 
     @property
+    def tiene_foto(self):
+        if self.foto:
+            return True
+        return False
+
+    @property
     def nombreCompleto(self):
         return '{} {}'.format(self.nombre, self.apellidos)
 

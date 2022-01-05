@@ -1,5 +1,5 @@
-let costo_bruto = $('#costo_planilla').text()
-$('#costo_planilla').text(displayCLP(costo_bruto))
+let costo_bruto = $('#precio_planilla_bruto').text()
+$('.costo_planilla').text(displayCLP(costo_bruto))
 
 div_resultado = (obj) => {
     let html = '<div id="imprimir_vale_pago"><img src="/static/img/logo_alces_grises.png" class=" mx-auto d-block" style="max-height: 80px;width: auto">'
@@ -64,3 +64,9 @@ $('#generar_pago').on('submit', function (e) {
             });
          }
     });
+
+$('#imprimir_vale_boton').on('click', function (e) {
+    $('#momento_impresion').html(`${moment().format('L')} ${moment().format('LT')}`)
+    printJS({printable: 'vale_cobro', type: 'html', targetStyles: ['*']})
+    $('#momento_impresion').empty()
+})

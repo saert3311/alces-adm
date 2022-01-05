@@ -10,6 +10,12 @@ class UltimosDespachosSerial(serializers.ModelSerializer):
         model = Despacho
         fields = ['id', 'nro_vehiculo', 'hora_salida_ss', 'recorrido_despacho', 'la_planilla']
 
+class ListarDespachosSerial(serializers.ModelSerializer):
+
+    class Meta:
+        model = Despacho
+        fields = ['id', 'nro_vehiculo', 'detalle', 'hora_salida_ss', 'vuelta', 'nombre_conductor']
+
 class DespachoImprimirSerial(serializers.ModelSerializer):
     planilla = serializers.CharField(source='control_planilla', read_only=True)
     patente = serializers.CharField(source='patente_vehiculo', read_only=True)

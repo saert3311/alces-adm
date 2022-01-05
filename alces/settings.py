@@ -168,9 +168,11 @@ CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 CONSTANCE_CONFIG = {
     'LIMITE_PLANILLAS_DEUDA': (1, 'Limite de planillas que chofer puede deber'),
-    'LIMITE_DESPACHOS_DEUDA': (3, 'Limite de despachos que choger puede deber'),
+    'LIMITE_DESPACHOS_DEUDA': (3, 'Limite de despachos que chofer puede deber'),
     'CONTROL_PLANILLA': (0, 'El siguiente numero de planilla a usar'),
     'CAMBIAR_CONTROL': (False, 'Se cambiara o no el siguiente control de planilla'),
-    'PRECIO_FERIADOS' : (False, 'Planillas a mitad de precio en feriados y domingos')
+    'PRECIO_FERIADOS' : (False, 'Planillas a mitad de precio en feriados y domingos'),
+    'FOTO_CONDUCTOR' : (False, 'Requerir fotografia del conductor para emitir despachos'),
+    'FOTO_AUXILIAR' : (False, 'Requerir fotografia del auxiliar para emitir despachos')
 }
 

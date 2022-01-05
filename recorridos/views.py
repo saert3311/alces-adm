@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
 from .forms import DespachoForm, ServicioForm, PagarPlanillaForm
-from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes, DespachoImprimirSerial
+from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes, DespachoImprimirSerial, ListarDespachosSerial
 from django.views.generic import CreateView, UpdateView, TemplateView, View
 from datetime import datetime
 
@@ -200,14 +200,19 @@ class PagarPlanilla(LoginRequiredMixin, View):
             planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
             planilla_enviar = {
                 'fecha_planilla' : planilla_pagar.fecha_planilla,
+                'fecha_simple' : planilla_pagar.fecha_simple,
                 'bus' : planilla_pagar.id_vehiculo.get_identidad,
                 'recorrido' : planilla_pagar.id_recorrido.nombre,
                 'precio': planilla_pagar.id_recorrido.valor_planilla_feriado(planilla_pagar.fecha_planilla),
                 'nro': self.kwargs['pl'],
                 'vueltas': planilla_pagar.vueltas,
-                'pagada' : planilla_pagar.id_pago_planilla,
+                'pagada' : planilla_pagar.id_pago_planilla.id,
             }
-
+            if planilla_pagar.id_pago_planilla is not None:
+                planilla_enviar['folio'] = planilla_pagar.id_pago_planilla.folio
+                planilla_enviar['forma_pago'] = planilla_pagar.id_pago_planilla.tipo_pago.nombre
+                planilla_enviar['inspector'] = planilla_pagar.id_user.nombre_completo
+            print (planilla_enviar)
         except ObjectDoesNotExist:
             messages.error(self.request, 'Planilla no encontrada')
             return redirect('recorridos:pago-planilla')
@@ -260,3 +265,31 @@ class PagarPlanilla(LoginRequiredMixin, View):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+
+class InformeDespachos(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    template_name = 'recorridos/informe-despachos.html.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Servicios'
+        context['seccion'] = 'directorio'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'listar_despachos':
+                data = []
+                los_despachos = Despacho.objects.filter(id_usuario=request.user.id, fecha_despacho=datetime.date().today())
+                despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
+                for i in despachos_serializados.data:
+                    data.append(i)
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        finally:
+            return JsonResponse(data, safe=False)
