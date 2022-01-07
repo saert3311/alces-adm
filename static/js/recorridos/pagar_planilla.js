@@ -5,12 +5,12 @@ div_resultado = (obj) => {
     let html = '<div id="imprimir_vale_pago"><img src="/static/img/logo_alces_grises.png" class=" mx-auto d-block" style="max-height: 80px;width: auto">'
     if (typeof (obj) === 'object') {
         html+= `<div class="row mb-1 pb-1 border-bottom border-dark"><div class="col"><h4 class="text-center mb-0">VALE CONTROL</h4><p class="mb-0 text-center"><strong>Inspector:</strong> ${obj['inspector']}</p><p class="text-center mb-0">${moment().format('L')} ${moment().format('LT')}</p></div></div>`
-        html+= `<div class="row"><div class="col-sm-6"><h5 class="mb-1">FOLIO</h5><p class="mb-0">${obj['nro_pago']}</p></div>`
+        html+= `<div class="row"><div class="col-sm-6"><h5 class="mb-1">FOLIO</h5><p class="mb-0">${obj['folio']}</p></div>`
         html+= `<div class="col-sm-6"><h5 class="mb-1">PLANILLA</h5><p class="mb-0">${obj['nro_planilla']}</p></div></div>`
         html+= `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1">BUS:</h5><p class="mb-0">${obj['bus']}</p></div>`
         html+= `<div class="col-sm-6"><h5 class="mb-1">FORMA PAGO:</h5><p class="mb-0">${obj['forma_pago']}</p></div></div>`
         html+= `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Detalle:</h5></div></div>`
-        html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-6 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${obj['fecha']}</p></div>`
+        html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-6 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${moment(obj['fecha']).format('L')}</p></div>`
         html+= `<div class="col-sm-6 text-center"><h5 class="mb-1 text-center">Monto:</h5><p>${displayCLP(obj['monto'])}</p></div></div>`
     }
     html += '</div>'

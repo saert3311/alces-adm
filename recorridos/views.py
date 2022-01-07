@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
-from .forms import DespachoForm, ServicioForm, PagarPlanillaForm
+from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm
 from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes, DespachoImprimirSerial, ListarDespachosSerial
 from django.views.generic import CreateView, UpdateView, TemplateView, View
 from datetime import datetime
@@ -18,7 +18,7 @@ class ListarServicios(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Servicios'
-        context['seccion'] = 'directorio'
+        context['seccion'] = 'recorridos'
         return context
 
     def post(self, request, *args, **kwargs):
@@ -51,7 +51,7 @@ class CrearServicio(LoginRequiredMixin, CreateView):
         context['titulo'] = 'Crear Servicio'
         context['subtitulo'] = 'Complete los datos para crear el nuevo servicio'
         context['boton'] = 'Crear'
-        context['seccion'] = 'directorio'
+        context['seccion'] = 'recorridos'
         return context
 
     def post(self, request, *args, **kwargs):
@@ -82,7 +82,7 @@ class ActualizarServicio(LoginRequiredMixin, UpdateView):
         context['titulo'] = 'Actualizar Servicio'
         context['subtitulo'] = 'Puede actualizar la informacion del servicio'
         context['boton'] = 'Actualizar'
-        context['seccion'] = 'directorio'
+        context['seccion'] = 'recorridos'
 
         return context
 
@@ -116,7 +116,7 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
         context['seccion1'] = 'Generar'
         context['seccion2'] = 'Ultimos Despachos'
         context['boton'] = 'Crear'
-        context['seccion'] = 'directorio'
+        context['seccion'] = 'recorridos'
         return context
 
     def post(self, request, *args, **kwargs):
@@ -190,7 +190,6 @@ class PagarPlanilla(LoginRequiredMixin, View):
     'titulo' : 'Pago Planilla',
     'subtitulo' : 'Complete los datos para registrar el pago',
     'boton' : 'Pagar',
-    'seccion' : 'directorio',
     'seccion2' : 'Vale Pago'
     }
 
@@ -206,20 +205,20 @@ class PagarPlanilla(LoginRequiredMixin, View):
                 'precio': planilla_pagar.id_recorrido.valor_planilla_feriado(planilla_pagar.fecha_planilla),
                 'nro': self.kwargs['pl'],
                 'vueltas': planilla_pagar.vueltas,
-                'pagada' : planilla_pagar.id_pago_planilla.id,
+                'pagada' : planilla_pagar.id_pago_planilla
             }
             if planilla_pagar.id_pago_planilla is not None:
                 planilla_enviar['folio'] = planilla_pagar.id_pago_planilla.folio
                 planilla_enviar['forma_pago'] = planilla_pagar.id_pago_planilla.tipo_pago.nombre
                 planilla_enviar['inspector'] = planilla_pagar.id_user.nombre_completo
-            print (planilla_enviar)
         except ObjectDoesNotExist:
             messages.error(self.request, 'Planilla no encontrada')
             return redirect('recorridos:pago-planilla')
         return render(request, 'recorridos/pagar-planilla.html', {
             'planilla': planilla_enviar,
             'form': form,
-            'texto' : self.texto_template
+            'texto' : self.texto_template,
+            'seccion' : 'recorridos'
         })
 
     def post(self, request, *args, **kwargs):
@@ -266,16 +265,18 @@ class PagarPlanilla(LoginRequiredMixin, View):
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
-class InformeDespachos(LoginRequiredMixin, TemplateView):
+class InformeDespachos(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    template_name = 'recorridos/informe-despachos.html.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Servicios'
-        context['seccion'] = 'directorio'
-        return context
+    def get(self, request, *args, **kwargs):
+        form = BuscarDespachosForm
+
+        return render(request, 'recorridos/informe-despachos.html', {
+            'form': form,
+            'titulo' : 'Infome de Despachos Emitidos',
+            'seccion' : 'recorridos'
+        })
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -283,7 +284,25 @@ class InformeDespachos(LoginRequiredMixin, TemplateView):
             accion = request.POST['accion']
             if accion == 'listar_despachos':
                 data = []
-                los_despachos = Despacho.objects.filter(id_usuario=request.user.id, fecha_despacho=datetime.date().today())
+                los_despachos = Despacho.objects.filter(fecha_despacho=datetime.now().date())
+                despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
+                for i in despachos_serializados.data:
+                    data.append(i)
+            elif accion == 'buscar':
+                data = []
+                fecha_object = datetime.strptime(request.POST['fecha'], '%d/%m/%Y').date()
+                if request.POST['bus'] == '' and request.POST['servicio'] == '':
+                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object)
+                elif request.POST['bus'] != '' and request.POST['servicio'] == '':
+                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object,
+                                                            id_vehiculo=request.POST['bus'])
+                elif request.POST['bus'] == '' and request.POST['servicio'] != '':
+                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object,
+                                                            id_recorrido=request.POST['servicio'])
+                else:
+                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object,
+                                                            id_recorrido=request.POST['servicio'],
+                                                            id_vehiculo=request.POST['bus'])
                 despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
                 for i in despachos_serializados.data:
                     data.append(i)

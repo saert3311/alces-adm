@@ -12,9 +12,17 @@ class NombreRutModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return '{} {} - {}'.format(obj.nombre, obj.apellidos, obj.rut)
 
+class BuscarDespachosForm(ModelForm):
+    id_vehiculo = forms.ModelChoiceField(queryset=Vehiculo.objects.filter(es_activo=True), required=False)
+    id_recorrido = forms.ModelChoiceField(queryset=Servicio.objects.filter(es_vigente=True), required=False)
+
+    class Meta:
+        model = Despacho
+        fields = ['id_vehiculo', 'fecha_despacho', 'id_recorrido']
+
 class DespachoForm(ModelForm):
     id_conductor = NombreRutModelChoiceField(queryset=Conductor.objects.filter(activo=True))
-    id_auxiliar = NombreRutModelChoiceField(queryset=Auxiliar.objects.filter(activo=True))
+    id_auxiliar = NombreRutModelChoiceField(queryset=Auxiliar.objects.filter(activo=True), required=False)
     id_vehiculo = forms.ModelChoiceField(queryset=Vehiculo.objects.filter(es_activo=True))
     id_recorrido = forms.ModelChoiceField(queryset=Servicio.objects.filter(es_vigente=True))
 
@@ -49,13 +57,14 @@ class DespachoForm(ModelForm):
                     'hora_salida' : despacho_generado.hora_salida_ss,
                     'conductor' : despacho_generado.id_conductor.nombreCompleto,
                     'rut_conductor': despacho_generado.id_conductor.rut,
-                    'auxiliar': despacho_generado.id_auxiliar.nombreCompleto,
-                    'rut_auxiliar': despacho_generado.id_auxiliar.rut,
                     'inspector': self.request.user.nombre_completo,
                     'ruta': despacho_generado.id_recorrido.nombre,
                     'variante': despacho_generado.get_variante_display(),
                     'vuelta': despacho_generado.vuelta
                 }
+                if despacho_generado.id_auxiliar is not None:
+                    data['despacho']['auxiliar'] = despacho_generado.id_auxiliar.nombreCompleto
+                    data['despacho'] ['rut_auxiliar'] = despacho_generado.id_auxiliar.rut,
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -74,10 +83,11 @@ class DespachoForm(ModelForm):
             self._errors['Conductor'] = self.error_class(['tiene licencia vencida'])
         if not cleaned_data['id_conductor'].activo:
             self._errors['Conductor'] = self.error_class(['no se encuentra activo'])
-        if not cleaned_data['id_auxiliar'].tiene_foto and config.FOTO_AUXILIAR is True:
-            self._errors['Auxiliar'] = self.error_class(['no tiene fotografia'])
-        if not cleaned_data['id_auxiliar'].activo:
-            self._errors['Auxiliar'] = self.error_class(['no se encuentra activo'])
+        if cleaned_data['id_auxiliar']:
+            if not cleaned_data['id_auxiliar'].tiene_foto and config.FOTO_AUXILIAR is True:
+                self._errors['Auxiliar'] = self.error_class(['no tiene fotografia'])
+            if not cleaned_data['id_auxiliar'].activo:
+                self._errors['Auxiliar'] = self.error_class(['no se encuentra activo'])
         if cleaned_data['variante'] == 1 and self.request.user.id_sucursal_id != Sucursal.objects.get(nombre__icontains='collao').id:
             self._errors['Vehiculo'] = self.error_class(['solo puede generar despachos de vuelta'])
         if Planilla.objects.filter(id_vehiculo=cleaned_data['id_vehiculo']).exclude(fecha_planilla=datetime.date.today()).filter(id_pago_planilla__isnull=True).count() >= config.LIMITE_PLANILLAS_DEUDA:

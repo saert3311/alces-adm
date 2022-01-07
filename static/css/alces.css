@@ -22,3 +22,6 @@ td.botones button {
     width: 80mm;
   }
 }
+.card-filtros .form-group{
+    margin-bottom: 0
+}

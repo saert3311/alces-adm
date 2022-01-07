@@ -5,6 +5,7 @@ app_name = 'recorridos'
 
 urlpatterns = [
     path('asignarDespacho/', AsignarDespacho.as_view(), name='asignar-despacho'),
+    path('informeDespachos/', InformeDespachos.as_view(), name='informe-despachos'),
     path('pagoPlanilla/', PagoPlanilla.as_view(), name='pago-planilla'),
     path('pagoPlanilla/pagar/<int:pl>/', PagarPlanilla.as_view(), name='pagar-planilla'),
     path('administrarServicios/', ListarServicios.as_view(), name='listar-servicios'),

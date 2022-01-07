@@ -43,9 +43,12 @@ class Pago_planilla(models.Model):
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Recibido por")
     pagada = models.BooleanField(verbose_name="Planilla Pagada", default=False)
 
+    def __str__(self):
+        return str(self.id)
+
     @property
     def folio(self):
-        return self.id
+        return str(self.id)
 
     @property
     def fecha_pago_simple(self):
@@ -118,7 +121,7 @@ class Despacho(models.Model):
         (2, 'Vuelta')
     )
     id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name='Conductor')
-    id_auxiliar = models.ForeignKey(Auxiliar, on_delete=models.PROTECT, verbose_name='Auxiliar')
+    id_auxiliar = models.ForeignKey(Auxiliar, on_delete=models.PROTECT, verbose_name='Auxiliar', blank=True, null=True)
     id_planilla = models.ForeignKey(Planilla, on_delete=models.PROTECT, verbose_name='Planilla', blank=True, null=True)
     variante = models.SmallIntegerField(choices=VARIANTE, default=1, verbose_name='Variante')
     hora_asignacion = models.DateTimeField(auto_now_add=True, verbose_name='Hora Asignación')

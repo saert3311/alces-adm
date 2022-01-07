@@ -1,4 +1,28 @@
-let cargar_despachos = (fecha = moment().format('L')) => {
+'use strict'
+
+let tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+let hoy = new Date();
+hoy.setDate(hoy.getDate());
+
+$('#fecha_despacho').datetimepicker({
+    locale: 'es',
+    format: 'DD/MM/YYYY',
+    userCurrent: true,
+    date: ($("#fecha_despacho").attr("value"), 'DD/MM/YYYY'),
+    maxDate: tomorrow
+});
+document.querySelector("#id_fecha_despacho").value = `${hoy.getDate()}/${hoy.getMonth()+1}/${hoy.getFullYear()}`;
+
+$(function (){
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
+})
+
+
+let cargar_despachos = (accion = 'listar_despachos', fecha = moment().format('L'), bus='', servicio='') => {
     $('#listado_despachos').DataTable({
                 responsive: true,
                 autoWidth: false,
@@ -8,48 +32,46 @@ let cargar_despachos = (fecha = moment().format('L')) => {
                     url: window.location.pathname,
                     type: 'POST',
                     data: {
-                        'accion': 'listar',
-                        'fecha' : fecha
+                        'accion': accion,
+                        'fecha' : fecha,
+                        'bus' : bus,
+                        'servicio' : servicio
                     },
                    dataSrc: '',
                 },
                 columns: [
-                    {'data': 'nombre'},
-                    {'data': 'valor_planilla'},
-                    {'data': 'distancia_kms'},
-                    {'data': 'es_vigente'},
+                    {'data': 'id'},
+                    {'data': 'nro_vehiculo'},
+                    {'data': 'detalle'},
+                    {'data': 'hora_salida_ss'},
+                    {'data': 'vuelta'},
+                    {'data': 'nombre_conductor'},
                     {'data': 'id'}
                 ],
                 language: {
                     url: '/static/plugins/datatables/es.json'
                 },
                 'columnDefs': [{
-                    'targets': [-2],
-                    'orderable': false,
-                    render: function (data, type, row){
-                        icono = row.es_vigente == true ? 'check' : 'ban'
-                        let activo = `<i class="fas fa-${icono}"></i>`
-                        return activo
-                    }
-                },{
                     'targets': [-1],
                     'orderable': false,
                     render: function (data, type, row){
                         let botones = `<a href="/administrarServicios/actualizar/${row.id}">
-                                            <button type="button" class="btn btn-primary"><i class="far fa-edit"></i>
+                                            <button type="button" class="btn btn-sm btn-primary"><i class="far fa-edit"></i>
                                             </button>
                                         </a>`
                         return botones
                     }
                 },{
-                    className: "botones", "targets": [ -1, -2 ]
+                    className: "botones", "targets": [ -1 ]
                 },{
-                    'targets': [1],
-                    'orderable': false,
-                    render: function (data, type, row){
-                        return displayCLP(row.valor_planilla)
-                        }
-                    }
+                    className: "text-center", "targets": [ 0, 1, 2, 3, 4, 5]
+                }
                 ],
             });
 }
+cargar_despachos();
+$('#busqueda_despachos').on('submit', function (e) {
+    e.preventDefault();
+    let [fecha, bus, servicio] = $('#busqueda_despachos').serializeArray()
+    cargar_despachos('buscar', fecha.value, bus.value, servicio.value)
+});

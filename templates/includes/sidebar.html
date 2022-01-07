@@ -32,7 +32,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:asignar-despacho' %}"
-                               class="nav-link {% if request.path == '/recorridos/asignar-despacho/' %}active{% endif %}">
+                               class="nav-link {% if request.path == '/asignarDespacho/' %}active{% endif %}">
                                 <i class="fas fa-play nav-icon"></i>
                                 <p>Asignar Despachos</p>
                             </a>
@@ -40,8 +40,8 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'cuenta:usuarios' %}"
-                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                            <a href="{% url 'recorridos:informe-despachos' %}"
+                               class="nav-link {% if request.path == '/informeDespachos/' %}active{% endif %}">
                                 <i class="far fa-calendar-alt nav-icon"></i>
                                 <p>Informe Despachos</p>
                             </a>
@@ -50,7 +50,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:pago-planilla' %}"
-                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                               class="nav-link {% if request.path == '/pagoPlanilla/' %}active{% endif %}">
                                 <i class="fas fa-money-bill nav-icon"></i>
                                 <p>Pago Planilla</p>
                             </a>
@@ -77,7 +77,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:listar-servicios' %}"
-                               class="nav-link {% if request.path == '/recorridos/administrarServicios/' %}active{% endif %}">
+                               class="nav-link {% if request.path == '/administrarServicios/' %}active{% endif %}">
                                 <i class="fas fa-business-time nav-icon"></i>
                                 <p>Administrar Servicios</p>
                             </a>

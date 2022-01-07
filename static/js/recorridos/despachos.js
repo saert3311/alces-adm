@@ -35,10 +35,12 @@ let div_despacho = (obj) => {
         html+= `<div class="col-sm-6"><h5 class="mb-1">Patente:</h5><p class="mb-0">${obj['patente']}</p></div></div>`
         html+= `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1">Conductor:</h5><p class="mb-0">${obj['conductor']}</p></div>`
         html+= `<div class="col-sm-6"><h5 class="mb-1">RUT:</h5><p class="mb-0">${obj['rut_conductor']}</p></div></div>`
-        html+= `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1" >Auxiliar:</h5><p class="mb-0">${obj['auxiliar']}</p></div>`
-        html+= `<div class="col-sm-6"><h5 class="mb-1">RUT:</h5><p class="mb-0">${obj['rut_auxiliar']}</p></div></div>`
+        if (obj['rut_auxiliar'] != undefined) {
+            html += `<div class="row mb-0"><div class="col-sm-6"><h5 class="mb-1" >Auxiliar:</h5><p class="mb-0">${obj['auxiliar']}</p></div>`
+            html += `<div class="col-sm-6"><h5 class="mb-1">RUT:</h5><p class="mb-0">${obj['rut_auxiliar']}</p></div></div>`
+        }
         html+= `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Ruta:</h5><p class="mb-0">${obj['ruta']} - ${obj['variante']}</p></div></div>`
-        html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-5 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${obj['fecha']}</p></div>`
+        html+= `<div class="row mb-4 border-bottom border-dark"><div class="col-sm-5 text-center"><h5 class="mb-1">Fecha:</h5><p class="mb-0">${moment(obj['fecha']).format('L')}</p></div>`
         html+= `<div class="col-sm-3 text-center"><h5 class="mb-1 text-center">Vuelta:</h5><p>${obj['vuelta']}</p></div>`
         html+= `<div class="col-sm-4 text-center"><h5 class="mb-1 text-center">Salida:</h5><p>${obj['hora_salida']}</p></div></div>`
     }
