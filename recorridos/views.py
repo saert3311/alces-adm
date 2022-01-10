@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
 from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm
@@ -290,21 +291,11 @@ class InformeDespachos(LoginRequiredMixin, View):
                     data.append(i)
             elif accion == 'buscar':
                 data = []
-                fecha_object = datetime.strptime(request.POST['fecha'], '%d/%m/%Y').date()
-                if request.POST['bus'] == '' and request.POST['servicio'] == '':
-                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object)
-                elif request.POST['bus'] != '' and request.POST['servicio'] == '':
-                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object,
-                                                            id_vehiculo=request.POST['bus'])
-                elif request.POST['bus'] == '' and request.POST['servicio'] != '':
-                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object,
-                                                            id_recorrido=request.POST['servicio'])
-                else:
-                    los_despachos = Despacho.objects.filter(fecha_despacho=fecha_object,
-                                                            id_recorrido=request.POST['servicio'],
-                                                            id_vehiculo=request.POST['bus'])
-                despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
-                for i in despachos_serializados.data:
+                busqueda = {k: v for k, v in request.POST.items() if v if k != 'accion'}
+                busqueda['fecha_despacho'] = datetime.strptime(busqueda['fecha_despacho'], '%d/%m/%Y').date()
+                los_despachos = Despacho.objects.filter(**busqueda)
+                los_despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
+                for i in los_despachos_serializados.data:
                     data.append(i)
             else:
                 data['error'] = 'Metodo no definido'

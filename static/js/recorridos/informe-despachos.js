@@ -22,7 +22,7 @@ $(function (){
 })
 
 
-let cargar_despachos = (accion = 'listar_despachos', fecha = moment().format('L'), bus='', servicio='') => {
+let cargar_despachos = (accion = 'listar_despachos', fecha = moment().format('L'), bus='', servicio='', inspector = '') => {
     $('#listado_despachos').DataTable({
                 responsive: true,
                 autoWidth: false,
@@ -33,9 +33,10 @@ let cargar_despachos = (accion = 'listar_despachos', fecha = moment().format('L'
                     type: 'POST',
                     data: {
                         'accion': accion,
-                        'fecha' : fecha,
-                        'bus' : bus,
-                        'servicio' : servicio
+                        'fecha_despacho' : fecha,
+                        'id_vehiculo' : bus,
+                        'id_recorrido' : servicio,
+                        'id_usuario' : inspector
                     },
                    dataSrc: '',
                 },
@@ -46,25 +47,13 @@ let cargar_despachos = (accion = 'listar_despachos', fecha = moment().format('L'
                     {'data': 'hora_salida_ss'},
                     {'data': 'vuelta'},
                     {'data': 'nombre_conductor'},
-                    {'data': 'id'}
+                    {'data': 'nombre_inspector'}
                 ],
                 language: {
                     url: '/static/plugins/datatables/es.json'
                 },
                 'columnDefs': [{
-                    'targets': [-1],
-                    'orderable': false,
-                    render: function (data, type, row){
-                        let botones = `<a href="/administrarServicios/actualizar/${row.id}">
-                                            <button type="button" class="btn btn-sm btn-primary"><i class="far fa-edit"></i>
-                                            </button>
-                                        </a>`
-                        return botones
-                    }
-                },{
-                    className: "botones", "targets": [ -1 ]
-                },{
-                    className: "text-center", "targets": [ 0, 1, 2, 3, 4, 5]
+                    className: "text-center", "targets": ['_all']
                 }
                 ],
             });
@@ -72,6 +61,6 @@ let cargar_despachos = (accion = 'listar_despachos', fecha = moment().format('L'
 cargar_despachos();
 $('#busqueda_despachos').on('submit', function (e) {
     e.preventDefault();
-    let [fecha, bus, servicio] = $('#busqueda_despachos').serializeArray()
-    cargar_despachos('buscar', fecha.value, bus.value, servicio.value)
+    let [fecha, bus, servicio, inspector] = $('#busqueda_despachos').serializeArray()
+    cargar_despachos('buscar', fecha.value, bus.value, servicio.value, inspector.value)
 });

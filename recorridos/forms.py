@@ -15,10 +15,11 @@ class NombreRutModelChoiceField(forms.ModelChoiceField):
 class BuscarDespachosForm(ModelForm):
     id_vehiculo = forms.ModelChoiceField(queryset=Vehiculo.objects.filter(es_activo=True), required=False)
     id_recorrido = forms.ModelChoiceField(queryset=Servicio.objects.filter(es_vigente=True), required=False)
+    id_usuario = forms.ModelChoiceField(queryset=User.objects.filter(user_type=3, is_active=True), required=False)
 
     class Meta:
         model = Despacho
-        fields = ['id_vehiculo', 'fecha_despacho', 'id_recorrido']
+        fields = ['id_vehiculo', 'fecha_despacho', 'id_recorrido', 'id_usuario']
 
 class DespachoForm(ModelForm):
     id_conductor = NombreRutModelChoiceField(queryset=Conductor.objects.filter(activo=True))
