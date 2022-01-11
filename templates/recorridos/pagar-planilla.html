@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/print.js/print.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/jquery-confirm/jquery-confirm.min.css' %}">
 {% endblock stylesheets %}
 {% block acciones %}
     <li class="nav-item d-none d-sm-inline-block">
@@ -52,7 +53,7 @@
                                 <div class="row">
                                     <div class="col-sm-2">
                                         <h5 class="font-weight-bold">Nro</h5>
-                                        <p>{{ planilla.nro }}</p>
+                                        <p id="nro_pla">{{ planilla.nro }}</p>
                                     </div>
                                     <div class="col-sm-5">
                                         <h5 class="font-weight-bold">Fecha</h5>
@@ -82,7 +83,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                                 <label for="fecha_despacho">Forma de pago:</label>
-                                                {{ form.tipo_pago|add_class:'form-control' }}
+                                                {{ form.tipo_pago|add_class:'form-control pla_modo_pago' }}
                                             </div>
                                     </div>
                                 </div>
@@ -177,6 +178,7 @@
     <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
     <script src="{% static 'plugins/print.js/print.min.js' %}"></script>
+    <script src="{% static 'plugins/jquery-confirm/jquery-confirm.min.js' %}"></script>
     <script src="{% static 'js/recorridos/pagar_planilla.js' %}"></script>
 {% endblock javascripts %}
 

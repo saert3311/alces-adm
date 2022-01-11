@@ -37,33 +37,49 @@ function resultado_pago(obj) {
 $('#generar_pago').on('submit', function (e) {
     e.preventDefault();
     if ($('#pago_footer button.disabled').length < 1) {
-            $('#btn-pago').addClass('disabled')
-            let parameters = new FormData(this);
-            $.ajax({
-                url: window.location.pathname,
-                type: 'POST',
-                data: parameters,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                beforeSend : function () {
-                    $('#loader_vale_cobro').removeClass('d-none')
-                }
-            }).done(function (data) {
-                if (!data.hasOwnProperty('error')) {
-                    resultado_pago(data)
-                }else{
-                    message_error(data.error);
+        $('#btn-pago').addClass('disabled')
+        $.confirm({
+            title: 'Procesar Pago',
+            content: `Desea procesar planilla Nro ${$('#nro_pla').text()}, por un monto de ${$('.costo_planilla').text()}, en ${$('.pla_modo_pago option:selected').text()}?`,
+            type: 'blue',
+            buttons: {
+                procesar: {
+                    btnClass: 'btn-blue',
+                    action: function (){
+                    let parameters = new FormData(this);
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: parameters,
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        beforeSend : function () {
+                            $('#loader_vale_cobro').removeClass('d-none')
+                        }
+                    }).done(function (data) {
+                        if (!data.hasOwnProperty('error')) {
+                            resultado_pago(data)
+                        }else{
+                            message_error(data.error);
+                            $('#btn-pago').removeClass('disabled')
+                            $('#loader_vale_cobro').addClass('d-none')
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        $.alert(textStatus + ': ' + errorThrown);
+                        $('#btn-pago').removeClass('disabled')
+                        $('#loader_vale_cobro').addClass('d-none')
+                    });
+                }},
+                cancelar: function () {
                     $('#btn-pago').removeClass('disabled')
                     $('#loader_vale_cobro').addClass('d-none')
                 }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                $.alert(textStatus + ': ' + errorThrown);
-                $('#btn-pago').removeClass('disabled')
-                $('#loader_vale_cobro').addClass('d-none')
-            });
-         }
-    });
+            }
+        })
+
+    }
+});
 
 $('#imprimir_vale_boton').on('click', function (e) {
     $('#momento_impresion').html(`${moment().format('L')} ${moment().format('LT')}`)
