@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
 from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm
@@ -242,12 +241,11 @@ class PagarPlanilla(LoginRequiredMixin, View):
                 if 'error' in pago_procesado:
                     data['error'] = pago_procesado['error']
                     return JsonResponse(data, safe=False)
-                print(pago_procesado)
                 planilla_pagar.id_pago_planilla = Pago_planilla.objects.get(id=pago_procesado['id_pago_planilla'])
                 planilla_pagar.save()
                 data['pago_planilla'] = {
                     'nro_planilla' : planilla_pagar.nro_control,
-                    'nro_pago' : pago_procesado['id_pago_planilla'],
+                    'folio' : pago_procesado['id_pago_planilla'],
                     'monto' : pago_procesado['valor_pagado'],
                     'bus' : planilla_pagar.id_vehiculo.get_identidad,
                     'fecha' : pago_procesado['fecha_pago'],
@@ -256,10 +254,6 @@ class PagarPlanilla(LoginRequiredMixin, View):
                     'ruta' : planilla_pagar.id_recorrido.nombre,
                     'fecha_planilla' : planilla_pagar.fecha_planilla
                 }
-                if not 'error' in pago_procesado:
-                    messages.success(request, 'Pago Realizado')
-                else:
-                    data['error'] = pago_procesado.error
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:

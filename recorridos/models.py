@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from constance import config
 from buses.models import Vehiculo
+from contabilidad.models import Rendicion_cuentas
 from cuenta.models import User
 from conductores.models import Conductor, Auxiliar
 from app.models import Sucursal
@@ -42,6 +43,7 @@ class Pago_planilla(models.Model):
     tipo_pago = models.ForeignKey(Tipo_pago, on_delete=models.PROTECT)
     id_user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Recibido por")
     pagada = models.BooleanField(verbose_name="Planilla Pagada", default=False)
+    id_rendicion_cuentas = models.ForeignKey(Rendicion_cuentas, on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return str(self.id)

@@ -25,6 +25,7 @@ function resultado_pago(obj) {
         html = '<p>' + obj + '</p>';
     }
     document.getElementById('vale_cobro').innerHTML = html;
+    sessionStorage.setItem('resultado', 'Pago Procesado');
     $('#loader_vale_cobro').addClass('d-none')
     $('#card_vale_pago').removeClass('d-none')
     printJS({
@@ -46,7 +47,7 @@ $('#generar_pago').on('submit', function (e) {
                 procesar: {
                     btnClass: 'btn-blue',
                     action: function (){
-                    let parameters = new FormData(this);
+                    let parameters = new FormData(document.getElementById('generar_pago'));
                     $.ajax({
                         url: window.location.pathname,
                         type: 'POST',
@@ -86,3 +87,10 @@ $('#imprimir_vale_boton').on('click', function (e) {
     printJS({printable: 'vale_cobro', type: 'html', targetStyles: ['*']})
     $('#momento_impresion').empty()
 })
+
+window.onafterprint = (event) => {
+    if (sessionStorage.getItem("resultado")){
+        toastr.success(sessionStorage.getItem("resultado"))
+        sessionStorage.removeItem('resultado')
+    }
+}

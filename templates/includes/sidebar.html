@@ -84,6 +84,22 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item {% if seccion == 'contabilidad' %}menu-open{% endif %}">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <p>Contabilidad<i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'contabilidad:rendicion-cuentas' %}"
+                               class="nav-link {% if request.path == '/rendicionCuentas/' %}active{% endif %}">
+                                <i class="fas fa-receipt"></i>
+                                <p>Rendicion de Cuentas</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item {% if seccion == 'directorio' %}menu-open{% endif %}">
                     <a href="#" class="nav-link">
                         <i class="far fa-list-alt"></i>
