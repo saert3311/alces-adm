@@ -47,6 +47,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-5">
+                                <h4>Planillas</h4>
                                     <table class="table table-striped">
                                         <thead>
                                         <tr>
@@ -79,56 +80,70 @@
                                             <div class="col-sm-4">
                                                 <div class="form-group">
                                                     <label>20.000</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="veintemil">
+                                                    <input type="number" name="20000" class="form-control" placeholder="0" id="veintemil" tabindex="1">
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>2.000</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="dosmil">
+                                                    <input type="number" name="2000" class="form-control" placeholder="0" id="dosmil" tabindex="4">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>50</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="cincuenta">
+                                                    <label>100</label>
+                                                    <input type="number" name="100" class="form-control" placeholder="0" id="cien" tabindex="7">
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="form-group">
                                                     <label>10.000</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="diezmil">
+                                                    <input type="number" name="10000" class="form-control" placeholder="0" id="diezmil" tabindex="2">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>1.000</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="mil">
+                                                    <input type="number" name="1000" class="form-control" placeholder="0" id="mil" tabindex="5">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>2.000</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="dosmil">
+                                                    <label>50</label>
+                                                    <input type="number" name="50" class="form-control" placeholder="0" id="cincuenta" tabindex="8">
                                                 </div>
 
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="form-group">
                                                     <label>5.000</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="cincomil">
+                                                    <input type="number" name="5000" class="form-control" placeholder="0" id="cincomil" tabindex="3">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>500</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="quinientos">
+                                                    <input type="number" name="500" class="form-control" placeholder="0" id="quinientos" tabindex="6">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>10</label>
-                                                    <input type="number" class="form-control" placeholder="0" id="diez">
+                                                    <input type="number" name="10" class="form-control" placeholder="0" id="diez" tabindex="9">
                                                 </div>
                                             </div>
                                         </div>
+                                        <h5 class="mt-1 mb-2">Consignación con diferencia</h5>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                          <input id="existe_diferencia" type="checkbox" name="existe_diferencia">
+                                                        </span>
+                                                    </div>
+                                                    <input id="monto_diferencia_show" type="text" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input id="monto_diferencia" type="hidden" name="diferencia">
+                                        <input type="hidden" name="firma" value="{{ firma }}">
                                     </form>
                                         </div>
                                         <div class="card-footer text-bold">
-                                            TOTAL <span id="total_arqueo">0</span>
+                                            TOTAL: <span id="total_arqueo">0</span>
                                         </div>
                                     </div>
-
-
+                                        <button id="realizar_consignacion" type="button" class="btn mt-3 btn-block btn-success disabled">Realizar Consignación</button>
                                 </div>
                             </div>
                         </div>

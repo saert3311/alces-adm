@@ -40,7 +40,7 @@ function displayFecha(fecha){
     fecha_obj = new Date(fecha)
     return `${fecha_obj.getDate()}/${fecha_obj.getMonth()}/${fecha_obj.getFullYear()}`
 }
-function message_error(obj) {
+function message_error(obj, reload=false) {
     var html = '';
     if (typeof (obj) === 'object') {
         html = '<ul>';
@@ -51,19 +51,40 @@ function message_error(obj) {
     } else {
         html = '<p>' + obj + '</p>';
     }
-    $.confirm({
-        title: 'Error',
-        icon: 'fas fa-exclamation-triangle',
-        content: html,
-        type: 'red',
-        typeAnimated: true,
-         buttons: {
-             tryAgain: {
-                 text: 'Ok',
-                 btnClass: 'btn-red',
-                 action: function () {
-                 }
-             },
-         }
-    });
+    if (reload == false) {
+        $.confirm({
+            title: 'Error',
+            icon: 'fas fa-exclamation-triangle',
+            content: html,
+            type: 'red',
+            typeAnimated: true,
+            buttons: {
+                tryAgain: {
+                    text: 'Ok',
+                    btnClass: 'btn-red',
+                    action: function () {
+                    }
+                },
+            }
+        });
+    }else{
+        $.confirm({
+            title: 'Error',
+            icon: 'fas fa-exclamation-triangle',
+            content: html,
+            type: 'red',
+            typeAnimated: true,
+            buttons: {
+                tryAgain: {
+                    text: 'Ok',
+                    btnClass: 'btn-red',
+                    action: function () {
+                    }
+                },
+            },
+            onDestroy: function () {
+                location.reload()
+            }
+        });
+    }
 }
