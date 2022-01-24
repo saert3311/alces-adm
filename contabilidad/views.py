@@ -40,12 +40,13 @@ class RendicionCuentas(LoginRequiredMixin, View):
             accion = request.POST['accion']
             if accion == 'procesar':
                 planillas_procesar = Pago_planilla.objects.filter(id_rendicion_cuentas__isnull=True,
-                                                                  id_user=request.user.id).values('fecha_pago__date').annotate(total=Sum('valor'))
+                                                                  id_user=request.user.id)
                 if planillas_procesar:
+                    planillas_validar = planillas_procesar.values('fecha_pago__date').annotate(total=Sum('valor'))
                     datos_validar = [{
                         'fecha': p['fecha_pago__date'].strftime('%d-%m-%Y'),
                         'monto': p['total']
-                    } for p in planillas_procesar]
+                    } for p in planillas_validar]
                     if request.POST['firma'] == self.signer.sign_object(datos_validar):
                         #Verificar y guardar
                         rendicion_salvar = {}
@@ -61,14 +62,17 @@ class RendicionCuentas(LoginRequiredMixin, View):
                         for key, value in arqueo_salvar.items():
                             verificar_arqueo += int(key)*int(value)
                         if rendicion_salvar['arqueo'] != verificar_arqueo:
-                            raise Exception('Arqueo Invalido')
-                        print(arqueo_salvar)
-                        print(rendicion_salvar)
-                        data['yay'] = 'yay'
+                            raise Exception('Arqueo Invalido, intente nuevamente')
                         rendicion = Rendicion_cuentas(id_usuario=request.user.id, entregado=rendicion_salvar['total_arqueo'], pendiente=rendicion_salvar['diferencia'], arqueo=arqueo_salvar)
                         rendicion.save()
                         planillas_procesar.update(id_rendicion_cuentas=rendicion)
-                        #finaliza la guardacion
+                        data = {
+                            'inspector': rendicion.id_usuario.nombre_completo,
+                            'fecha': rendicion.fecha,
+                            'total': rendicion.entregado,
+                            'pendiente': rendicion.pendiente,
+                            'arqueo': rendicion.arqueo
+                        }
                     else:
                         data['error'] = 'Se debe actualizar la pagina para realizar rendicion de cuenta'
                         data['recargar'] = True
