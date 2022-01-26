@@ -18,6 +18,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+handler404 = 'app.views.handler404'
+handler403 = 'app.views.handler403'
+handler500 = 'app.views.handler500'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cuenta.urls', namespace='cuenta')),

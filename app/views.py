@@ -6,10 +6,10 @@ from django.views.generic import ListView, CreateView, UpdateView
 from .serializers import ListarSucursalesSerializado
 from .forms import SucursalForm
 from .models import Comuna, Sucursal
-from recorridos.models import Despacho
+from recorridos.models import Despacho, Planilla, Pago_planilla
 from django.contrib import messages
 from datetime import date
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 # Create your views here.
 from django.views import View
@@ -21,17 +21,24 @@ class Inicio(LoginRequiredMixin, View):
     def get(self, request):
         despachos_emitidos = Despacho.objects.filter(fecha_despacho=date.today()).count()
         maquinas_activas = Despacho.objects.filter(fecha_despacho=date.today()).values('id_vehiculo').distinct().count()
+        planillas_emitidas = Planilla.objects.filter(fecha_planilla=date.today()).count()
+        recaudacion = Pago_planilla.objects.filter(fecha_pago__date=date.today()).aggregate(Sum('valor'))
         return render(request, 'inicio.html', {
             'despachos_emitidos' : despachos_emitidos,
-            'maquinas_activas' : maquinas_activas
+            'maquinas_activas' : maquinas_activas,
+            'planillas_emitidas': planillas_emitidas,
+            'recaudacion': "$ {:,.0f}".format(recaudacion['valor__sum'] if recaudacion['valor__sum'] != None else 0).replace(',', '.')
         })
 
 
 def handler404(request, exception):
-    return render(request, 'page-404.html', status=404)
+    return render(request, 'errors/page-404.html', status=404)
 
 def handler500(request):
     return render(request, 'page-500.html', status=500)
+
+def handler403(request, exception):
+    return render(request, 'page-403.html', status=403)
 
 def GetComunas(request):
     id_region = request.GET.get('region')

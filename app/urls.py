@@ -7,8 +7,6 @@ from . import views
 from .views import *
 
 app_name = 'app'
-handler404 = views.handler404
-handler500 = views.handler500
 
 urlpatterns = [
     # Pagina Inicio

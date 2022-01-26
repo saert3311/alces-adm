@@ -13,7 +13,7 @@ class CrearUser(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields + ('user_type', 'first_name', 'last_name', 'email', 'id_sucursal')
+        fields = UserCreationForm.Meta.fields + ('user_type', 'first_name', 'last_name', 'email', 'id_sucursal', 'groups')
 
 
 class EditarUsuario(ModelForm):
@@ -22,8 +22,8 @@ class EditarUsuario(ModelForm):
     }
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'username', 'password', 'user_type', 'is_active', 'id_sucursal')
-        exclude = ['groups', 'user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_staff']
+        fields = ('first_name', 'last_name', 'email', 'username', 'password', 'user_type', 'is_active', 'id_sucursal', 'groups')
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_staff']
 
     def save(self, commit=True):
         data = {}

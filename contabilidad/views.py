@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.datetime_safe import strftime
 from django.views import View
 from django.contrib import messages
@@ -25,7 +25,7 @@ class RendicionCuentas(LoginRequiredMixin, View):
             } for p in planillas_procesar]
         else:
             messages.error(request, 'No existen ingresos a declarar')
-            return render(request, 'inicio.html')
+            return redirect('app:inicio')
 
         return render(request, 'contabilidad/rendicion-cuentas.html', {
             'seccion' : 'contabilidad',
@@ -56,22 +56,27 @@ class RendicionCuentas(LoginRequiredMixin, View):
                             if key == 'accion' or key == 'firma':
                                 continue
                             if key.isdigit():
-                                arqueo_salvar[key] = value if value != '' else 0
+                                arqueo_salvar[key] = int(value) if value != '' else 0
                                 continue
                             rendicion_salvar[key] = value
                         for key, value in arqueo_salvar.items():
                             verificar_arqueo += int(key)*int(value)
-                        if rendicion_salvar['arqueo'] != verificar_arqueo:
+                        if int(rendicion_salvar['total_arqueo']) != verificar_arqueo:
                             raise Exception('Arqueo Invalido, intente nuevamente')
-                        rendicion = Rendicion_cuentas(id_usuario=request.user.id, entregado=rendicion_salvar['total_arqueo'], pendiente=rendicion_salvar['diferencia'], arqueo=arqueo_salvar)
+
+                        rendicion = Rendicion_cuentas(id_usuario=request.user,
+                                                      entregado=rendicion_salvar['total_arqueo'],
+                                                      pendiente=rendicion_salvar['diferencia'],
+                                                      arqueo=arqueo_salvar)
                         rendicion.save()
                         planillas_procesar.update(id_rendicion_cuentas=rendicion)
-                        data = {
+                        data['rendicion'] = {
                             'inspector': rendicion.id_usuario.nombre_completo,
-                            'fecha': rendicion.fecha,
+                            'fecha': rendicion.fecha_simple,
                             'total': rendicion.entregado,
                             'pendiente': rendicion.pendiente,
-                            'arqueo': rendicion.arqueo
+                            'arqueo': rendicion.arqueo,
+                            'folio': rendicion.id
                         }
                     else:
                         data['error'] = 'Se debe actualizar la pagina para realizar rendicion de cuenta'

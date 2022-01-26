@@ -72,10 +72,58 @@ $('#arqueo #existe_diferencia').change(function (e){
     }
 })
 
+let div_rendicion = (obj) => {
+        let html = `<div class="row mb-2 pb-2 border-bottom border-dark"><div class="col"><h4 class="text-center mb-0">RENDICION CUENTAS</h4><p class="mb-0 text-center"><strong>Inspector:</strong> ${obj['inspector']}</p><p class="text-center mb-0">${moment().format('L')} ${moment().format('LT')}</p></div></div>`
+        html += `<div class="row mx-1 text-center"><div class="col-sm-6"><h5 class="mb-1">Fecha</h5><p class="mb-0">${obj['fecha']}</p></div>`
+        html += `<div class="col-sm-6"><h5 class="mb-1">Folio</h5><p class="mb-0">${obj['folio']}</p></div></div>`
+        html += `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Dinero recibido</h5><h4 class="mb-0">${displayCLP(obj['total'])}</h4></div></div>`
+        html += `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Dinero Pendiente</h5><h4 class="mb-0">${displayCLP(obj['pendiente'])}</h4></div></div>`
+        html += `<div class="row mb-0 text-center"><div class="col"><h5 class="mb-1">Arqueo Dinero</h5></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">20.000</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['20000']*20000))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">10.000</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['10000']*10000))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">5.000</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['5000']*5000))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">2.000</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['2000']*2000))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">1.000</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['1000']*1000))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">500</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['500']*500))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">100</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['100']*100))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">50</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['50']*50))}</p></div></div>`
+        html += `<div class="row mx-3 text-center border"><div class="col-sm-6"><h5 class="mb-1">10</h5></div>`
+        html += `<div class="col-sm-6"><p class="mb-0">${displayCLP((obj['arqueo']['10']*10))}</p></div></div>`
+        html += `<div class="row mx-3 mb-0 pb-5 border-bottom border-dark"><div class="col"><h5 class="mb-1">${obj['inspector']}<br>Firma:</h5></div></div>`
+        html += '</div>'
+    return html
+}
+
+function resultado_rendicion(obj) {
+    let html = '';
+    if (typeof (obj) === 'object' && obj.hasOwnProperty('rendicion')) {
+        html = div_rendicion(obj['rendicion']);
+    } else {
+        html = '<p>' + obj + '</p>';
+    }
+    $('#imprimir').append(html)
+            printJS({
+            printable: 'imprimir',
+            type: 'html',
+            targetStyles: ['*']
+        })
+}
+
+
+
 $('#realizar_consignacion').on('click', function (e) {
     if (!$(this).hasClass('disabled')){
         $(this).addClass('disabled')
         $('#arqueo input').attr('readonly', 'readonly')
+        $('#existe_diferencia').attr('disabled', 'disabled')
         $.confirm({
             title: 'Procesar',
             content: `Monto: ${$('#total_arqueo').text()}, Diferencia: ${$('#monto_diferencia_show').val()}`,
@@ -96,21 +144,25 @@ $('#realizar_consignacion').on('click', function (e) {
                     }).done(function (data) {
                         if (!data.hasOwnProperty('error')) {
                             console.log(data)
+                            resultado_rendicion(data)
                         }else{
                             message_error(data.error, data.recargar);
                             $('#realizar_consignacion').removeClass('disabled')
+                            $('#existe_diferencia').removeAttr('disabled')
                             $('#arqueo input[type=number]').removeAttr('readonly')
                             $('#arqueo input[type=checkbox]').removeAttr('readonly')
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         $.alert(textStatus + ': ' + errorThrown);
                         $('#realizar_consignacion').removeClass('disabled')
+                        $('#existe_diferencia').removeAttr('disabled')
                         $('#arqueo input[type=number]').removeAttr('readonly')
                         $('#arqueo input[type=checkbox]').removeAttr('readonly')
                     });
                 }},
                 cancelar: function () {
                     $('#realizar_consignacion').removeClass('disabled')
+                    $('#existe_diferencia').removeAttr('disabled')
                     $('#arqueo input[type=number]').removeAttr('readonly')
                     $('#arqueo input[type=checkbox]').removeAttr('readonly')
                 }
@@ -118,4 +170,12 @@ $('#realizar_consignacion').on('click', function (e) {
         })
 
     }
+})
+
+$('#reimprimir_rendicion').on('click', function (e) {
+    printJS({
+            printable: 'imprimir',
+            type: 'html',
+            targetStyles: ['*']
+    })
 })

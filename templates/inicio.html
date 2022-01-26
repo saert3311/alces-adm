@@ -29,57 +29,55 @@
 
     <!-- Main content -->
     <div class="content">
-      <div class="container-fluid">
+        <div class="container-fluid">
             <div class="row">
-          <div class="col-md-3 col-sm-6 col-12">
-            <div class="info-box">
-              <span class="info-box-icon bg-info"><i class="far fa-sticky-note"></i></span>
-              <div class="info-box-content">
-                <span class="info-box-text">Despachos Emitidos</span>
-                <span class="info-box-number">{{ despachos_emitidos }}</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-md-3 col-sm-6 col-12">
-            <div class="info-box">
-              <span class="info-box-icon bg-success"><i class="far fa-chart-bar"></i></span>
+                <div class="col-md-3 col-sm-6 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning"><i class="far fa-copy"></i></span>
 
-              <div class="info-box-content">
-                <span class="info-box-text">Maquinas Activas</span>
-                <span class="info-box-number">{{ maquinas_activas }}</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!--
-          <div class="col-md-3 col-sm-6 col-12">
-            <div class="info-box">
-              <span class="info-box-icon bg-warning"><i class="far fa-copy"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Planillas emitidas</span>
+                            <span class="info-box-number">{{ planillas_emitidas }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info"><i class="far fa-sticky-note"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Despachos Emitidos</span>
+                            <span class="info-box-number">{{ despachos_emitidos }}</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-lightblue color-palette"><i class="far fa-chart-bar"></i></span>
 
-              <div class="info-box-content">
-                <span class="info-box-text">Otra Info</span>
-                <span class="info-box-number">13,648</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 col-sm-6 col-12">
-            <div class="info-box">
-              <span class="info-box-icon bg-danger"><i class="far fa-star"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Maquinas Activas</span>
+                            <span class="info-box-number">{{ maquinas_activas }}</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <div class="col-md-3 col-sm-6 col-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-success"><i class="fas fa-money-bill"></i></span>
 
-              <div class="info-box-content">
-                <span class="info-box-text">Otra Info</span>
-                <span class="info-box-number">93,139</span>
-              </div>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Recaudación del dia</span>
+                            <span class="info-box-number">{{ recaudacion }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-             -->
-        </div>
 
-      </div><!-- /.container-fluid -->
+        </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
 {% endblock contenido %}
