@@ -13,7 +13,7 @@ class User(AbstractUser):
         (2, 'contable'),
         (3, 'terminal'),
     )
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default=1, verbose_name="Rol")
+    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default=0, verbose_name="Rol", blank=True, null=True)
     id_sucursal = models.ForeignKey(Sucursal, on_delete=models.PROTECT, verbose_name='Sucursal del Usuario', default=1)
 
     def is_admin(self):

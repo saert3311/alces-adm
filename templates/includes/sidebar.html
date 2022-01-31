@@ -144,6 +144,7 @@
                         </li>
                     </ul>
                 </li>
+            {% if request.user.is_superuser %}
                 <li class="nav-item {% if seccion == 'admin' %}menu-open{% endif %}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-toolbox"></i>
@@ -169,6 +170,7 @@
                         </li>
                     </ul>
                 </li>
+            {% endif %}
                 <li class="nav-item">
                     <a href="{% url 'cuenta:logout' %}" class="nav-link">
                         <i class="nav-icon fas fa-door-open"></i>

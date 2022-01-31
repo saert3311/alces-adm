@@ -53,11 +53,13 @@
                            <tr>
                                <td>{{ u.username }}</td>
                                <td>{{ u.first_name }} {{ u.last_name }}</td>
-                               <td>{{ u.get_user_type_display }}</td>
-                               <td></td>
+                               <td>{% for g in u.groups.all %}
+                                   {{ g.name }}
+                                   {% endfor %}</td>
+                               <td>{{ u.id_sucursal.nombre }}</td>
                                <td>{{ u.last_login }}</td>
                                <td>{% if u.is_active == True %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
-                               <td class="botones"><a href="{% url 'cuenta:actualizar_usuario' u.id %}"><button type="button" class="btn btn-secondary"><i class="far fa-edit"></i></button></a><a href="{% url 'cuenta:eliminar_usuario' u.id %}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button></a></td>
+                               <td class="botones"><a href="{% url 'cuenta:actualizar_usuario' u.id %}"><button type="button" class="btn btn-secondary"><i class="far fa-edit"></i></button></a></td>
                            </tr>
                            {% endfor %}
                            </tbody>
