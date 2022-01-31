@@ -1,14 +1,15 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView
 from buses.serializers import ListarSerializado
 from buses.forms import VehiculoForm
 from buses.models import Vehiculo
 from django.contrib import messages
 
 
-class ListarVehiculos(LoginRequiredMixin, ListView):
+class ListarVehiculos(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'buses.view_vehiculo'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Vehiculo
@@ -37,7 +38,8 @@ class ListarVehiculos(LoginRequiredMixin, ListView):
         finally:
             return JsonResponse(data, safe=False)
 
-class CrearVehiculo(LoginRequiredMixin, CreateView):
+class CrearVehiculo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('buses.view_vehiculo', 'buses.add_vehiculo')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Vehiculo
@@ -64,7 +66,8 @@ class CrearVehiculo(LoginRequiredMixin, CreateView):
             data['error'] = str(e)
         return JsonResponse(data)
 
-class ActualizarVehiculo(LoginRequiredMixin, UpdateView):
+class ActualizarVehiculo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('buses.view_vehiculo', 'buses.change_vehiculo')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Vehiculo

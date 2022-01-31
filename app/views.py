@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -51,7 +51,8 @@ def GetComunas(request):
         data['error'] =str(e)
     return JsonResponse(data, safe=False)
 
-class ListarSucursales(LoginRequiredMixin, ListView):
+class ListarSucursales(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'app.view_sucursal'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Sucursal
@@ -80,7 +81,8 @@ class ListarSucursales(LoginRequiredMixin, ListView):
         finally:
             return JsonResponse(data, safe=False)
 
-class CrearSucursal(LoginRequiredMixin, CreateView):
+class CrearSucursal(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('app.view_sucursal', 'app.add_sucursal')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Sucursal
@@ -108,6 +110,7 @@ class CrearSucursal(LoginRequiredMixin, CreateView):
         return JsonResponse(data)
 
 class ActualizarSucursal(LoginRequiredMixin, UpdateView):
+    permission_required = ('recorridos.view_sucursal', 'recorridos.change_sucursal')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Sucursal

@@ -1,8 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.utils.datetime_safe import strftime
 from django.views import View
 from django.contrib import messages
 from recorridos.models import Pago_planilla
@@ -10,7 +9,8 @@ from contabilidad.models import Rendicion_cuentas
 from django.core.signing import Signer
 
 
-class RendicionCuentas(LoginRequiredMixin, View):
+class RendicionCuentas(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = ('contabilidad.view_rendicion_cuentas', 'contabilidad.add_rendicion_cuentas')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     signer = Signer()

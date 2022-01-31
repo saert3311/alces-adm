@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -10,7 +10,8 @@ from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPl
 from django.views.generic import CreateView, UpdateView, TemplateView, View
 from datetime import datetime
 
-class ListarServicios(LoginRequiredMixin, TemplateView):
+class ListarServicios(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'recorrido.view_servicio'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     template_name = 'recorridos/listar-servicios.html'
@@ -38,7 +39,8 @@ class ListarServicios(LoginRequiredMixin, TemplateView):
         finally:
             return JsonResponse(data, safe=False)
 
-class CrearServicio(LoginRequiredMixin, CreateView):
+class CrearServicio(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('recorridos.view_servicio', 'recorridos.add_servicio')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Servicio
@@ -65,7 +67,8 @@ class CrearServicio(LoginRequiredMixin, CreateView):
             data['error'] = str(e)
         return JsonResponse(data)
 
-class ActualizarServicio(LoginRequiredMixin, UpdateView):
+class ActualizarServicio(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('recorridos.view_servicio', 'recorridos.change_servicio')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Servicio
@@ -97,7 +100,8 @@ class ActualizarServicio(LoginRequiredMixin, UpdateView):
             data['error'] = str(e)
         return JsonResponse(data)
 
-class AsignarDespacho(LoginRequiredMixin, CreateView):
+class AsignarDespacho(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('recorridos.view_despacho', 'recorridos.add_despacho')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Despacho
@@ -153,7 +157,8 @@ class AsignarDespacho(LoginRequiredMixin, CreateView):
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
-class PagoPlanilla(LoginRequiredMixin, TemplateView):
+class PagoPlanilla(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = ('recorridos.view_pago_planilla')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     template_name = 'recorridos/pago-planilla.html'
@@ -182,7 +187,8 @@ class PagoPlanilla(LoginRequiredMixin, TemplateView):
         finally:
             return JsonResponse(data, safe=False)
 
-class PagarPlanilla(LoginRequiredMixin, View):
+class PagarPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = ('recorridos.view_pago_planilla', 'recorridos.add_pago_planilla')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
 
@@ -260,7 +266,8 @@ class PagarPlanilla(LoginRequiredMixin, View):
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
-class InformeDespachos(LoginRequiredMixin, View):
+class InformeDespachos(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'recorridos.view_despacho'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
 

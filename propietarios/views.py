@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -8,7 +8,8 @@ from .serializers import ListarSerializado
 from django.views.generic import ListView, CreateView, UpdateView
 
 
-class ListarPropietarios(LoginRequiredMixin, ListView):
+class ListarPropietarios(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'propietarios.view_propietario'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Propietario
@@ -38,7 +39,8 @@ class ListarPropietarios(LoginRequiredMixin, ListView):
             return JsonResponse(data, safe=False)
 
 
-class CrearPropietario(LoginRequiredMixin, CreateView):
+class CrearPropietario(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('propietarios.view_propietario', 'propietarios.add_propietario')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Propietario
@@ -66,7 +68,8 @@ class CrearPropietario(LoginRequiredMixin, CreateView):
         return JsonResponse(data)
 
 
-class ActualizarPropietario(LoginRequiredMixin, UpdateView):
+class ActualizarPropietario(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('propietarios.view_propietario', 'propietarios.edit_propietario')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Propietario

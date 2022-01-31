@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -33,6 +33,7 @@ class Login(LoginView):
 
 
 class ListarUsuarios(LoginRequiredMixin, ListView):
+    permission_required = 'cuenta.view_user'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = User
@@ -45,7 +46,8 @@ class ListarUsuarios(LoginRequiredMixin, ListView):
         return context
 
 
-class CrearUsuario(LoginRequiredMixin, CreateView):
+class CrearUsuario(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('cuenta.view_user', 'cuenta.add_user')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = User
@@ -75,7 +77,8 @@ class CrearUsuario(LoginRequiredMixin, CreateView):
             data['error'] = str(e)
         return JsonResponse(data)
 
-class ActualizarUsuario(LoginRequiredMixin, UpdateView):
+class ActualizarUsuario(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('cuenta.view_user', 'cuenta.change_user')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = User
@@ -105,30 +108,3 @@ class ActualizarUsuario(LoginRequiredMixin, UpdateView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
-
-class EliminarUsuario(LoginRequiredMixin, DeleteView):
-    login_url = '/login/'
-    redirect_field_name = 'redirect_to'
-    model = User
-    template_name = 'cuenta/eliminar.html'
-    success_url = reverse_lazy('cuenta:usuarios')
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            self.object.delete()
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Usuario'
-        context['subtitulo'] = 'Se procedera a la eliminacion del siguiente usuario'
-        context['boton'] = 'Actualizar'
-        context['seccion'] = 'admin'
-        return context

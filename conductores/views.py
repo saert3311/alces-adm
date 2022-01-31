@@ -1,16 +1,15 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, QueryDict
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .forms import *
 from .models import Conductor, Auxiliar
 from .serializers import ListarSerializado, AuxiliarSerializado
-# Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 
-class ListarConductores(LoginRequiredMixin, ListView):
+class ListarConductores(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'conductores.view_conductor'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Conductor
@@ -39,7 +38,8 @@ class ListarConductores(LoginRequiredMixin, ListView):
         finally:
             return JsonResponse(data, safe=False)
 
-class CrearConductor(LoginRequiredMixin, CreateView):
+class CrearConductor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('conductores.view_conductor', 'conductores.add_conductor')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Conductor
@@ -66,7 +66,8 @@ class CrearConductor(LoginRequiredMixin, CreateView):
             data['error'] = str(e)
         return JsonResponse(data)
 
-class ActualizarConductor(LoginRequiredMixin, UpdateView):
+class ActualizarConductor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('conductores.view_conductor', 'conductores.change_conductor')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Conductor
@@ -98,35 +99,8 @@ class ActualizarConductor(LoginRequiredMixin, UpdateView):
             data['error'] = str(e)
         return JsonResponse(data)
 
-class EliminarConductor(LoginRequiredMixin, DeleteView):
-    login_url = '/login/'
-    redirect_field_name = 'redirect_to'
-    model = Conductor
-    template_name = 'conductores/eliminar.html'
-    success_url = reverse_lazy('conductores:listar')
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            self.object.delete()
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Conductor'
-        context['subtitulo'] = 'Se procedera a la eliminacion del siguiente conductor'
-        context['boton'] = 'Eliminar'
-        context['seccion'] = 'directorio'
-        return context
-
-
-class ListarAuxiliares(LoginRequiredMixin, ListView):
+class ListarAuxiliares(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'conductores.view_auxiliar'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Auxiliar
@@ -155,7 +129,8 @@ class ListarAuxiliares(LoginRequiredMixin, ListView):
         finally:
             return JsonResponse(data, safe=False)
 
-class CrearAuxiliar(LoginRequiredMixin, CreateView):
+class CrearAuxiliar(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('conductores.view_auxiliar', 'conductores.add_auxiliar')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Auxiliar
@@ -182,7 +157,8 @@ class CrearAuxiliar(LoginRequiredMixin, CreateView):
             data['error'] = str(e)
         return JsonResponse(data)
 
-class ActualizarAuxiliar(LoginRequiredMixin, UpdateView):
+class ActualizarAuxiliar(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('conductores.view_auxiliar', 'conductores.change_auxiliar')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Conductor
