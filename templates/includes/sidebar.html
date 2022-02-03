@@ -21,6 +21,7 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                {% if perms.recorridos %}
                 <li class="nav-item {% if seccion == 'recorridos' %}menu-open{% endif %}">
                     <a href="#" class="nav-link">
                         <i class="fas fa-route"></i>
@@ -29,6 +30,7 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                {% if perms.recorridos.add_despacho %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:asignar-despacho' %}"
@@ -38,6 +40,8 @@
                             </a>
                         </li>
                     </ul>
+                    {% endif %}
+                {% if perms.recorridos.view_despacho %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:informe-despachos' %}"
@@ -47,6 +51,8 @@
                             </a>
                         </li>
                     </ul>
+                    {% endif %}
+                {% if perms.recorridos.add_pago_planilla %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:pago-planilla' %}"
@@ -56,6 +62,8 @@
                             </a>
                         </li>
                     </ul>
+                    {% endif %}
+                {% if perms.recorridos.change_planilla %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'cuenta:usuarios' %}"
@@ -65,6 +73,8 @@
                             </a>
                         </li>
                     </ul>
+                    {% endif %}
+                {% if perms.recorridos.delete_planilla %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'cuenta:usuarios' %}"
@@ -74,6 +84,8 @@
                             </a>
                         </li>
                     </ul>
+                    {% endif %}
+                {% if perms.recorridos.add_servicio %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:listar-servicios' %}"
@@ -83,13 +95,17 @@
                             </a>
                         </li>
                     </ul>
+                    {% endif %}
                 </li>
+                {% endif %}
+                {% if perms.contabilidad %}
                 <li class="nav-item {% if seccion == 'contabilidad' %}menu-open{% endif %}">
                     <a href="#" class="nav-link">
                         <i class="fas fa-file-invoice-dollar"></i>
                         <p>Contabilidad<i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                {% if perms.contabilidad.add_rendicion_cuentas %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'contabilidad:rendicion-cuentas' %}"
@@ -99,7 +115,10 @@
                             </a>
                         </li>
                     </ul>
+                    {% endif %}
                 </li>
+            {% endif %}
+                {% if request.user.is_superuser %}
                 <li class="nav-item {% if seccion == 'directorio' %}menu-open{% endif %}">
                     <a href="#" class="nav-link">
                         <i class="far fa-list-alt"></i>
@@ -144,7 +163,6 @@
                         </li>
                     </ul>
                 </li>
-            {% if request.user.is_superuser %}
                 <li class="nav-item {% if seccion == 'admin' %}menu-open{% endif %}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-toolbox"></i>
