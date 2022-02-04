@@ -1,1 +1,1 @@
-web: gunicorn alces.wsgi --loglfile -
+web: gunicorn alces.wsgi:application --log-file - --log-level debug
