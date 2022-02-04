@@ -11,6 +11,17 @@ td.botones button {
 .input-group.patente input:first-child {
     width: 75%;
 }
-@media print{
 
+.transicion{
+    -webkit-transition: opacity 300ms, visibility 300ms;
+  transition: opacity 300ms, visibility 300ms;
+}
+
+@media print {
+  .imprimir_termica {
+    width: 80mm;
+  }
+}
+.card-filtros .form-group{
+    margin-bottom: 0
 }
