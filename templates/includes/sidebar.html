@@ -77,8 +77,8 @@
                 {% if perms.recorridos.delete_planilla %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'cuenta:usuarios' %}"
-                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                            <a href="{% url 'recorridos:anular-planilla' %}"
+                               class="nav-link {% if request.path == '/recorridos/anularPlanilla/' %}active{% endif %}">
                                 <i class="fas fa-folder-minus nav-icon"></i>
                                 <p>Anular Planilla</p>
                             </a>
@@ -184,6 +184,14 @@
                                class="nav-link {% if request.path == '/sucursales/' %}active{% endif %}">
                                 <i class="fas fa-house-user nav-icon"></i>
                                 <p>Sucursales</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="admin" class="nav-link">
+                                <i class="fab fa-python"></i>
+                                <p>Backend Admin</p>
                             </a>
                         </li>
                     </ul>

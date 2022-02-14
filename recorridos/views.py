@@ -304,3 +304,42 @@ class InformeDespachos(LoginRequiredMixin, PermissionRequiredMixin, View):
             data['error'] = str(e)
         finally:
             return JsonResponse(data, safe=False)
+
+class AnularPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'recorridos.change_planilla'
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, *args, **kwargs):
+        form = BuscarDespachosForm
+
+        return render(request, 'recorridos/informe-despachos.html', {
+            'form': form,
+            'titulo' : 'Anular Planilla',
+            'seccion' : 'recorridos'
+        })
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'listar_despachos':
+                data = []
+                los_despachos = Despacho.objects.filter(fecha_despacho=datetime.now().date())
+                despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
+                for i in despachos_serializados.data:
+                    data.append(i)
+            elif accion == 'buscar':
+                data = []
+                busqueda = {k: v for k, v in request.POST.items() if v if k != 'accion'}
+                busqueda['fecha_despacho'] = datetime.strptime(busqueda['fecha_despacho'], '%d/%m/%Y').date()
+                los_despachos = Despacho.objects.filter(**busqueda)
+                los_despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
+                for i in los_despachos_serializados.data:
+                    data.append(i)
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        finally:
+            return JsonResponse(data, safe=False)

@@ -27,6 +27,10 @@ def inc_control_planilla():
         config.CAMBIAR_CONTROL = False
     return ultima_planilla.nro_control + 1
 
+class SoloVigentes(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(es_vigente=False)
+
 class Tipo_pago(models.Model):
     nombre = models.CharField(max_length=25, unique=True, verbose_name="Forma de Pago")
     descripcion = models.CharField(max_length=150, verbose_name="Descripcion")
@@ -95,6 +99,11 @@ class Planilla(models.Model):
     revalidada = models.PositiveIntegerField(verbose_name="Planilla revalidada", blank=True, null=True)
     id_conductor = models.ForeignKey(Conductor, on_delete=models.PROTECT, verbose_name="Conductor")
     es_pirata = models.BooleanField(verbose_name='Es pirata', default=False)
+    es_vigente = models.BooleanField(verbose_name='Esta Vigente', default=True)
+
+    objects = SoloVigentes()
+
+    all_objects = models.Manager()
 
     @property
     def vueltas(self):

@@ -33,7 +33,7 @@
           <input type="hidden" name="next" value="{{ next }}">
           {% csrf_token %}
         <div class="input-group mb-3">
-          <input name="username" type="text" class="form-control" placeholder="Usuario">
+          <input name="username" type="text" class="form-control" placeholder="Usuario" id="id_rut">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -76,6 +76,7 @@
 <!-- /.login-box -->
 
 <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+<script src="{% static 'js/jquery.rut.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'plugins/sweetalert2/sweetalert2.js' %}"></script>
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
@@ -99,6 +100,7 @@
         }
     });
 }
+$('#id_rut').rut({formatOn: 'keyup', validateOn: 'change keyup'});
 </script>
 </body>
 </html>

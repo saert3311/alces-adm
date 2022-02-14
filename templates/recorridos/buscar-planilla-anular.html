@@ -1,0 +1,121 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+        <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+{% endblock stylesheets %}
+{% block acciones %}
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'recorridos:asignar-despacho' %}" class="nav-link">Asignar Despachos</a>
+      </li>
+{% endblock acciones %}
+{% block contenido %}
+    {% load widget_tweaks %}
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0"><i class="fas fa-list nav-icon"></i> {{ titulo }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
+                <li class="breadcrumb-item active"><i class="fas fa-list nav-icon"></i> {{ titulo }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col align-self-center">
+                  <div class="card">
+                      <form id="busqueda_despachos">
+                          <div class="card-body card-filtros">
+                              <div class="row">
+                                  <div class="col-sm-2">
+                                      <div class="form-group">
+                                          <label for="id_fecha_despacho">Fecha</label>
+                                          <div class="input-group date" id="fecha_despacho"
+                                               data-target-input="nearest">
+                                              {{ form.fecha_despacho|add_class:'form-control datetimepicker-input'|attr:'data-target:#fecha_despacho' }}
+                                              <div class="input-group-append" data-target="#fecha_despacho"
+                                                   data-toggle="datetimepicker">
+                                                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-2">
+                                      <div class="form-group">
+                                          <label for="id_vehiculo">Bus</label>
+                                          {{ form.id_vehiculo|add_class:'form-control select2bs4' }}
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-3">
+                                      <div class="form-group">
+                                          <label for="id_recorrido">Servicio</label>
+                                          {{ form.id_recorrido|add_class:'form-control select2bs4' }}
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-3">
+                                      <div class="form-group">
+                                          <label for="id_recorrido">Inspector</label>
+                                          {{ form.id_usuario|add_class:'form-control select2bs4' }}
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-2 d-flex align-items-end flex-row-reverse">
+                                      <button type="submit" class="btn btn-info float-right bottom-left">Buscar</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+        <div class="row">
+           <div class="col align-self-center">
+               <div class="card">
+                   <div class="card-body">
+                       <table id="listado_despachos" class="table table-sm table-bordered table-striped">
+                           <thead>
+                           <tr>
+                               <th>Folio</th>
+                               <th>Bus</th>
+                               <th>Ruta</th>
+                               <th>Salida</th>
+                               <th>Vuelta</th>
+                               <th>Conductor</th>
+                               <th>Inspector</th>
+                           </tr>
+                           </thead>
+                       </table>
+                   </div>
+               </div>
+           </div>
+        </div>
+
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock contenido %}
+{% block javascripts %}
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+    <script src="{% static 'plugins/moment/locale/es.js' %}"></script>
+    <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
+    <script src="{% static 'js/recorridos/informe-despachos.js' %}"></script>
+{% endblock javascripts %}

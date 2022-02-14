@@ -19,10 +19,17 @@ class Inicio(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     def get(self, request):
-        despachos_emitidos = Despacho.objects.filter(fecha_despacho=date.today()).count()
-        maquinas_activas = Despacho.objects.filter(fecha_despacho=date.today()).values('id_vehiculo').distinct().count()
-        planillas_emitidas = Planilla.objects.filter(fecha_planilla=date.today()).count()
-        recaudacion = Pago_planilla.objects.filter(fecha_pago__date=date.today()).aggregate(Sum('valor'))
+        if request.user.is_superuser is True:
+            despachos_emitidos = Despacho.objects.filter(fecha_despacho=date.today()).count()
+            maquinas_activas = Despacho.objects.filter(fecha_despacho=date.today()).values('id_vehiculo').distinct().count()
+            planillas_emitidas = Planilla.objects.filter(fecha_planilla=date.today()).count()
+            recaudacion = Pago_planilla.objects.filter(fecha_pago__date=date.today()).aggregate(Sum('valor'))
+        else:
+            despachos_emitidos = Despacho.objects.filter(fecha_despacho=date.today(), id_usuario=request.user.id).count()
+            maquinas_activas = Despacho.objects.filter(fecha_despacho=date.today(), id_usuario=request.user.id).values('id_vehiculo').distinct().count()
+            planillas_emitidas = Planilla.objects.filter(fecha_planilla=date.today(), id_user=request.user.id).count()
+            recaudacion = Pago_planilla.objects.filter(fecha_pago__date=date.today(), id_user=request.user.id).aggregate(Sum('valor'))
+
         return render(request, 'inicio.html', {
             'despachos_emitidos' : despachos_emitidos,
             'maquinas_activas' : maquinas_activas,
