@@ -16,6 +16,12 @@ class ListarDespachosSerial(serializers.ModelSerializer):
         model = Despacho
         fields = ['id', 'nro_vehiculo', 'detalle', 'hora_salida_ss', 'vuelta', 'nombre_inspector', 'nombre_conductor']
 
+class ListarPlanillasSerial(serializers.ModelSerializer):
+
+    class Meta:
+        model = Planilla
+        fields = ['id', 'nro_vehiculo', 'nro_control', 'servicio_desc', 'nombre_conductor', 'nro_despachos']
+
 class DespachoImprimirSerial(serializers.ModelSerializer):
     planilla = serializers.CharField(source='control_planilla', read_only=True)
     patente = serializers.CharField(source='patente_vehiculo', read_only=True)

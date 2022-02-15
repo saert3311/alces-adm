@@ -17,6 +17,7 @@ def es_terminal(sucursal):
             params={'sucursal': sucursal}
         )
 
+
 def inc_control_planilla():
     ultima_planilla = Planilla.objects.all().order_by('id').last()
     if not ultima_planilla:
@@ -105,6 +106,14 @@ class Planilla(models.Model):
 
     all_objects = models.Manager()
 
+    def clean(self):
+        if self.es_vigente is False and self.id_pago_planilla is None:
+            raise ValidationError(
+                '',
+                params={'sucursal': sucursal}
+            )
+
+
     @property
     def vueltas(self):
         return Despacho.objects.filter(id_planilla=self.id).count()
@@ -124,6 +133,14 @@ class Planilla(models.Model):
     @property
     def fecha_simple(self):
         return self.fecha_planilla.strftime('%d/%m/%Y')
+
+    @property
+    def nombre_conductor(self):
+        return self.id_conductor.nombreCompleto
+
+    @property
+    def nro_despachos(self):
+        return self.despacho_set.count()
 
 class Despacho(models.Model):
 

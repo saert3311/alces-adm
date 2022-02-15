@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Despacho, Servicio, Planilla, Pago_planilla
-from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm
-from .serializers import ListarRecorridoSerial, UltimosDespachosSerial, ListarPlanillasPendientes, DespachoImprimirSerial, ListarDespachosSerial
+from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm, BuscarPlanillaForm
+from .serializers import *
 from django.views.generic import CreateView, UpdateView, TemplateView, View
 from datetime import datetime
 
@@ -311,9 +311,9 @@ class AnularPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
     redirect_field_name = 'redirect_to'
 
     def get(self, request, *args, **kwargs):
-        form = BuscarDespachosForm
+        form = BuscarPlanillaForm
 
-        return render(request, 'recorridos/informe-despachos.html', {
+        return render(request, 'recorridos/buscar-planilla-anular.html', {
             'form': form,
             'titulo' : 'Anular Planilla',
             'seccion' : 'recorridos'
@@ -323,19 +323,19 @@ class AnularPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
         data = {}
         try:
             accion = request.POST['accion']
-            if accion == 'listar_despachos':
+            if accion == 'listar':
                 data = []
-                los_despachos = Despacho.objects.filter(fecha_despacho=datetime.now().date())
-                despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
-                for i in despachos_serializados.data:
+                las_planillas = Planilla.objects.filter(fecha_planilla=datetime.now().date(), id_pago_planilla__isnull=True)
+                planillas_serializadas = ListarPlanillasSerial(las_planillas, many=True)
+                for i in planillas_serializadas.data:
                     data.append(i)
             elif accion == 'buscar':
                 data = []
                 busqueda = {k: v for k, v in request.POST.items() if v if k != 'accion'}
-                busqueda['fecha_despacho'] = datetime.strptime(busqueda['fecha_despacho'], '%d/%m/%Y').date()
-                los_despachos = Despacho.objects.filter(**busqueda)
-                los_despachos_serializados = ListarDespachosSerial(los_despachos, many=True)
-                for i in los_despachos_serializados.data:
+                busqueda['fecha_planilla'] = datetime.strptime(busqueda['fecha_planilla'], '%d/%m/%Y').date()
+                las_planillas = Planilla.objects.filter(**busqueda).filter(id_pago_planilla__isnull=True)
+                las_planillas_serializadas = ListarPlanillasSerial(las_planillas, many=True)
+                for i in las_planillas_serializadas.data:
                     data.append(i)
             else:
                 data['error'] = 'Metodo no definido'
