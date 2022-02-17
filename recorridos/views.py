@@ -343,3 +343,38 @@ class AnularPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
             data['error'] = str(e)
         finally:
             return JsonResponse(data, safe=False)
+
+class AnulacionPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = ('recorridos.view_planilla', 'recorridos.change_planilla')
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            planilla = Planilla.objects.get(id=self.kwargs['pl'])
+            despachos = Despacho.objects.filter(id_planilla=self.kwargs['pl'])
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'Planilla no encontrada')
+            return redirect('recorridos:pago-planilla')
+        except Exception as e:
+            messages.error(self.request, str(e))
+            return redirect('recorridos:pago-planilla')
+        return render(request, 'recorridos/planilla-anular.html', {
+            'planilla' : planilla,
+            'despachos' : despachos,
+            'titulo' : 'Anular Planilla',
+            'subtitulo' : 'Listado de Planillas Anulables',
+            'seccion' : 'recorridos'
+        })
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            planilla = Planilla.objects.get(id=request.POST['planilla'])
+            planilla.es_vigente = False
+            planilla.save()
+            messages.success(self.request, 'Planilla Anulada Satisfactoriamente')
+            data['resultado'] = 1
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)

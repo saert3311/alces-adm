@@ -107,12 +107,11 @@ class Planilla(models.Model):
     all_objects = models.Manager()
 
     def clean(self):
-        if self.es_vigente is False and self.id_pago_planilla is None:
+        if self.es_vigente is False and self.id_pago_planilla is not None:
             raise ValidationError(
-                '',
-                params={'sucursal': sucursal}
+                'No es posible anular una Planilla pagada',
+                params={'planilla': self.nro_control}
             )
-
 
     @property
     def vueltas(self):
