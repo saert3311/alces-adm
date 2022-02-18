@@ -306,17 +306,18 @@ class InformeDespachos(LoginRequiredMixin, PermissionRequiredMixin, View):
             return JsonResponse(data, safe=False)
 
 class AnularPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = 'recorridos.change_planilla'
+    permission_required = 'recorridos.view_planilla'
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, *args, **kwargs):
         form = BuscarPlanillaForm
 
-        return render(request, 'recorridos/buscar-planilla-anular.html', {
+        return render(request, 'recorridos/buscar-planilla.html', {
             'form': form,
             'titulo' : 'Anular Planilla',
-            'seccion' : 'recorridos'
+            'seccion' : 'recorridos',
+            'icono' : 'fas fa-eraser'
         })
 
     def post(self, request, *args, **kwargs):
@@ -360,6 +361,81 @@ class AnulacionPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
             messages.error(self.request, str(e))
             return redirect('recorridos:pago-planilla')
         return render(request, 'recorridos/planilla-anular.html', {
+            'planilla' : planilla,
+            'despachos' : despachos,
+            'titulo' : 'Anular Planilla',
+            'subtitulo' : 'Listado de Planillas Anulables',
+            'seccion' : 'recorridos'
+        })
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            planilla = Planilla.objects.get(id=request.POST['planilla'])
+            planilla.es_vigente = False
+            planilla.save()
+            messages.success(self.request, 'Planilla Anulada Satisfactoriamente')
+            data['resultado'] = 1
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+class BuscarRevalidarPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'recorridos.view_planilla'
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, *args, **kwargs):
+        form = BuscarPlanillaForm
+
+        return render(request, 'recorridos/buscar-planilla.html', {
+            'form': form,
+            'titulo' : 'Revalidar Planilla',
+            'seccion' : 'recorridos',
+            'icono' : 'fas fa-redo'
+        })
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'listar':
+                data = []
+                las_planillas = Planilla.objects.filter(fecha_planilla=datetime.now().date(), id_pago_planilla__isnull=False)
+                planillas_serializadas = ListarPlanillasSerial(las_planillas, many=True)
+                for i in planillas_serializadas.data:
+                    data.append(i)
+            elif accion == 'buscar':
+                data = []
+                busqueda = {k: v for k, v in request.POST.items() if v if k != 'accion'}
+                busqueda['fecha_planilla'] = datetime.strptime(busqueda['fecha_planilla'], '%d/%m/%Y').date()
+                las_planillas = Planilla.objects.filter(**busqueda).filter(id_pago_planilla__isnull=False)
+                las_planillas_serializadas = ListarPlanillasSerial(las_planillas, many=True)
+                for i in las_planillas_serializadas.data:
+                    data.append(i)
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        finally:
+            return JsonResponse(data, safe=False)
+
+class RevalidacionPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = ('recorridos.view_planilla', 'recorridos.change_planilla')
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            planilla = Planilla.objects.get(id=self.kwargs['pl'])
+            despachos = Despacho.objects.filter(id_planilla=self.kwargs['pl'])
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'Planilla no encontrada')
+            return redirect('recorridos:pago-planilla')
+        except Exception as e:
+            messages.error(self.request, str(e))
+            return redirect('recorridos:pago-planilla')
+        return render(request, 'recorridos/planilla-revalidar.html', {
             'planilla' : planilla,
             'despachos' : despachos,
             'titulo' : 'Anular Planilla',
