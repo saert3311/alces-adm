@@ -56,7 +56,7 @@ let cargar = (accion = 'listar', fecha = moment().format('L'), bus='', servicio=
                     'targets': [-1],
                     'orderable': false,
                     render: function (data, type, row){
-                        let botones = `<a href="/anularPlanilla/${row.id}">
+                        let botones = `<a href="${window.location.pathname}${row.id}">
                                             <button type="button" class="btn btn-info btn-sm"><i class="far fa-calendar-times"></i>
                                             </button>
                                         </a>`

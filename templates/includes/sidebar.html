@@ -66,8 +66,8 @@
                 {% if perms.recorridos.change_planilla %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'cuenta:usuarios' %}"
-                               class="nav-link {% if request.path == '/recorridos/servicios/' %}active{% endif %}">
+                            <a href="{% url 'recorridos:revalidar-planilla' %}"
+                               class="nav-link {% if request.path == '/revalidarPlanilla/' %}active{% endif %}">
                                 <i class="fas fa-folder-plus nav-icon"></i>
                                 <p>Revalidar Planilla</p>
                             </a>
@@ -78,7 +78,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'recorridos:anular-planilla' %}"
-                               class="nav-link {% if request.path == '/recorridos/anularPlanilla/' %}active{% endif %}">
+                               class="nav-link {% if request.path == '/anularPlanilla/' %}active{% endif %}">
                                 <i class="fas fa-folder-minus nav-icon"></i>
                                 <p>Anular Planilla</p>
                             </a>

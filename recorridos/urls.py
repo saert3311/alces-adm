@@ -12,5 +12,7 @@ urlpatterns = [
     path('administrarServicios/crear/', CrearServicio.as_view(), name='crear-servicio'),
     path('administrarServicios/actualizar/<int:pk>/', ActualizarServicio.as_view(), name='actualizar-servicio'),
     path('anularPlanilla/', AnularPlanilla.as_view(), name='anular-planilla'),
-    path('anularPlanilla/<int:pl>/', AnulacionPlanilla.as_view(), name='planilla-a-anular')
+    path('anularPlanilla/<int:pl>/', AnulacionPlanilla.as_view(), name='planilla-a-anular'),
+    path('revalidarPlanilla/', BuscarRevalidarPlanilla.as_view(), name='revalidar-planilla'),
+    path('revalidarPlanilla/<int:pl>/', RevalidacionPlanilla.as_view(), name='planilla-a-revalidar'),
     ]

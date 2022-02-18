@@ -1,0 +1,123 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+{% block acciones %}
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{% url 'app:inicio' %}" class="nav-link">Inicio</a>
+      </li>
+{% endblock acciones %}
+{% block contenido %}
+    {% load widget_tweaks %}
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0"><i class="fas fa-list nav-icon"></i> {{ titulo }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'app:inicio' %}">Inicio</a></li>
+                <li class="breadcrumb-item active"><i class="fas fa-list nav-icon"></i> {{ titulo }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-sm-6 align-self-center">
+                  <div class="card">
+                          <div class="card-body card-filtros">
+                              <div class="row">
+                                  <div class="col-1">
+                                    <h5>Folio</h5>
+                                      <p>{{ planilla.nro_control }}</p>
+                                  </div>
+                                  <div class="col">
+                                        <h5>Fecha:</h5>
+                                        <p>{{ planilla.fecha_planilla }}</p>
+                                  </div>
+                                  <div class="col">
+                                        <h5>Bus</h5>
+                                        <p>{{ planilla.id_vehiculo.get_identidad }}</p>
+                                  </div>
+                                  <div class="col">
+                                        <h5>Conductor</h5>
+                                        <p>{{ planilla.id_conductor.nombreCompleto }}</p>
+                                  </div>
+                                  <div class="col">
+                                      <h5>Recorrido</h5>
+                                      <p>{{ planilla.id_recorrido.nombre }}</p>
+                                  </div>
+                                  <div class="col">
+                                      <h5>Inspector</h5>
+                                      <p>{{ planilla.id_user.nombre_completo }}</p>
+                                  </div>
+                                  <div class="col-1 d-flex align-items-end flex-row-reverse">
+                                      <form id="process_anulacion">
+                                        <button type="submit" id="anular_planilla" class="btn btn-danger float-right bottom-left" planilla_anular="{{ planilla.id }}">Anular</button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                  </div>
+              </div>
+          </div>
+        <div class="row">
+           <div class="col align-self-center">
+               <div class="card">
+                   <div class="card-header">
+                       <h3 class="card-title">
+                           Despachos Asociados
+                       </h3>
+                   </div>
+                   <div class="card-body">
+                       <table class="table table-sm table-bordered table-striped">
+                           <thead>
+                           <tr class="text-center">
+                               <th>Folio</th>
+                               <th>Hora</th>
+                               <th>Conductor</th>
+                               <th>Auxiliar</th>
+                               <th>Variante</th>
+                               <th>Sucursal</th>
+                               <th>Inspector</th>
+                           </tr>
+                           </thead>
+                           <tbody class="text-center">
+                           {% for d in despachos %}
+                           <tr>
+                               <td>{{ d.id }}</td>
+                               <td>{{ d.hora_salida_ss }}</td>
+                               <td>{{ d.id_conductor.nombreCompleto }}</td>
+                               <td>{% if d.id_auxiliar is not Null %}
+                                   {{ d.id_auxiliar.nombreCompleto }}
+                                   {% else %}
+                                   <i class="fas fa-user-alt-slash"></i>
+                                   {% endif %}</td>
+                               <td>{{ d.variante_text }}</td>
+                               <td>{{ d.id_suc_despacho.nombre }}</td>
+                               <td>{{ d.id_usuario.nombre_completo }}</td>
+                           </tr>
+                           {% endfor %}
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+           </div>
+        </div>
+
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock contenido %}
+{% block javascripts %}
+    <script src="{% static 'js/recorridos/anulacion-planilla.js' %}"></script>
+{% endblock javascripts %}
