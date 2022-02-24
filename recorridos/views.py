@@ -3,12 +3,13 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
-from .models import Despacho, Servicio, Planilla, Pago_planilla
-from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm, BuscarPlanillaForm
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from .models import Despacho, Servicio, Planilla, Pago_planilla, inc_control_planilla
+from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm, BuscarPlanillaForm, RevalidarPlanillaForm
 from .serializers import *
 from django.views.generic import CreateView, UpdateView, TemplateView, View
 from datetime import datetime
+from constance import config
 
 class ListarServicios(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     permission_required = 'recorrido.view_servicio'
@@ -392,7 +393,7 @@ class BuscarRevalidarPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View)
             'form': form,
             'titulo' : 'Revalidar Planilla',
             'seccion' : 'recorridos',
-            'icono' : 'fas fa-redo'
+            'icono' : 'fas fa-folder-plus'
         })
 
     def post(self, request, *args, **kwargs):
@@ -401,7 +402,7 @@ class BuscarRevalidarPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View)
             accion = request.POST['accion']
             if accion == 'listar':
                 data = []
-                las_planillas = Planilla.objects.filter(fecha_planilla=datetime.now().date(), id_pago_planilla__isnull=False)
+                las_planillas = Planilla.objects.filter(fecha_planilla=datetime.now().date(), id_pago_planilla__isnull=False, revalidada__isnull=True)
                 planillas_serializadas = ListarPlanillasSerial(las_planillas, many=True)
                 for i in planillas_serializadas.data:
                     data.append(i)
@@ -409,7 +410,7 @@ class BuscarRevalidarPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View)
                 data = []
                 busqueda = {k: v for k, v in request.POST.items() if v if k != 'accion'}
                 busqueda['fecha_planilla'] = datetime.strptime(busqueda['fecha_planilla'], '%d/%m/%Y').date()
-                las_planillas = Planilla.objects.filter(**busqueda).filter(id_pago_planilla__isnull=False)
+                las_planillas = Planilla.objects.filter(**busqueda).filter(id_pago_planilla__isnull=False, revalidada__isnull=True)
                 las_planillas_serializadas = ListarPlanillasSerial(las_planillas, many=True)
                 for i in las_planillas_serializadas.data:
                     data.append(i)
@@ -426,31 +427,54 @@ class RevalidacionPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
     redirect_field_name = 'redirect_to'
 
     def get(self, request, *args, **kwargs):
+        form = RevalidarPlanillaForm
         try:
             planilla = Planilla.objects.get(id=self.kwargs['pl'])
             despachos = Despacho.objects.filter(id_planilla=self.kwargs['pl'])
         except ObjectDoesNotExist:
             messages.error(self.request, 'Planilla no encontrada')
-            return redirect('recorridos:pago-planilla')
+            return redirect('recorridos:revalidar-planilla')
         except Exception as e:
             messages.error(self.request, str(e))
-            return redirect('recorridos:pago-planilla')
+            return redirect('recorridos:revalidar-planilla')
         return render(request, 'recorridos/planilla-revalidar.html', {
             'planilla' : planilla,
             'despachos' : despachos,
-            'titulo' : 'Anular Planilla',
-            'subtitulo' : 'Listado de Planillas Anulables',
+            'form' : form,
+            'titulo' : 'Revalidar Planilla',
             'seccion' : 'recorridos'
         })
 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            planilla = Planilla.objects.get(id=request.POST['planilla'])
-            planilla.es_vigente = False
-            planilla.save()
-            messages.success(self.request, 'Planilla Anulada Satisfactoriamente')
-            data['resultado'] = 1
+            planilla_revalidar = Planilla.objects.get(id=self.kwargs['pl'])
+            if planilla_revalidar.id_pago_planilla is None:
+                data['error'] = 'Planilla no ha sido pagada'
+                return JsonResponse(data, safe=False)
+            planilla_nueva = request.POST
+            planilla_nueva._mutable = True
+            planilla_nueva['id_pago_planilla'] = planilla_revalidar.id_pago_planilla
+            planilla_nueva['id_user'] = str(request.user.pk)
+            planilla_nueva['id_vehiculo'] = planilla_revalidar.id_vehiculo
+            planilla_nueva['revalidada'] = self.kwargs['pl']
+            planilla_nueva._mutable = False
+            form = RevalidarPlanillaForm(planilla_nueva)
+            pago_procesado = form.save()
+            if 'error' in pago_procesado:
+                data['error'] = pago_procesado['error']
+                return JsonResponse(data, safe=False)
+            planilla_revalidada = Planilla.objects.get(id=pago_procesado['id'])
+            data['planilla'] = {
+                'folio': planilla_revalidada.nro_control,
+                'monto': planilla_revalidada.id_pago_planilla.valor,
+                'bus': planilla_revalidada.id_vehiculo.get_identidad,
+                'fecha': planilla_revalidada.id_pago_planilla.fecha_pago_simple,
+                'inspector': str(request.user.nombre_completo),
+                'forma_pago': planilla_revalidada.id_pago_planilla.tipo_pago.nombre,
+                'ruta': planilla_revalidada.id_recorrido.nombre,
+                'fecha_planilla': planilla_revalidada.fecha_planilla
+            }
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)

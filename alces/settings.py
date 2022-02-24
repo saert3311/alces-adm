@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('ALCES_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'alces-adm.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 # Application definition
@@ -181,6 +181,7 @@ CONSTANCE_CONFIG = {
     'CAMBIAR_CONTROL': (False, 'Se cambiara o no el siguiente control de planilla'),
     'PRECIO_FERIADOS' : (False, 'Planillas a mitad de precio en feriados y domingos'),
     'FOTO_CONDUCTOR' : (False, 'Requerir fotografia del conductor para emitir despachos'),
-    'FOTO_AUXILIAR' : (False, 'Requerir fotografia del auxiliar para emitir despachos')
+    'FOTO_AUXILIAR' : (False, 'Requerir fotografia del auxiliar para emitir despachos'),
+    'LIMITE_REVALIDAR' : (1, 'Numero de planillas que son posible revalidar')
 }
 

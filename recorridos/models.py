@@ -19,7 +19,7 @@ def es_terminal(sucursal):
 
 
 def inc_control_planilla():
-    ultima_planilla = Planilla.objects.all().order_by('id').last()
+    ultima_planilla = Planilla.all_objects.latest('id')
     if not ultima_planilla:
         return 1
     if config.CAMBIAR_CONTROL is True and config.CONTROL_PLANILLA > ultima_planilla.nro_control:
@@ -109,9 +109,13 @@ class Planilla(models.Model):
     def clean(self):
         if self.es_vigente is False and self.id_pago_planilla is not None:
             raise ValidationError(
-                'No es posible anular una Planilla pagada',
-                params={'planilla': self.nro_control}
-            )
+                'No es posible anular la Planilla', code='no_revalidable')
+        if Planilla.objects.filter(revalidada=self.revalidada).count() >= config.LIMITE_REVALIDAR:
+            raise ValidationError(
+                'Ya no es posible revalidar la Planilla', code='no_revalidable' )
+        if Planilla.objects.get(id=self.revalidada).revalidada is not None:
+            raise ValidationError(
+                'No puedes revalidar una planilla de otra planilla revalidada', code='no_revalidable')
 
     @property
     def vueltas(self):

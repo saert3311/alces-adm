@@ -167,3 +167,23 @@ class PagarPlanillaForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+class RevalidarPlanillaForm(ModelForm):
+    id_conductor = NombreRutModelChoiceField(queryset=Conductor.objects.filter(activo=True))
+    id_recorrido = forms.ModelChoiceField(queryset=Servicio.objects.filter(es_vigente=True))
+
+    class Meta:
+        model = Planilla
+        exclude = ['nro_control', 'es_vigente', 'es_pirata']
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
