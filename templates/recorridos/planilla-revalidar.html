@@ -42,6 +42,11 @@
                   <div class="card card-primary card-outline">
                       <div class="card-header">
                         <h3 class="card-title">Datos Planilla</h3>
+                          {% if revalidada is True %}
+                          <div class="card-tools">
+                              <small class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> Planilla anteriormente revalidada</small>
+                          </div>
+                          {% endif %}
                       </div>
                           <div class="card-body card-filtros">
                               <div class="row">

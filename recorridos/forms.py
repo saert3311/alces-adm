@@ -181,7 +181,8 @@ class RevalidarPlanillaForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
-                form.save()
+                result = form.save()
+                data['id_planilla'] = result.id
             else:
                 data['error'] = form.errors
         except Exception as e:

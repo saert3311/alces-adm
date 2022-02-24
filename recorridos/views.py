@@ -431,6 +431,7 @@ class RevalidacionPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
         try:
             planilla = Planilla.objects.get(id=self.kwargs['pl'])
             despachos = Despacho.objects.filter(id_planilla=self.kwargs['pl'])
+            revalidada = Planilla.objects.filter(revalidada=planilla.id).exists()
         except ObjectDoesNotExist:
             messages.error(self.request, 'Planilla no encontrada')
             return redirect('recorridos:revalidar-planilla')
@@ -441,6 +442,7 @@ class RevalidacionPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
             'planilla' : planilla,
             'despachos' : despachos,
             'form' : form,
+            'revalidada' : revalidada,
             'titulo' : 'Revalidar Planilla',
             'seccion' : 'recorridos'
         })
@@ -464,7 +466,7 @@ class RevalidacionPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
             if 'error' in pago_procesado:
                 data['error'] = pago_procesado['error']
                 return JsonResponse(data, safe=False)
-            planilla_revalidada = Planilla.objects.get(id=pago_procesado['id'])
+            planilla_revalidada = Planilla.objects.get(id=pago_procesado['id_planilla'])
             data['planilla'] = {
                 'folio': planilla_revalidada.nro_control,
                 'monto': planilla_revalidada.id_pago_planilla.valor,
