@@ -165,6 +165,11 @@ class Despacho(models.Model):
     id_origen = models.ForeignKey(Sucursal, related_name='salida', on_delete=models.PROTECT, verbose_name='Origen')
     id_suc_despacho = models.ForeignKey(Sucursal, related_name='despachado', on_delete=models.PROTECT, verbose_name='Sucursal despacho')
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT, verbose_name='Vehiculo')
+    es_vigente = models.BooleanField(verbose_name='Esta Vigente', default=True)
+
+    objects = SoloVigentes()
+
+    all_objects = models.Manager()
 
     @property
     def ruta(self):

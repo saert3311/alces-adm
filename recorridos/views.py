@@ -152,6 +152,8 @@ class AsignarDespacho(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             elif accion == 'buscar_despacho':
                 el_despacho = Despacho.objects.get(id=request.POST['despacho'])
                 data['despacho'] = DespachoImprimirSerial(el_despacho).data
+            elif accion == 'anular_despacho':
+                pass
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:

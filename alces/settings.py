@@ -182,6 +182,7 @@ CONSTANCE_CONFIG = {
     'PRECIO_FERIADOS' : (False, 'Planillas a mitad de precio en feriados y domingos'),
     'FOTO_CONDUCTOR' : (False, 'Requerir fotografia del conductor para emitir despachos'),
     'FOTO_AUXILIAR' : (False, 'Requerir fotografia del auxiliar para emitir despachos'),
-    'LIMITE_REVALIDAR' : (1, 'Numero de planillas que son posible revalidar')
+    'LIMITE_REVALIDAR' : (1, 'Numero de planillas que son posible revalidar'),
+    'CONDUCTOR_MULTI_MAQUINA' : (True, 'Conductor puede salir en varias maquinas en un dia')
 }
 

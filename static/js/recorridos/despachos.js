@@ -79,7 +79,8 @@ let ultimos_despachos = () => {
                     'targets': [-1],
                     'orderable': false,
                     render: function (data, type, row){
-                        let botones = `${row.la_planilla}<span class="float-right badge bg-info item_planilla" planilla="${row.id}"><i class="fas fa-print"></i></span>`
+                        let botones = `${row.la_planilla}<span class="float-right badge bg-info item_planilla" planilla="${row.id}" accion="buscar_despacho"><i class="fas fa-print"></i></span>
+                                                        <span class="float-right badge bg-danger item_planilla mr-2" planilla="${row.id}" accion="anular_despacho"><i class="far fa-trash-alt"></i></span>`
                         return botones
                     }
                 },{
@@ -89,11 +90,12 @@ let ultimos_despachos = () => {
                 'initComplete': function () {
                     $('.item_planilla').on('click', function () {
                     let pla_buscar = $(this).attr("planilla");
+                    let accion = $(this).attr("accion");
                         $.ajax({
                             url: window.location.pathname,
                             type: 'POST',
                             data: {
-                                accion : 'buscar_despacho',
+                                accion : accion,
                                 despacho : pla_buscar
                             },
                         }).done(function (data) {

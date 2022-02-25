@@ -38,7 +38,7 @@ class DespachoForm(ModelForm):
 
     class Meta:
         model = Despacho
-        fields = '__all__'
+        exclude = ['es_vigente']
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
@@ -118,11 +118,10 @@ class DespachoForm(ModelForm):
                 self._errors['Vehiculo'] = self.error_class(['Hora de salida del vehiculo no corresponde con tiempo de recorrido anterior'])
             if ultimo_despacho.id_recorrido != cleaned_data['id_recorrido']:
                 self._errors['Vehiculo'] = self.error_class([f'Ya tiene una o mas vueltas en ruta {ultimo_despacho.id_recorrido.nombre}'])
-            despachos_conductor = Despacho.objects.filter(fecha_despacho=cleaned_data['fecha_despacho'], id_conductor=cleaned_data['id_conductor'])
-            for despacho in despachos_conductor:
-                if despacho.id_conductor != cleaned_data['id_conductor']:
+            despachos_conductor = Despacho.objects.filter(fecha_despacho=cleaned_data['fecha_despacho'], id_conductor=cleaned_data['id_conductor']).exclude(id_vehiculo=cleaned_data['id_vehiculo'])
+            if not config.CONDUCTOR_MULTI_MAQUINA and despachos_conductor.exists():
+                for despacho in despachos_conductor:
                     self._errors['Conductor'] = self.error_class([f'Conductor tiene vueltas en el bus {despacho.id_vehiculo.nro}'])
-                    break
         return cleaned_data
 
 
