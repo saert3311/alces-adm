@@ -95,12 +95,12 @@ let ultimos_despachos = () => {
                             url: window.location.pathname,
                             type: 'POST',
                             data: {
-                                accion : accion,
+                                accion : 'buscar_despacho',
                                 despacho : pla_buscar
                             },
                         }).done(function (data) {
                             if (!data.hasOwnProperty('error')) {
-                                resultado_despacho(data)
+                                resultado_despacho(data, accion)
                             }else{
                                 message_error(data.error);
                             }
@@ -114,20 +114,25 @@ let ultimos_despachos = () => {
             });
 }
 ultimos_despachos();
-function resultado_despacho(obj) {
+function resultado_despacho(obj, accion) {
     let html = '';
     if (typeof (obj) === 'object' && obj.hasOwnProperty('despacho')) {
         html = div_despacho(obj['despacho']);
+            document.getElementById('recibo_despacho').innerHTML = html;
+        $('#modal_resultado').modal('show')
+        printJS({
+            printable: 'recibo_despacho',
+            type: 'html',
+            targetStyles: ['*']
+        })
     } else {
         html = '<p>' + obj + '</p>';
+        $.alert({
+            title: 'Alert!',
+            content: html,
+        });
     }
-    document.getElementById('recibo_despacho').innerHTML = html;
-    $('#modal_resultado').modal('show')
-    printJS({
-        printable: 'recibo_despacho',
-        type: 'html',
-        targetStyles: ['*']
-    })
+
 }
 $('#generar_despacho').on('submit', function (e) {
     e.preventDefault();
