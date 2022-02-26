@@ -116,21 +116,54 @@ let ultimos_despachos = () => {
 ultimos_despachos();
 function resultado_despacho(obj, accion) {
     let html = '';
-    if (typeof (obj) === 'object' && obj.hasOwnProperty('despacho')) {
+    if (obj.hasOwnProperty('despacho') && accion == 'buscar_despacho') {
         html = div_despacho(obj['despacho']);
-            document.getElementById('recibo_despacho').innerHTML = html;
+        document.getElementById('recibo_despacho').innerHTML = html;
         $('#modal_resultado').modal('show')
         printJS({
             printable: 'recibo_despacho',
             type: 'html',
             targetStyles: ['*']
         })
-    } else {
+    } else if (obj.hasOwnProperty('despacho') && accion == 'anular_despacho'){
+        $.confirm({
+            title: 'Anular Despacho',
+            content: `Desea anular la planilla con el Folio Nro <strong>${obj.despacho.planilla}</strong>?`,
+            icon: 'fas fa-exclamation-triangle',
+            type: 'orange',
+            buttons: {
+                procesar: {
+                    btnClass: 'btn-blue',
+                    action: function (){
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {'despacho' : obj.despacho.id,
+                               'accion': accion
+                        },
+                    }).done(function (data) {
+                        if (!data.hasOwnProperty('error')) {
+                            $.alert({
+                                title: 'Atencion!',
+                                content: data.success,
+                            });
+                        }else{
+                            message_error(data.error);
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        $.alert(textStatus + ': ' + errorThrown);
+                    }).always(function () {
+                        ultimos_despachos()
+                    });
+                }},
+                cancelar: function () {
+                }
+            }
+        })
+    }
+    else {
         html = '<p>' + obj + '</p>';
-        $.alert({
-            title: 'Alert!',
-            content: html,
-        });
+        $.alert({title: html});
     }
 
 }
@@ -146,7 +179,7 @@ $('#generar_despacho').on('submit', function (e) {
         contentType: false,
     }).done(function (data) {
         if (!data.hasOwnProperty('error')) {
-            resultado_despacho(data)
+            resultado_despacho(data, 'buscar_despacho')
             $('#generar_despacho .select2bs4').val(null).trigger('change')
         }else{
             message_error(data.error);

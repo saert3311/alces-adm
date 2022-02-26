@@ -102,7 +102,7 @@ class ActualizarServicio(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
         return JsonResponse(data)
 
 class AsignarDespacho(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = ('recorridos.view_despacho', 'recorridos.add_despacho')
+    permission_required = ('recorridos.view_despacho', 'recorridos.add_despacho', 'recorridos.change_despacho')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = Despacho
@@ -153,7 +153,13 @@ class AsignarDespacho(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                 el_despacho = Despacho.objects.get(id=request.POST['despacho'])
                 data['despacho'] = DespachoImprimirSerial(el_despacho).data
             elif accion == 'anular_despacho':
-                data['respuesta'] = 'Todo bien'
+                el_despacho = Despacho.all_objects.get(id=request.POST['despacho'])
+                if el_despacho.id_usuario == request.user.id or request.user.is_superuser:
+                    el_despacho.es_vigente = False
+                    el_despacho.save()
+                    data['success'] = 'Despacho Anulado'
+                else:
+                    data['error'] = 'No puedes anular despacho emitido por otro usuario'
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:
