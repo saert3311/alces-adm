@@ -41,7 +41,7 @@ class RendicionCuentas(LoginRequiredMixin, PermissionRequiredMixin, View):
             if accion == 'procesar':
                 planillas_procesar = Pago_planilla.objects.filter(id_rendicion_cuentas__isnull=True,
                                                                   id_user=request.user.id)
-                if planillas_procesar:
+                if planillas_procesar.exists():
                     planillas_validar = planillas_procesar.values('fecha_pago__date').annotate(total=Sum('valor'))
                     datos_validar = [{
                         'fecha': p['fecha_pago__date'].strftime('%d-%m-%Y'),

@@ -13,4 +13,4 @@ class Rendicion_cuentas(models.Model):
 
     @property
     def fecha_simple(self):
-        return self.fecha_pago.strftime('%d/%m/%Y')
+        return self.fecha.strftime('%d/%m/%Y')

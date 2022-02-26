@@ -94,7 +94,7 @@ DATABASES = {
         'NAME': 'alces',
         'USER': 'alces_user',
         'PASSWORD': 'aygklAVaxy8ATrFDfxMICSXuhxudf5aO',
-        'HOST': '169.254.155.161',
+        'HOST': '169.254.3.178',
         'PORT': '5432'
     }
 }
