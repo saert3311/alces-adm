@@ -8,7 +8,7 @@ from .models import Despacho, Servicio, Planilla, Pago_planilla, inc_control_pla
 from .forms import DespachoForm, ServicioForm, PagarPlanillaForm, BuscarDespachosForm, BuscarPlanillaForm, RevalidarPlanillaForm
 from .serializers import *
 from django.views.generic import CreateView, UpdateView, TemplateView, View
-from datetime import datetime
+from datetime import datetime, timedelta
 from constance import config
 
 class ListarServicios(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
@@ -154,12 +154,13 @@ class AsignarDespacho(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                 data['despacho'] = DespachoImprimirSerial(el_despacho).data
             elif accion == 'anular_despacho':
                 el_despacho = Despacho.all_objects.get(id=request.POST['despacho'])
-                if el_despacho.id_usuario == request.user.id or request.user.is_superuser:
-                    el_despacho.es_vigente = False
-                    el_despacho.save()
-                    data['success'] = 'Despacho Anulado'
-                else:
-                    data['error'] = 'No puedes anular despacho emitido por otro usuario'
+                if not request.user.is_superuser or el_despacho.id_usuario.id != request.user.id:
+                    raise Exception('No puedes anular despacho emitido por otro usuario')
+                if (datetime.combine(el_despacho.fecha_despacho, el_despacho.hora_salida) - datetime.now()) < timedelta(minutes=config.MINUTOS_ANULAR_PLANILLA):
+                    raise Exception(f'No puedes anular la planilla con menos de {config.MINUTOS_ANULAR_PLANILLA} de anticipación')
+                el_despacho.es_vigente = False
+                el_despacho.save()
+                data['success'] = 'Despacho Anulado'
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:

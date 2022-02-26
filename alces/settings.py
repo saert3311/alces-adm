@@ -183,6 +183,7 @@ CONSTANCE_CONFIG = {
     'FOTO_CONDUCTOR' : (False, 'Requerir fotografia del conductor para emitir despachos'),
     'FOTO_AUXILIAR' : (False, 'Requerir fotografia del auxiliar para emitir despachos'),
     'LIMITE_REVALIDAR' : (1, 'Numero de planillas que son posible revalidar'),
-    'CONDUCTOR_MULTI_MAQUINA' : (True, 'Conductor puede salir en varias maquinas en un dia')
+    'CONDUCTOR_MULTI_MAQUINA' : (True, 'Conductor puede salir en varias maquinas en un dia'),
+    'MINUTOS_ANULAR_PLANILLA' : (1, 'Minutos de diferencia para poder anular una planilla')
 }
 
