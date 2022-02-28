@@ -42,7 +42,13 @@ $('#process_revalidar').on('submit', function (e) {
                         contentType: false,
                     }).done(function (data) {
                         if (!data.hasOwnProperty('error')) {
-                            $.alert('Planilla revalidada!');
+                            $.alert({
+                                title:'Planilla revalidada!',
+                                content: `Nueva Fecha: ${data.planilla.fecha_planilla} con folio: ${data.planilla.folio}`,
+                                onDestroy: function () {
+                                    window.location.replace('/revalidarPlanilla')
+                                }
+                            });
                         }else{
                             message_error(data.error);
                             $('#revalidar_planilla').removeClass('disabled')
