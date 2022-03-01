@@ -9,6 +9,7 @@ from django.forms import model_to_dict
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = (
+        (0, 'dummy'),
         (1, 'admin'),
         (2, 'contable'),
         (3, 'terminal'),

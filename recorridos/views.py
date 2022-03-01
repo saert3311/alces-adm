@@ -180,6 +180,12 @@ class PagoPlanilla(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
         context['seccion'] = 'recorridos'
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.id_sucursal.es_recaudador:
+            return redirect('home')
+
+        return super(PagoPlanilla, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         data = {}
         try:
@@ -210,6 +216,9 @@ class PagarPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
     }
 
     def get(self, request, *args, **kwargs):
+        if request.user.id_sucursal.es_recaudador is False or request.user.is_superuser:
+            messages.error(self.request, 'Funcion no permitida')
+            return redirect('app:inicio')
         form = PagarPlanillaForm
         try:
             planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])
@@ -240,6 +249,8 @@ class PagarPlanilla(LoginRequiredMixin, PermissionRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         data = {}
         try:
+            if request.user.id_sucursal.es_recaudador is False or request.user.is_superuser:
+                raise Exception('Funcion no permitida')
             accion = request.POST['accion']
             if accion == 'pagar_planilla':
                 planilla_pagar = Planilla.objects.get(id=self.kwargs['pl'])

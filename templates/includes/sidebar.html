@@ -105,7 +105,7 @@
                         <p>Contabilidad<i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-                {% if perms.contabilidad.add_rendicion_cuentas %}
+                {% if perms.contabilidad.add_rendicion_cuentas and user.id_sucursal.es_recaudador%}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{% url 'contabilidad:rendicion-cuentas' %}"
@@ -189,7 +189,7 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="admin" class="nav-link">
+                            <a href="/admin" class="nav-link">
                                 <i class="fab fa-python"></i>
                                 <p>Backend Admin</p>
                             </a>
