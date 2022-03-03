@@ -2,8 +2,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views import View
 from django.contrib import messages
+from django.views.generic import TemplateView
+from .serializers import RendicionesEnviadasSerial
 from recorridos.models import Pago_planilla
 from contabilidad.models import Rendicion_cuentas
 from django.core.signing import Signer
@@ -83,6 +86,36 @@ class RendicionCuentas(LoginRequiredMixin, PermissionRequiredMixin, View):
                         data['recargar'] = True
                 else:
                     data['error'] = 'No existen items para rendición de cuentas'
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        finally:
+            return JsonResponse(data, safe=False)
+
+class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = ('contabilidad.view_rendicion_cuentas')
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    template_name = 'recorridos/listar-rendiciones.html'
+    success_url = reverse_lazy('recorridos:pago-planilla')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Rendiciones enviadas'
+        context['seccion'] = 'contabilidad'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'listar':
+                data = []
+                las_rendiciones = Rendicion_cuentas.objects.all()
+                las_rendiciones_serializadas = RendicionesEnviadasSerial(las_rendiciones, many=True)
+                for i in las_rendiciones_serializadas.data:
+                    data.append(i)
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:

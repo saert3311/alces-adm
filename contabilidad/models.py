@@ -13,3 +13,7 @@ class Rendicion_cuentas(models.Model):
     @property
     def fecha_simple(self):
         return self.fecha.strftime('%d/%m/%Y')
+
+    @property
+    def nombre_inspector(self):
+        return self.id_usuario.nombre_completo

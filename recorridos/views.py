@@ -182,9 +182,9 @@ class PagoPlanilla(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.id_sucursal.es_recaudador:
-            return redirect('home')
-
-        return super(PagoPlanilla, self).dispatch(request, *args, **kwargs)
+            messages.error(self.request, 'No eres recaudador')
+            return redirect('app:inicio')
+        return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         data = {}

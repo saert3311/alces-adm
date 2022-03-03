@@ -15,7 +15,7 @@ class NombreRutModelChoiceField(forms.ModelChoiceField):
 class BuscarDespachosForm(ModelForm):
     id_vehiculo = forms.ModelChoiceField(queryset=Vehiculo.objects.filter(es_activo=True), required=False)
     id_recorrido = forms.ModelChoiceField(queryset=Servicio.objects.filter(es_vigente=True), required=False)
-    id_usuario = forms.ModelChoiceField(queryset=User.objects.filter(user_type=3, is_active=True), required=False)
+    id_usuario = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Terminal', is_active=True), required=False)
 
     class Meta:
         model = Despacho
@@ -24,7 +24,7 @@ class BuscarDespachosForm(ModelForm):
 class BuscarPlanillaForm(ModelForm):
     id_vehiculo = forms.ModelChoiceField(queryset=Vehiculo.objects.filter(es_activo=True), required=False)
     id_recorrido = forms.ModelChoiceField(queryset=Servicio.objects.filter(es_vigente=True), required=False)
-    id_user = forms.ModelChoiceField(queryset=User.objects.filter(user_type=3, is_active=True), required=False)
+    id_user = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Terminal', is_active=True), required=False)
 
     class Meta:
         model = Planilla
