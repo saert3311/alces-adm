@@ -116,10 +116,10 @@
                         </li>
                     </ul>
                     {% endif %}
-                    {% if perms.contabilidad.add_rendicion_cuentas %}
+                    {% if perms.contabilidad.add_recepcion_cuentas %}
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{% url 'contabilidad:rendicion-cuentas' %}"
+                            <a href="{% url 'contabilidad:recibir-rendicion-listar' %}"
                                class="nav-link {% if request.path == '/rendicionCuentas/' %}active{% endif %}">
                                 <i class="fas fa-receipt"></i>
                                 <p>Recibir cuentas</p>

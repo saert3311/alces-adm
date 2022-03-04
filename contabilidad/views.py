@@ -93,32 +93,19 @@ class RendicionCuentas(LoginRequiredMixin, PermissionRequiredMixin, View):
         finally:
             return JsonResponse(data, safe=False)
 
-class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = ('contabilidad.view_rendicion_cuentas')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
-    template_name = 'recorridos/listar-rendiciones.html'
-    success_url = reverse_lazy('recorridos:pago-planilla')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Rendiciones enviadas'
-        context['seccion'] = 'contabilidad'
-        return context
+    def get(self, request, *args, **kwargs):
+        datos = Rendicion_cuentas.objects.filter(id_recepcion_cuentas__isnull=True).values('fecha__date', 'id_usuario__id_sucursal__nombre').annotate(total_entregado=Sum('entregado'), total_pendiente=Sum('pendiente'))
+        if not datos.exists():
+            messages.error(request, 'No existen cuentas para recibir')
+            return redirect('app:inicio')
 
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            accion = request.POST['accion']
-            if accion == 'listar':
-                data = []
-                las_rendiciones = Rendicion_cuentas.objects.all()
-                las_rendiciones_serializadas = RendicionesEnviadasSerial(las_rendiciones, many=True)
-                for i in las_rendiciones_serializadas.data:
-                    data.append(i)
-            else:
-                data['error'] = 'Metodo no definido'
-        except Exception as e:
-            data['error'] = str(e)
-        finally:
-            return JsonResponse(data, safe=False)
+        return render(request, 'contabilidad/listar-rendiciones.html', {
+            'seccion' : 'contabilidad',
+            'titulo' : 'Recibir Cuentas Terminal',
+            'datos' : datos
+        })

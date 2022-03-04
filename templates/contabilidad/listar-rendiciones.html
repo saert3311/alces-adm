@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block title %}Despachos{% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
@@ -43,12 +44,23 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center">Fecha</th>
-                                    <th class="text-center">Inspector</th>
+                                    <th class="text-center">Terminal</th>
                                     <th class="text-center">Entregado</th>
                                     <th class="text-center">Pendiente</th>
                                     <th class="text-center">Opciones</th>
                                 </tr>
                                 </thead>
+                                    <tbody class="text-center">
+                           {% for d in datos %}
+                           <tr>
+                               <td>{{ d.fecha__date }}</td>
+                               <td>{{ d.id_usuario__id_sucursal__nombre }}</td>
+                               <td>$ {{ d.total_entregado|floatformat|intcomma  }}</td>
+                               <td>$ {{ d.total_pendiente|floatformat|intcomma }}</td>
+                               <td class="botones"><a href="#"><button type="button" class="btn btn-secondary"><i class="far fa-edit"></i></button></a></td>
+                           </tr>
+                           {% endfor %}
+                           </tbody>
                             </table>
                             </div>
                     </div>
