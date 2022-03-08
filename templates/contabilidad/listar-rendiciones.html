@@ -57,7 +57,11 @@
                                <td>{{ d.id_usuario__id_sucursal__nombre }}</td>
                                <td>$ {{ d.total_entregado|floatformat|intcomma  }}</td>
                                <td>$ {{ d.total_pendiente|floatformat|intcomma }}</td>
-                               <td class="botones"><a href="#"><button type="button" class="btn btn-secondary"><i class="far fa-edit"></i></button></a></td>
+                               <form method="post" enctype="multipart/form-data">
+                                   {% csrf_token %}
+                                   <input id="fecha" name="fecha" type="hidden" value="{{ d.fecha__date|date:'m/d/Y' }}" >
+                               <td class="botones"><button type="submit" class="btn btn-secondary recibir-cuentas"><i class="far fa-edit"></i></button></td>
+                                   </form>
                            </tr>
                            {% endfor %}
                            </tbody>
@@ -79,6 +83,6 @@
     <script src="{% static 'plugins/moment/locale/es.js' %}"></script>
     <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'plugins/select2/js/select2.full.js' %}"></script>
-    <script src="{% static 'js/recorridos/listar-rendiciones.js' %}"></script>
+    <script src="{% static 'js/contabilidad/listar-rendiciones.js' %}"></script>
 {% endblock javascripts %}
 
