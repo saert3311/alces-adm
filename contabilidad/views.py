@@ -94,7 +94,7 @@ class RendicionCuentas(LoginRequiredMixin, PermissionRequiredMixin, View):
             return JsonResponse(data, safe=False)
 
 class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = ('contabilidad.view_rendicion_cuentas')
+    permission_required = ('contabilidad.view_rendicion_cuentas', 'contabilidad.change_rendicion_cuentas', 'contabilidad.view_recepcion_cuentas','contabilidad.add_recepcion_cuentas')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
 
@@ -109,3 +109,21 @@ class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, Vie
             'titulo' : 'Recibir Cuentas Terminal',
             'datos' : datos
         })
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            accion = request.POST['accion']
+            if accion == 'detalle':
+                rendiciones = Rendicion_cuentas.objects.filter(fecha=request.POST['fecha']).exclude(id_recepcion_cuentas__isnull=True)
+                if not rendiciones.exists():
+                    messages.error('No Existen rendiciones a recibir en esta fecha')
+                    return redirect('contabilidad:recibir-rendicion-listar')
+            else:
+                data['error'] = 'Metodo no definido'
+        except Exception as e:
+            data['error'] = str(e)
+        if request.META.get('HTTP_X_REQUESTED_WITH') != 'XMLHttpRequest' and 'error' in data:
+            messages.error(request, data['error'])
+            return redirect('app:inicio')
+        return JsonResponse(data, safe=False)

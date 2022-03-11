@@ -60,6 +60,7 @@
                                <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
                                    <input id="fecha" name="fecha" type="hidden" value="{{ d.fecha__date|date:'m/d/Y' }}" >
+                                   <input id="fecha" name="accion" type="hidden" value="detalle" >
                                <td class="botones"><button type="submit" class="btn btn-secondary recibir-cuentas"><i class="far fa-edit"></i></button></td>
                                    </form>
                            </tr>
