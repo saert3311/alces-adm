@@ -70,7 +70,8 @@ class RendicionCuentas(LoginRequiredMixin, PermissionRequiredMixin, View):
                         rendicion = Rendicion_cuentas(id_usuario=request.user,
                                                       entregado=rendicion_salvar['total_arqueo'],
                                                       pendiente=rendicion_salvar['diferencia'],
-                                                      arqueo=arqueo_salvar)
+                                                      arqueo=arqueo_salvar,
+                                                      observaciones=request.POST['observaciones'])
                         rendicion.save()
                         planillas_procesar.update(id_rendicion_cuentas=rendicion)
                         data['rendicion'] = {
@@ -115,15 +116,20 @@ class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, Vie
         try:
             accion = request.POST['accion']
             if accion == 'detalle':
-                rendiciones = Rendicion_cuentas.objects.filter(fecha=request.POST['fecha']).exclude(id_recepcion_cuentas__isnull=True)
+                rendiciones = Rendicion_cuentas.objects.filter(fecha__date=request.POST['fecha'], id_recepcion_cuentas__isnull=True)
                 if not rendiciones.exists():
-                    messages.error('No Existen rendiciones a recibir en esta fecha')
-                    return redirect('contabilidad:recibir-rendicion-listar')
+                    messages.error(request, 'No Existen rendiciones a recibir en esta fecha')
+                    return redirect('contabilidad:recibir-rendicion-listar.html')
+                return render(request, 'contabilidad/detalle-rendicion.html', {
+                              'seccion' : 'contabilidad',
+                              'titulo' : 'Detalle de cuentas recibidas',
+                            'rendiciones' : rendiciones
+                })
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:
             data['error'] = str(e)
-        if request.META.get('HTTP_X_REQUESTED_WITH') != 'XMLHttpRequest' and 'error' in data:
-            messages.error(request, data['error'])
-            return redirect('app:inicio')
+            if request.META.get('HTTP_X_REQUESTED_WITH') != 'XMLHttpRequest' and 'error' in data:
+                messages.error(request, str(e))
+                return redirect('app:inicio')
         return JsonResponse(data, safe=False)

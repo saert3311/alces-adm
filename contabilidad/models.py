@@ -26,6 +26,7 @@ class Rendicion_cuentas(models.Model):
     pendiente = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Monto Rendición', default=0)
     arqueo = models.JSONField(verbose_name='Arqueo de Billetes')
     id_recepcion_cuentas = models.ForeignKey(RecepcionCuentas, on_delete=models.PROTECT, verbose_name='Cuenta Recepcionada', blank=True, null=True)
+    observaciones = models.TextField(verbose_name='Observaciones', null=True, blank=True)
 
     @property
     def fecha_simple(self):
