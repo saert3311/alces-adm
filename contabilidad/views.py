@@ -122,7 +122,7 @@ class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, Vie
                     return redirect('contabilidad:recibir-rendicion-listar.html')
                 return render(request, 'contabilidad/detalle-rendicion.html', {
                               'seccion' : 'contabilidad',
-                              'titulo' : 'Detalle de cuentas recibidas',
+                              'titulo' : f'Detalle de cuentas del {rendiciones.first().fecha_simple}',
                             'rendiciones' : rendiciones
                 })
             else:
