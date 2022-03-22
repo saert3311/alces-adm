@@ -7,6 +7,7 @@ from django.views import View
 from django.contrib import messages
 from django.views.generic import TemplateView
 from .serializers import RendicionesEnviadasSerial
+from .forms import RendicionForm
 from recorridos.models import Pago_planilla
 from contabilidad.models import Rendicion_cuentas
 from django.core.signing import Signer
@@ -94,7 +95,7 @@ class RendicionCuentas(LoginRequiredMixin, PermissionRequiredMixin, View):
         finally:
             return JsonResponse(data, safe=False)
 
-class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, View):
+class RecibirRendiciones(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = ('contabilidad.view_rendicion_cuentas', 'contabilidad.change_rendicion_cuentas', 'contabilidad.view_recepcion_cuentas','contabilidad.add_recepcion_cuentas')
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
@@ -125,6 +126,18 @@ class ListarRendicionesEmitidas(LoginRequiredMixin, PermissionRequiredMixin, Vie
                               'titulo' : f'Detalle de cuentas del {rendiciones.first().fecha_simple}',
                             'rendiciones' : rendiciones
                 })
+            elif accion == 'recibir':
+                ids = request.POST['marcados'].split(',')
+                rendiciones = Rendicion_cuentas.objects.filter(id__in=ids)
+                datos = {
+                    'id_usuario' : request.user.id,
+                    'entregado' : rendiciones.aggregate(Sum('entregado')).entregado__sum,
+                    'entregado': rendiciones.aggregate(Sum('pendiente')).pendiente__sum,
+                    'observaciones': request.POST['observaciones']
+                }
+                print(datos)
+                form = RendicionForm(initial=datos)
+                print(form)
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:

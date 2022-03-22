@@ -15,10 +15,16 @@ $('.validar_recepcion').on('click', function () {
     }
 })
 
-$('#recibir').on('submit', function (e) {
+$('#form_recibir').on('submit', function (e) {
     e.preventDefault()
-        if ($('#pago_footer button.disabled').length < 1) {
-        $('#btn-pago').addClass('disabled')
+        if (rendiciones.length < 1) {
+            return $.alert({
+                title: 'Atencion!',
+                type: 'red',
+                content: 'No has seleccionado ningun elemento a recibir!',
+            });
+        }
+        $("#form_recibir input").prop("disabled", true);$(".validar_recepcion").prop("disabled", true);
         $.confirm({
             title: 'Procesar Pago',
             content: `Desea realizar la recepción de los elementos marcados?`,
@@ -27,7 +33,10 @@ $('#recibir').on('submit', function (e) {
                 procesar: {
                     btnClass: 'btn-blue',
                     action: function (){
-                    let parameters = new FormData(document.getElementById('recibir'));
+                    let parameters = new FormData();
+                    parameters.append('marcados', rendiciones);
+                    parameters.append('accion', 'recibir');
+                    parameters.append('observaciones', document.getElementById('observaciones').value)
                     $.ajax({
                         url: window.location.pathname,
                         type: 'POST',
@@ -35,30 +44,21 @@ $('#recibir').on('submit', function (e) {
                         dataType: 'json',
                         processData: false,
                         contentType: false,
-                        beforeSend : function () {
-                            $('#loader_vale_cobro').removeClass('d-none')
-                        }
                     }).done(function (data) {
                         if (!data.hasOwnProperty('error')) {
-                            resultado_pago(data)
+                            console.log('ok')
                         }else{
                             message_error(data.error);
-                            $('#btn-pago').removeClass('disabled')
-                            $('#loader_vale_cobro').addClass('d-none')
+                            $("#recibir input").prop("disabled", false);$(".validar_recepcion").prop("disabled", false);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         $.alert(textStatus + ': ' + errorThrown);
-                        $('#btn-pago').removeClass('disabled')
-                        $('#loader_vale_cobro').addClass('d-none')
+                        $("#recibir input").prop("disabled", false);$(".validar_recepcion").prop("disabled", false);
                     });
                 }},
                 cancelar: function () {
-                    $('#btn-pago').removeClass('disabled')
-                    $('#loader_vale_cobro').addClass('d-none')
+                    $("#recibir input").prop("disabled", false);$(".validar_recepcion").prop("disabled", false);
                 }
             }
         })
-
-    }
 });
-})

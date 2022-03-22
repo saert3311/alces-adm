@@ -6,5 +6,5 @@ app_name = "contabilidad"
 
 urlpatterns = [
     path('rendicionCuentas/', RendicionCuentas.as_view(), name='rendicion-cuentas'),
-    path('recibirRendicion/', ListarRendicionesEmitidas.as_view(), name='recibir-rendicion-listar')
+    path('recibirRendicion/', RecibirRendiciones.as_view(), name='recibir-rendicion-listar')
 ]
