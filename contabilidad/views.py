@@ -6,10 +6,9 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.contrib import messages
 from django.views.generic import TemplateView
-from .serializers import RendicionesEnviadasSerial
-from .forms import RendicionForm
+from .serializers import RecepcionSerializado
 from recorridos.models import Pago_planilla
-from contabilidad.models import Rendicion_cuentas
+from contabilidad.models import Rendicion_cuentas, RecepcionCuentas
 from django.core.signing import Signer
 
 
@@ -130,14 +129,16 @@ class RecibirRendiciones(LoginRequiredMixin, PermissionRequiredMixin, View):
                 ids = request.POST['marcados'].split(',')
                 rendiciones = Rendicion_cuentas.objects.filter(id__in=ids)
                 datos = {
-                    'id_usuario' : request.user.id,
-                    'entregado' : rendiciones.aggregate(Sum('entregado')).entregado__sum,
-                    'entregado': rendiciones.aggregate(Sum('pendiente')).pendiente__sum,
+                    'id_usuario' : request.user,
+                    'entregado' : rendiciones.aggregate(Sum('entregado'))['entregado__sum'],
+                    'pendiente': rendiciones.aggregate(Sum('pendiente'))['pendiente__sum'],
                     'observaciones': request.POST['observaciones']
                 }
-                print(datos)
-                form = RendicionForm(initial=datos)
-                print(form)
+                recepcion = RecepcionCuentas(**datos)
+                recepcion.save()
+                rendiciones.update(id_recepcion_cuentas=recepcion)
+                data['id'] = recepcion.id
+                data['entregado'] = recepcion.entregado
             else:
                 data['error'] = 'Metodo no definido'
         except Exception as e:

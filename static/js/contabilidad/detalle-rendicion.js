@@ -46,7 +46,15 @@ $('#form_recibir').on('submit', function (e) {
                         contentType: false,
                     }).done(function (data) {
                         if (!data.hasOwnProperty('error')) {
-                            console.log('ok')
+                            console.log(data)
+                            $.alert({
+                                title: 'Recepcionado!',
+                                type: 'green',
+                                content: `Se han recepcionado ${displayCLP(data.entregado)} con folio ${data.id}`,
+                                onDestroy: function () {
+                                    window.location.href = '/recibirRendicion';
+                                }
+                            });
                         }else{
                             message_error(data.error);
                             $("#recibir input").prop("disabled", false);$(".validar_recepcion").prop("disabled", false);
