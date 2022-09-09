@@ -92,10 +92,10 @@ WSGI_APPLICATION = 'alces.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'alces',
-        'USER': 'alces_user',
-        'PASSWORD': 'aygklAVaxy8ATrFDfxMICSXuhxudf5aO', #obviamente no usaremos esto en prod, usaremos variables de entorno
-        'HOST': '169.254.55.142',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '', #obviamente no usaremos esto en prod, usaremos variables de entorno
+        'HOST': '',
         'PORT': '5432'
     }
 }
